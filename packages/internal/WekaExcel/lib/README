@@ -1,0 +1,13 @@
+README
+======
+
+Information on the libraries in use:
+
+- Apache POI (poi*.jar, dom4j*.jar, geronimo*.jar, xmlbeans*.jar)
+  Version:  3.8
+  License:  Apache 2.0
+  Homepage: http://poi.apache.org/
+  Download: http://archive.apache.org/dist/poi/release/bin/poi-bin-3.8-20120326.zip 
+
+
+$Revision$

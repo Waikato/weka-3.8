@@ -1,0 +1,31 @@
+# Description file for LibLINEAR
+
+PackageName=LibLINEAR
+
+Version=1.9.8
+
+Date=2015-11-12
+
+Title=A wrapper class for the liblinear classifier
+
+Category=Classification
+
+Author=Benedikt Waldvogel <mail@bwaldvogel.de>
+
+Maintainer=Weka team <wekalist@list.scms.waikato.ac.nz>
+
+License=BSD
+
+Description=A wrapper class for the liblinear classifier. Rong-En Fan, Kai-Wei Chang, Cho-Jui Hsieh, Xiang-Rui Wang, Chih-Jen Lin (2008). LIBLINEAR - A Library for Large Linear Classification.
+
+Changes=Now exposes epsilon parameter for support vector regression. Also exposes maximum number of iterations. Library .jar compiled from source based on current Github snapshot. Cleaned up output of toString().
+
+# Package URL for obtaining the package archive
+PackageURL=http://prdownloads.sourceforge.net/weka/LibLINEAR1.9.8.zip?download
+
+# URL for further information
+URL=http://liblinear.bwaldvogel.de/
+
+Related=LibSVM
+
+Depends=weka (>=3.7.13)

@@ -1,0 +1,1691 @@
+                                                                                                                                                                                                                                                               
+Delivered-To: mhallster@gmail.com
+Received: by 10.194.205.68 with SMTP id le4csp35776wjc;
+        Fri, 14 Mar 2014 07:47:19 -0700 (PDT)
+X-Received: by 10.66.232.7 with SMTP id tk7mr9550166pac.94.1394808438704;
+        Fri, 14 Mar 2014 07:47:18 -0700 (PDT)
+Return-Path: <SRS0=TTZW18=YP=trefi.com=david.persons@cs.waikato.ac.nz>
+Received: from zombie.scms.waikato.ac.nz (mail.scms.waikato.ac.nz. [130.217.241.36])
+        by mx.google.com with ESMTPS id a3si3115497pay.348.2014.03.14.07.47.14
+        for <mhallster@gmail.com>
+        (version=TLSv1 cipher=RC4-SHA bits=128/128);
+        Fri, 14 Mar 2014 07:47:16 -0700 (PDT)
+Received-SPF: pass (google.com: domain of SRS0=TTZW18=YP=trefi.com=david.persons@cs.waikato.ac.nz designates 130.217.241.36 as permitted sender) client-ip=130.217.241.36;
+Authentication-Results: mx.google.com;
+       spf=pass (google.com: domain of SRS0=TTZW18=YP=trefi.com=david.persons@cs.waikato.ac.nz designates 130.217.241.36 as permitted sender) smtp.mail=SRS0=TTZW18=YP=trefi.com=david.persons@cs.waikato.ac.nz
+Received: from mx1.its.waikato.ac.nz ([130.217.76.2])
+	by zombie.scms.waikato.ac.nz with esmtp (Exim 4.69)
+	(envelope-from <david.persons@trefi.com>)
+	id 1WOTOA-0002W1-OE
+	for mhall@cs.waikato.ac.nz; Sat, 15 Mar 2014 03:47:10 +1300
+X-AuditID: 82d94c02-b7cabae00000035a-23-53231667710f
+Received: from smtp-vbr2.xs4all.nl (smtp-vbr2.xs4all.nl [194.109.24.22])
+	by  (Symantec Brightmail Gateway) with SMTP id 03.00.00858.86613235; Sat, 15 Mar 2014 03:47:07 +1300 (NZDT)
+Received: from CTC37 (a80-101-51-118.adsl.xs4all.nl [80.101.51.118])
+	by smtp-vbr2.xs4all.nl (8.13.8/8.13.8) with ESMTP id s2EEks4T007241
+	for <mhall@cs.waikato.ac.nz>; Fri, 14 Mar 2014 15:46:57 +0100 (CET)
+	(envelope-from david.persons@trefi.com)
+From: "David Persons" <david.persons@trefi.com>
+To: <mhall@cs.waikato.ac.nz>
+References: <003601ce1b57$a67fa150$f37ee3f0$@trefi.com>	<CAFi3mySihCTNk42cqST2u_0CosdNGPEDF83vR2FKb6713=Y5hA@mail.gmail.com>	<004701ce1f36$b843cff0$28cb6fd0$@trefi.com>	<CAFi3myQBR07Odq7+-MksKzhk0AnzayAYMSUxJsHZkV0euv9dTA@mail.gmail.com>	<001f01ce2490$9e950560$dbbf1020$@trefi.com>	<CAFi3myTSfTjmbPnTpXQFXgxmhMEvYBVH9KUT_WeCoJEtThx9cA@mail.gmail.com>	<002f01ce4b41$2da5ef90$88f1ceb0$@trefi.com>	<CAFi3myTneXo=KDCLTq0Lj7dZNqs5=Rs4DjnYi865a1i8OyUwQA@mail.gmail.com>	<003d01ce4bd5$6cda5bd0$468f1370$@trefi.com>	<CAFi3myTQxxpAyOT5oU69gFfq0=LQP4b8Yfz7fYSW3LWQDjuvzg@mail.gmail.com>	<001c01cf1cf0$96743280$c35c9780$@trefi.com>	<CAFi3myR1PmU1qaPTM38Z3jDZP_+MGc9cTiSftptCGBV9epENDQ@mail.gmail.com>	<007501cf3175$f8f69d00$eae3d700$@trefi.com>	<CAFi3myRKxBXCJaQ+7_R=GdXyrcUFoXs69JmT3=vHef3zmantFQ@mail.gmail.com>	<000f01cf330a$80bf8b80$823ea280$@trefi.com>	<CAFi3myRC7ie60pxYW3jk7pkOvdT_ZyPiNOvyszE8jQgJtSpeqQ@mail.gmail.com>	<004301cf3850$d1c45d80$754d1880$@trefi.com>	<CAFi3myQAyipWmAxy0h8vcMZmByt!
+ v-OcsNKJ7u6Rh3ZwHk-T9yA
+	@mail.gmail.com>	<014501cf3ec3$2a5b11f0$7f1135d0$@trefi.com> <CAFi3myTjc3ahrTV2dvXvTVpfo2M1+R1gu24sn--B51uLpDD+UA@mail.gmail.com>
+In-Reply-To: <CAFi3myTjc3ahrTV2dvXvTVpfo2M1+R1gu24sn--B51uLpDD+UA@mail.gmail.com>
+Subject: RE: exporting weka models to pmml
+Date: Fri, 14 Mar 2014 14:47:11 -0000
+Message-ID: <003701cf3f94$49e3a880$ddaaf980$@trefi.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0038_01CF3F94.49EAD470"
+X-Mailer: Microsoft Outlook 14.0
+Thread-Index: AQKL/ftkYkDDAq6huKSipdB8H+RH9AGvivNeAbyT0t8CLU8dmQHATDPtAhStL8QC7VtoEQH00KPeAOCkmVoCPC03PgJnq46oAecEOeYBeIeyKgLVnMlIAdDDeI8CskmemwG1vvS7AiRwVPUDMF46CQEmhsNqmDE5UhA=
+Content-Language: en-us
+X-Virus-Scanned: by XS4ALL Virus Scanner
+X-Brightmail-Tracker: AAAAAR+dY74=
+
+This is a multipart message in MIME format.
+
+------=_NextPart_000_0038_01CF3F94.49EAD470
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+Sounds good! Yes, of course University of Waikato can have the copyright.
+
+ 
+
+cheers
+
+ 
+
+From: mhallster@gmail.com [mailto:mhallster@gmail.com] On Behalf Of Mark
+Hall
+Sent: Friday, March 14, 2014 8:21 AM
+To: David Persons
+Subject: Re: exporting weka models to pmml
+
+ 
+
+Hi David,
+
+ 
+
+Yes, that did the trick. I've just done a couple of tests and things are
+looking good! There were just a couple of modifications required:
+
+ 
+
+1. The functionName was set to "regression" in the generated PMML - this
+should be "classification" for logistic regression
+
+2. The normalizationMethod needed to be set to "softmax" rather than "logit"
+for multinomial logistic regression.
+
+ 
+
+Once I made these changes, I tested on the iris and vote UCI data sets. For
+vote I used a version with missing values already replaced in the data (I'll
+test the PMML missing value replacement tomorrow). I used the "re-evaluate
+model on current test set" contextual menu option in the Explorer and
+compared the PMML model results to those from Logistic. Results were
+identical (to the 4 decimal places printed by the Explorer). This includes
+RMSE and MAE, which measure the accuracy of the probability estimates. So
+the probabilities produced by the PMML model appear to be correct. Some more
+datasets need to be tried of course, but it is looking pretty good!
+
+ 
+
+I'll take a look at altering Logistic to just store means/modes in an array
+over the weekend (or next week sometime) and then look to get your changes
+checked in to the trunk.
+
+ 
+
+I can't remember if I've asked you this already - are you willing to give
+copyright for these contributions to the University of Waikato? Occasionally
+the university manages to sell a commercial license for Weka, and some of
+the proceeds come back to the ML group for supporting research students,
+conference trips etc. If you say yes it will make my job easier as I have to
+maintain a separate code line for Weka that is in sync with trunk but sans
+non-waikato copyright and patented code :-)
+
+ 
+
+Cheers,
+
+Mark.
+
+ 
+
+ 
+
+On Fri, Mar 14, 2014 at 2:50 AM, David Persons <david.persons@trefi.com>
+wrote:
+
+Hi Mark,
+
+ 
+
+I see. You can just rename DELIMITER.java to DELIMITER2.java (and also
+update its references in Delimiter.java). And do the same for TIMEANCHOR. I
+tested this locally and things still work afterwards. JAXB generated objects
+for all possible pmml objects, most of the generated classes will not be
+used, including these two.
+
+ 
+
+Cheers, David
+
+ 
+
+From: mhallster@gmail.com [mailto:mhallster@gmail.com] On Behalf Of Mark
+Hall
+Sent: Thursday, March 13, 2014 8:13 AM
+
+
+To: David Persons
+Subject: Re: exporting weka models to pmml
+
+ 
+
+Hi David,
+
+ 
+
+I've just started to take a look at your latest stuff. It's looking pretty
+cool, but I haven't been able to compile it. There is a major problem with
+these automatically generated JAXB bindings for us Mac users - Macs have a
+case-insensitive file system by default. DELIMITER.java overwrites
+Delimiter.java when I unpack your zip. The same problem occurs with
+Timeanchor/TIMEANCHOR. I guess I could (under Linux) rename these classes
+manually (and grep for all references to them) to eliminate the collisions.
+I've never used JAXB before - do you know of any elegant solution to this?
+
+ 
+
+I was going to modify Logistic.buildClassifier() to just create an array
+member variable to hold all the means/modes rather than keep a copy of the
+unfiltered training data hanging around. But I need to be able to compile it
+all first :-)
+
+ 
+
+Cheers,
+
+Mark.
+
+ 
+
+ 
+
+On Wed, Mar 5, 2014 at 9:56 PM, David Persons <david.persons@trefi.com>
+wrote:
+
+Hi Mark,
+
+ 
+
+Thanks, now it works.
+
+ 
+
+Attached is a zip file containing the current additions for the Logistic
+model. The DataDictionary, TransformationDictionary, MiningSchema and
+marshaling of the created object can be used in other models as well, so
+these implementations should be moved to some general location. It would be
+handy if it's integrated in the WEKA source before starting with the Neural
+Network implementation. The most important question remaining is the
+following:
+
+ 
+
+-          To make the toPMML function more easy to implement and for
+getting the meanOrMode I have introduced a new class variable Instances
+m_structue_before which is initialized in the beginning of the
+buildClassifier method (line 647) and stores the original format of the
+train set including all of its instances. Of course this reference has to be
+set to NULL before serialization and so on. You know better how to handle
+this then me, or maybe there is a better way, can you take a look at it?
+
+ 
+
+The other additions in the zip file are:
+
+-          Function toPMML in weka.classifiers.functions.Logistic
+
+-          The PMMLProducer interface which Logistic implements is placed in
+package weka.core.pmml
+
+-          The generated JAXB objects are located in
+weka.core.pmml.jaxbbindings
+
+ 
+
+ 
+
+I was surprised R only exports PMML and has no way of importing it and using
+it afterwards. It can be read as an XMLNode, but not used to make
+predictions afterwards. Do you know if there exists a website where the PMML
+file can be checked? It would be nice to actually be able to test the PMML
+file by making predictions in another package, maybe it is possible with
+KNIME?
+
+ 
+
+cheers
+
+ 
+
+From: mhallster@gmail.com [mailto:mhallster@gmail.com] On Behalf Of Mark
+Hall
+Sent: Thursday, February 27, 2014 1:24 AM
+
+
+To: David Persons
+Subject: Re: exporting weka models to pmml
+
+ 
+
+Hi David,
+
+ 
+
+The problem is that you have "missingValueTreatment" declared in the pmml
+file but not "missingValueReplacement". The former is just for informational
+uses ("asMean" is useless by itself if we don't have access to tha training
+data from which to compute the mean) and the later is what we really need. I
+modified the logit.pmml file and added missingValueReplacement="3.1415" for
+the "ps" field - see the attached screenshot of the model loaded into the
+Explorer.
+
+ 
+
+Cheers,
+
+Mark.
+
+ 
+
+ 
+
+On Thu, Feb 27, 2014 at 4:50 AM, David Persons <david.persons@trefi.com>
+wrote:
+
+Hi Mark,
+
+ 
+
+That's what I thought, see the following file (everything is still on the
+same line, will fix that too J). When you read this file into WEKA it throws
+an error:
+
+'[Regression] WARNING: Instance to predict has missing value(s) but there is
+no missing value handling meta data and no prior probabilities/default value
+to fall back on. No prediction will be made (zero probabilities output).'
+
+on line 725 in Regression, because miningSchema.hasTargetMetaData fails, so
+that's where the confusion started. Maybe something has to change in
+importing of the PMML file into WEKA?
+
+ 
+
+Cheers.
+
+David
+
+ 
+
+From: mhallster@gmail.com [mailto:mhallster@gmail.com] On Behalf Of Mark
+Hall
+Sent: Wednesday, February 26, 2014 5:13 AM
+
+
+To: David Persons
+Subject: Re: exporting weka models to pmml
+
+ 
+
+Hi David,
+
+ 
+
+No, you won't have to muck around with Target. From memory, that is for
+making a default prediction in the case that there are missing values
+present in a test instance and no missing values treatment has been
+specified in the mining schema.
+
+ 
+
+If you take a look at line 698 in Regression, you'll see that it makes a
+call to MappingInfo.instanceToSchema(). This maps the incoming instance
+values to the format specified by the mining schema and also applies missing
+value and outlier treatments. Line 291 in MappingInfo calls
+miningSchema.applyMissingAndOutlierTreatments(), which in turn calls
+MiningFieldMetaInfo.applyMissingValueTreatment() for each attribute.
+
+ 
+
+So your MiningFields need to look something like:
+
+ 
+
+ 
+ 
+ 
+<MiningField name="foo" missingValueReplacement="3.14"
+missingValueTreatment="asMean" />
+ 
+ 
+The missingValueReplacement would be a string a for nominal attribute. The
+missingValueTreatment field is for information only I believe.
+ 
+ 
+Cheers,
+ 
+ 
+Mark.
+ 
+ 
+ 
+
+ 
+
+On Tue, Feb 25, 2014 at 4:34 AM, David Persons <david.persons@trefi.com>
+wrote:
+
+Hi Mark,
+
+ 
+
+Do you have an example of how it is supposed to work using MiningSchema
+and/or Targets? On line 724 of weka.classifiers.pmml.consumer.Regression it
+is going to check hasTargetMetaData on mining schema, so I probably have to
+create a Target inside a Targets class somehow and add it to the
+MiningSchema? But I do not see that in the definition in
+http://www.dmg.org/v3-2/MiningSchema.html
+
+ 
+
+Regards David
+
+ 
+
+ 
+
+From: mhallster@gmail.com [mailto:mhallster@gmail.com] On Behalf Of Mark
+Hall
+
+
+Sent: Monday, February 17, 2014 12:54 AM
+
+To: David Persons
+Subject: Re: exporting weka models to pmml
+
+ 
+
+Hi David,
+
+ 
+
+I've just started to take a look at this. Aside from issue with slightly
+different probability estimates (and this might just be due to small
+numerical differences from rounding), the main problem I can see is with
+missing values handling. ps is 78% missing and size is 94% missing in the
+data. This is not a transformation dictionary thing, but instead can be
+specified in the mining schema:
+
+ 
+
+http://www.dmg.org/v3-2/MiningSchema.html
+
+ 
+
+The ReplaceMissingValues filter uses the mean for numeric variables and the
+mode for nominal ones. For Logistic, 100% missing attributes is not an issue
+because they get removed by the RemoveUseless filter.
+
+ 
+
+Otherwise it is looking pretty cool!
+
+ 
+
+Cheers,
+Mark.
+
+ 
+
+P.S. the xml is kind of hard to read - on my Mac it appears all on one line
+in Emacs :-)
+
+ 
+
+ 
+
+On Thu, Jan 30, 2014 at 1:49 AM, David Persons <david.persons@trefi.com>
+wrote:
+
+Hi Mark,
+
+I finally had some days to work on the PMML export. I got some thoughts /
+questions I like to share with you.
+
+I started with the Logistic classifier, the result is the logit.pmml file
+that is attached. I also attach the dataset on which the Logistic classifier
+is trained. Can you take a look at the resulting pmml file? I used the PMML
+Regression model instead of the PMML GeneralRegression model. Not because of
+a particular reason, but because the first example I stumbled upon did it
+that way. Do we need to be able to export the GeneralRegression model? Is
+the GeneralRegression preferred above the Regression model somehow since
+PMML 4.1?
+
+I tested the exported model by importing it in WEKA and calling the
+distributionForInstance function on the resulting
+weka.classifiers.pmml.consumer.Regression class for the first instance in
+the training set. The outcome differs from the original Logistic model;
+0.002058/0.997941 versus 0.004099/0.995900. Not a big difference but a
+difference anyway. I did not find an explanation for the different outcome
+yet, do you have an idea? Maybe the paystaxes should be added to the
+TransformationDictionary because it is also changed by the
+ReplaceMissingValues filter? Not sure yet about how the DerivedField should
+look like though.
+
+The LinearRegression / SimpleLogistic classifiers should be quite easy to
+export to PMML right now. I hope to do that soon and will try and export the
+MultilayerPerceptron after that. What is the most handy way to share my code
+with you so it can be added to the WEKA source tree later on?
+
+Regards,
+David
+
+
+
+-----Original Message-----
+From: mhallster@gmail.com [mailto:mhallster@gmail.com] On Behalf Of Mark
+Hall
+
+Sent: Wednesday, May 08, 2013 10:07 PM
+To: David Persons
+Subject: Re: exporting weka models to pmml
+
+On Wed, May 8, 2013 at 10:18 PM, David Persons <david.persons@trefi.com>
+wrote:
+> Hi Mark,
+>
+> That's right, at the moment it is not necessary to expose the training
+> data structure via a getter method. I think it is good to add it to
+> the Classifier/Clusterer interface in Weka 3.7 indeed.
+>
+> When I check out the latest developer snapshot the following files
+> (which were present in 3.6.9) are not in the src jar anymore:
+> weka.classifiers.functions.RBFNetwork
+> weka.classifiers.meta.MetaCost
+> weka.classifiers.meta.MultiBoostAB
+> weka.classifiers.meta.ClassificationViaClustering
+
+These are now all separate packages that can be downloaded via Weka's
+package manager (there is a command line and GUI package manager):
+
+http://weka.wikispaces.com/How+do+I+use+the+package+manager%3F
+
+Packages (including source) get installed to ${user.home}/wekafiles/packages
+
+Cheers,
+Mark.
+
+P.S. You can also see what packages are available at:
+
+http://weka.sourceforge.net/packageMetaData/
+
+
+>
+> cheers
+>
+> -----Original Message-----
+> From: mhallster@gmail.com [mailto:mhallster@gmail.com] On Behalf Of
+> Mark Hall
+> Sent: Tuesday, May 07, 2013 11:35 PM
+> To: David Persons
+> Subject: Re: exporting weka models to pmml
+>
+> Hi David,
+>
+> Sounds great! The toPMML() method will be local to each scheme that
+> implements PMML output correct? So it is probably not necessary at the
+> moment to expose the training data structure via a getter method? I
+> agree that it is probably generally useful to have such a method, but
+> I'd probably add it to the Classifier/Clusterer interface (Weka 3.7).
+> This becomes a major API change - benign for most application
+> developers, but drastic for anyone who has binary serialized
+> classifiers as their models wont be loadable after the change.
+>
+> I can't see a problem with RBFNetwork, MultiBoostAB etc. in 3.7.9. I
+> just tried them with the iris data and they are not grayed out in the
+Explorer.
+> What data set did you load and was the class attribute set
+> appropriately (i.e. of the right type for the scheme in question)?
+>
+> Cheers,
+> Mark.
+>
+> P.S. Let me know when I can take a look at some code!
+>
+> On Wed, May 8, 2013 at 4:37 AM, David Persons
+> <david.persons@trefi.com>
+> wrote:
+>> Hi Mark,
+>>
+>>
+>>
+>> I played around a bit with exporting to PMML. I now use JAXB to
+>> generate Java objects from the PMML 4.1 xsd file. These generated
+>> objects are then filled in the toPMML methods in the Logistic /
+>> MultilayerPerceptron classifiers. The created object can then easily
+>> be marshalled to XML / String. JAXB is part of Java SE 1.6 and up, so
+>> no extra libraries will be needed. Probably, the exact same class
+>> variables used in the toString functions will be needed to produce
+>> the PMML. The toPMML function will actually look a bit like the
+>> toString methods.. I think in general it would be handy to have
+>> getters for all class variables used in the toString methods for all
+>> classifiers J But for now, can you make a getter for Instances
+>> m_structure in Logistic and for Instances m_instances in
+>> MultilayerPerceptron? Probably most/all classifiers will have a Instances
+class variable like this?
+>> So, I guess it is most handy to use a general name for these getters.
+>>
+>>
+>>
+>> Another question. I was wondering, in the Weka Explorer of developers
+>> branch: 3.7.9 some classifiers / filters are inactive. For example:
+>> RBFNetwork, MetaCost, MultiBoostAB, ClassificationViaClustering. They
+>> are active in current stable version 3.6.9. What is the reason they
+>> are inactive in 3.7.9? They can be used and called from code?
+>>
+>>
+>>
+>> Cheers, David
+>>
+>>
+>>
+>> From: mhallster@gmail.com [mailto:mhallster@gmail.com] On Behalf Of
+>> Mark Hall
+>> Sent: Tuesday, March 19, 2013 9:18 PM
+>>
+>>
+>> To: David Persons
+>> Subject: Re: exporting weka models to pmml
+>>
+>>
+>>
+>>
+>>
+>> On Tue, Mar 19, 2013 at 11:57 PM, David Persons
+>> <david.persons@trefi.com>
+>> wrote:
+>>
+>> Hi Mark,
+>>
+>>
+>>
+>> Ok, sounds good. I will try doing it the described way for
+>> MultiLayerPerceptron and Logistic then. There are other issues with
+>> higher priority (as there always are J) so cannot say anything about
+>> when it will be finished. Some months from now probably.
+>>
+>>
+>>
+>> Great! Just send me stuff to review as you get time. Also, let me
+>> know about changes needed (such as getter methods and visibility
+>> modifiers) to core Weka along the way and, if reasonable, I can make
+>> those in the subversion trunk. You can update and then have at the
+>> end just changes/new stuff that is PMML-specific.
+>>
+>>
+>>
+>>
+>>
+>> A last question. What is the reason there are no getters for the
+>> weights / bias'es in MultiLayerPerceptron and other Classifiers?
+>>
+>>
+>>
+>> No particular reason. Some of the code is quite old in Weka now and,
+>> at the time, it was not foreseen how folks might want to develop with
+>> some of these algorithms.
+>>
+>>
+>>
+>> Cheers,
+>> Mark.
+>>
+>>
+>>
+>>
+>>
+>> Cheers
+>>
+>>
+>>
+>> From: mhallster@gmail.com [mailto:mhallster@gmail.com] On Behalf Of
+>> Mark Hall
+>> Sent: Saturday, March 16, 2013 8:45 PM
+>>
+>>
+>> To: David Persons
+>> Subject: Re: exporting weka models to pmml
+>>
+>>
+>>
+>> Hi David,
+>>
+>>
+>>
+>> My apologies for the delay in replying - my inbox was under heavy
+>> assault last week and your reply got lost in the noise :-) This
+>> sounds reasonable to me. I would suggest that we could just make the
+>> actual schemes in Weka implement the PMMLProducer interface directly.
+>> If variables in schemes need to be moved from private to protected
+>> then we should do that in the core and in any packages (>= Weka
+>> 3.7.2) that need it. PMML export support would be a new feature in
+>> 3.7, we can't add it to 3.6 because 3.6 is feature frozen to
+>> correspond to what is described in the Witten, Frank and Hall data
+>> mining book. I would also suggest that the interface just have a
+>> simple toPMML() (and perhaps toPMML(String pmmlVersion)) methods.
+>> Perhaps they could just return the XML as a String rather than (or in
+>> addition to) the Document object? This would facilitate easy output
+>> on the command line as is done
+> for graphs and trees in the dot format at present.
+>>
+>>
+>>
+>> As I said before, I think a big part of the challenge will be with
+>> trying to support as much of the data pre-processing (via Filters)
+>> that classifiers do internally as possible. this is not so much of a
+>> big deal for MultilayerPerceptron as it does its own internal
+>> normalization and only uses the simple unsupervised NominalToBinary
+>> filter. In general I think that applicable filters should implement
+>> PMMLProducer too and produce the corresponding PMML transformation
+>> dictionary element. This will possibly require more changes to core
+>> Weka to allow access to internal stuff computed by the filter.
+>>
+>>
+>>
+>> Anyhow, I'm happy to have a collaborator on this project if you
+>> decide to go ahead.
+>>
+>>
+>>
+>> Cheers,
+>> Mark.
+>>
+>> On Wed, Mar 13, 2013 at 4:31 AM, David Persons
+>> <david.persons@trefi.com>
+>> wrote:
+>>
+>> Hi Mark,
+>>
+>>
+>>
+>> We could create a PMMLProducer interface with a method getXMLDocument
+>> which returns an org.w3c.dom.Document object and create a new class
+>> for each Classifier, MultilayerPerceptronSchema and LogisticSchema
+>> for example, which implement this interface. Is that what you mean?
+>> Until now we only use MultilayerPerceptron and Logistic models so for
+>> now I can try and transform those to PMML in this way.
+>>
+>>
+>>
+>> One issue with this approach is the new classes will need access to
+>> some private class variables of MultilayerPerceptron, Logistic and
+>> all the other Classifiers. One way to solve this is to create a
+>> method 'public Map<String,Object> getModelParameters' in interface
+>> Classifier which returns the classifier-specific parameters. In case
+>> of MultilayerPerceptron this Map would include m_inputs, m_outputs,
+>> m_neuralNodes and m_instances (and maybe some more). Such a method
+>> will come in handy for other purposes as well. In our system, we use
+>> the NN weights to give an indication of attribute importance. Right
+>> now we retrieve the weights by parsing the string returned by the
+>> toString method of class MultilayerPerceptron. We do something
+>> similar for retrieving the beta's in the Logistic model. This is
+>> quite tedious of course and the getModelParameters function will come
+>> in handy here as
+> well. What are your thoughts about this?
+>>
+>>
+>>
+>> Cheers,
+>>
+>> David
+>>
+>>
+>>
+>>
+>>
+>> From: mhallster@gmail.com [mailto:mhallster@gmail.com] On Behalf Of
+>> Mark Hall
+>> Sent: Thursday, March 07, 2013 9:25 PM
+>> To: David Persons
+>> Subject: Re: exporting weka models to pmml
+>>
+>>
+>>
+>> Hi David,
+>>
+>>
+>>
+>> PMML export (and import support for PMML 4.x) have been on my to-do
+>> list for a long time now. It's just a matter of priorities and time
+>> for
+> me.
+>>
+>>
+>>
+>> My vague thoughts along export support were to have a PMMLProducer
+>> interface that schemes could implement that would basically return
+>> the XML description of the object in question. The difficulties
+>> revolve around mapping to all the necessary supporting elements -
+>> e.g. mining schema, transformation dictionary etc. And whether PMML
+>> can represent
+> stuff that Weka does (e.g.
+>> Weka's SMO support vector machine has options to fit logistic
+>> regression models to the output of the SVM and perform pairwise
+>> coupling of the probability estimates). Is it possible to represent
+>> some of what can be done with filter chaining in Weka (i.e. via the
+>> FilteredClassifier or
+>> MultiFilter) in the transformation dictionary? I've saw some PMML
+>> produced by R once that accomplished some of this by embedding R
+>> function calls in the meta data tags in the XML - hardly portable :-)
+>>
+>>
+>>
+>> Anyhow, I'd love to hear you ideas on the subject and we're open to
+>> contributions of course.
+>>
+>>
+>>
+>> Cheers,
+>> Mark.
+>>
+>> On Fri, Mar 8, 2013 at 6:17 AM, David Persons
+>> <david.persons@trefi.com>
+>> wrote:
+>>
+>> Hi Mark,
+>>
+>>
+>>
+>> It is already possible for some years to read pmml files into weka.
+>> Exporting to pmml is however not supported. Are there any issues why
+>> exporting to pmml is not supported yet? We are looking to save weka
+>> models as text files and I can spend some time on it. Maybe, when you
+>> explain to me how you want exporting to pmml to be implemented I can
+>> try to make it like that and it can be used in the main weka source tree?
+>>
+>>
+>>
+>> cheers,
+>>
+>> David
+>>
+>>
+>>
+>>
+>>
+>> --
+>> Mark Hall
+>> Senior Developer/Consultant, Pentaho Open Source Business
+>> Intelligence Citadel International, Suite 340, 5950 Hazeltine
+>> National Dr., Orlando, FL 32822, USA
+>> +64 7 348-7099 <tel:%2B64%207%20348-7099>  office, +64 21 399-132
+<tel:%2B64%2021%20399-132>  mobile, +1 815 550-8637
+<tel:%2B1%20815%20550-8637>  fax,
+>> Skype: mark.andrew.hall, Yahoo: mark_andrew_hall Download the latest
+>> release today <http://www.sourceforge.net/projects/pentaho>
+>>
+>>
+>>
+>>
+>>
+>> --
+>> Mark Hall
+>> Senior Developer/Consultant, Pentaho Open Source Business
+>> Intelligence Citadel International, Suite 340, 5950 Hazeltine
+>> National Dr., Orlando, FL 32822, USA
+>> +64 7 348-7099 <tel:%2B64%207%20348-7099>  office, +64 21 399-132
+<tel:%2B64%2021%20399-132>  mobile, +1 815 550-8637
+<tel:%2B1%20815%20550-8637>  fax,
+>> Skype: mark.andrew.hall, Yahoo: mark_andrew_hall Download the latest
+>> release today <http://www.sourceforge.net/projects/pentaho>
+>>
+>>
+>>
+>>
+>
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+------=_NextPart_000_0038_01CF3F94.49EAD470
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
+xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" =
+xmlns=3D"http://www.w3.org/TR/REC-html40"><head><META =
+HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii"><meta name=3DGenerator content=3D"Microsoft Word 14 =
+(filtered medium)"><style><!--
+/* Font Definitions */
+@font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;}
+@font-face
+	{font-family:Consolas;
+	panose-1:2 11 6 9 2 2 4 3 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{mso-style-priority:99;
+	color:purple;
+	text-decoration:underline;}
+p
+	{mso-style-priority:99;
+	mso-margin-top-alt:auto;
+	margin-right:0in;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+pre
+	{mso-style-priority:99;
+	mso-style-link:"HTML Preformatted Char";
+	margin:0in;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Courier New";}
+p.MsoAcetate, li.MsoAcetate, div.MsoAcetate
+	{mso-style-priority:99;
+	mso-style-link:"Balloon Text Char";
+	margin:0in;
+	margin-bottom:.0001pt;
+	font-size:8.0pt;
+	font-family:"Tahoma","sans-serif";}
+span.HTMLPreformattedChar
+	{mso-style-name:"HTML Preformatted Char";
+	mso-style-priority:99;
+	mso-style-link:"HTML Preformatted";
+	font-family:Consolas;}
+span.EmailStyle20
+	{mso-style-type:personal-reply;
+	font-family:"Calibri","sans-serif";
+	color:#1F497D;}
+span.BalloonTextChar
+	{mso-style-name:"Balloon Text Char";
+	mso-style-priority:99;
+	mso-style-link:"Balloon Text";
+	font-family:"Tahoma","sans-serif";}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-family:"Calibri","sans-serif";}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]--></head><body lang=3DEN-US link=3Dblue =
+vlink=3Dpurple><div class=3DWordSection1><p class=3DMsoNormal><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>Sounds good! Yes, of course University of Waikato can have the =
+copyright.<o:p></o:p></span></p><p class=3DMsoNormal><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'><o:p>&nbsp;</o:p></span></p><p class=3DMsoNormal><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>cheers<o:p></o:p></span></p><p class=3DMsoNormal><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'><o:p>&nbsp;</o:p></span></p><p class=3DMsoNormal><b><span =
+style=3D'font-size:10.0pt;font-family:"Tahoma","sans-serif"'>From:</span>=
+</b><span style=3D'font-size:10.0pt;font-family:"Tahoma","sans-serif"'> =
+mhallster@gmail.com [mailto:mhallster@gmail.com] <b>On Behalf Of =
+</b>Mark Hall<br><b>Sent:</b> Friday, March 14, 2014 8:21 =
+AM<br><b>To:</b> David Persons<br><b>Subject:</b> Re: exporting weka =
+models to pmml<o:p></o:p></span></p><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><div><p class=3DMsoNormal>Hi =
+David,<o:p></o:p></p><div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></div><div><p =
+class=3DMsoNormal>Yes, that did the trick. I've just done a couple of =
+tests and things are looking good! There were just a couple of =
+modifications required:<o:p></o:p></p></div><div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></div><div><p =
+class=3DMsoNormal>1. The functionName was set to &quot;regression&quot; =
+in the generated PMML - this should be &quot;classification&quot; for =
+logistic regression<o:p></o:p></p></div><div><p class=3DMsoNormal>2. The =
+normalizationMethod needed to be set to &quot;softmax&quot; rather than =
+&quot;logit&quot; for multinomial logistic =
+regression.<o:p></o:p></p></div><div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></div><div><p =
+class=3DMsoNormal>Once I made these changes, I tested on the iris and =
+vote UCI data sets. For vote I used a version with missing values =
+already replaced in the data (I'll test the PMML missing value =
+replacement tomorrow). I used the &quot;re-evaluate model on current =
+test set&quot; contextual menu option in the Explorer and compared the =
+PMML model results to those from Logistic. Results were identical (to =
+the 4 decimal places printed by the Explorer). This includes RMSE and =
+MAE, which measure the accuracy of the probability estimates. So the =
+probabilities produced by the PMML model appear to be correct. Some more =
+datasets need to be tried of course, but it is looking pretty =
+good!<o:p></o:p></p></div><div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></div><div><p =
+class=3DMsoNormal>I'll take a look at altering Logistic to just store =
+means/modes in an array over the weekend (or next week sometime) and =
+then look to get your changes checked in to the =
+trunk.<o:p></o:p></p></div><div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></div><div><p class=3DMsoNormal>I =
+can't remember if I've asked you this already - are you willing to give =
+copyright for these contributions to the University of Waikato? =
+Occasionally the university manages to sell a commercial license for =
+Weka, and some of the proceeds come back to the ML group for supporting =
+research students, conference trips etc. If you say yes it will make my =
+job easier as I have to maintain a separate code line for Weka that is =
+in sync with trunk but sans non-waikato copyright and patented code =
+:-)<o:p></o:p></p></div><div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></div><div><p =
+class=3DMsoNormal>Cheers,<o:p></o:p></p></div><div><p =
+class=3DMsoNormal>Mark.<o:p></o:p></p></div><div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></div><div><p class=3DMsoNormal =
+style=3D'margin-bottom:12.0pt'><o:p>&nbsp;</o:p></p><div><p =
+class=3DMsoNormal>On Fri, Mar 14, 2014 at 2:50 AM, David Persons &lt;<a =
+href=3D"mailto:david.persons@trefi.com" =
+target=3D"_blank">david.persons@trefi.com</a>&gt; =
+wrote:<o:p></o:p></p><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>Hi Mark,</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>&nbsp;</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>I see. You can just rename DELIMITER.java to DELIMITER2.java (and =
+also update its references in Delimiter.java). And do the same for =
+TIMEANCHOR. I tested this locally and things still work afterwards. JAXB =
+generated objects for all possible pmml objects, most of the generated =
+classes will not be used, including these two.</span><o:p></o:p></p><p =
+class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>&nbsp;</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>Cheers, David</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>&nbsp;</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span =
+style=3D'font-size:10.0pt;font-family:"Tahoma","sans-serif"'>From:</span>=
+</b><span style=3D'font-size:10.0pt;font-family:"Tahoma","sans-serif"'> =
+<a href=3D"mailto:mhallster@gmail.com" =
+target=3D"_blank">mhallster@gmail.com</a> [mailto:<a =
+href=3D"mailto:mhallster@gmail.com" =
+target=3D"_blank">mhallster@gmail.com</a>] <b>On Behalf Of </b>Mark =
+Hall<br><b>Sent:</b> Thursday, March 13, 2014 8:13 =
+AM</span><o:p></o:p></p><div><div><p class=3DMsoNormal><br><b>To:</b> =
+David Persons<br><b>Subject:</b> Re: exporting weka models to =
+pmml<o:p></o:p></p></div></div><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Hi =
+David,<o:p></o:p></p><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>I've just =
+started to take a look at your latest stuff. It's looking pretty cool, =
+but I haven't been able to compile it. There is a major problem with =
+these automatically generated JAXB bindings for us Mac users - Macs have =
+a case-insensitive file system by default. DELIMITER.java overwrites =
+Delimiter.java when I unpack your zip. The same problem occurs with =
+Timeanchor/TIMEANCHOR. I guess I could (under Linux) rename these =
+classes manually (and grep for all references to them) to eliminate the =
+collisions. I've never used JAXB before - do you know of any elegant =
+solution to this?<o:p></o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>I was going =
+to modify Logistic.buildClassifier() to just create an array member =
+variable to hold all the means/modes rather than keep a copy of the =
+unfiltered training data hanging around. But I need to be able to =
+compile it all first :-)<o:p></o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Cheers,<o:p>=
+</o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Mark.<o:p></=
+o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;margin-bottom:12.0pt'>&nbsp;<o:p></o:p><=
+/p><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>On Wed, Mar =
+5, 2014 at 9:56 PM, David Persons &lt;<a =
+href=3D"mailto:david.persons@trefi.com" =
+target=3D"_blank">david.persons@trefi.com</a>&gt; =
+wrote:<o:p></o:p></p><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>Hi Mark,</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>&nbsp;</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>Thanks, now it works.</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>&nbsp;</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>Attached is a zip file containing the current additions for the =
+Logistic model. The DataDictionary, TransformationDictionary, =
+MiningSchema and marshaling of the created object can be used in other =
+models as well, so these implementations should be moved to some general =
+location. It would be handy if it&#8217;s integrated in the WEKA source =
+before starting with the Neural Network implementation. The most =
+important question remaining is the following:</span><o:p></o:p></p><p =
+class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>&nbsp;</span><o:p></o:p></p><p><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>-</span><span =
+style=3D'font-size:7.0pt;color:#1F497D'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp; </span><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>To make the toPMML function more easy to implement and for getting =
+the meanOrMode I have introduced a new class variable Instances =
+m_structue_before which is initialized in the beginning of the =
+buildClassifier method (line 647) and stores the original format of the =
+train set including all of its instances. Of course this reference has =
+to be set to NULL before serialization and so on. You know better how to =
+handle this then me, or maybe there is a better way, can you take a look =
+at it?</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>&nbsp;</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>The other additions in the zip file =
+are:</span><o:p></o:p></p><p><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>-</span><span =
+style=3D'font-size:7.0pt;color:#1F497D'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp; </span><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>Function toPMML in =
+weka.classifiers.functions.Logistic</span><o:p></o:p></p><p><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>-</span><span =
+style=3D'font-size:7.0pt;color:#1F497D'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp; </span><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>The PMMLProducer interface which Logistic implements is placed in =
+package weka.core.pmml</span><o:p></o:p></p><p><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>-</span><span =
+style=3D'font-size:7.0pt;color:#1F497D'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp; </span><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>The generated JAXB objects are located in =
+weka.core.pmml.jaxbbindings</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>&nbsp;</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>&nbsp;</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>I was surprised R only exports PMML and has no way of importing it =
+and using it afterwards. It can be read as an XMLNode, but not used to =
+make predictions afterwards. Do you know if there exists a website where =
+the PMML file can be checked? It would be nice to actually be able to =
+test the PMML file by making predictions in another package, maybe it is =
+possible with KNIME?</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>&nbsp;</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>cheers</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>&nbsp;</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span =
+style=3D'font-size:10.0pt;font-family:"Tahoma","sans-serif"'>From:</span>=
+</b><span style=3D'font-size:10.0pt;font-family:"Tahoma","sans-serif"'> =
+<a href=3D"mailto:mhallster@gmail.com" =
+target=3D"_blank">mhallster@gmail.com</a> [mailto:<a =
+href=3D"mailto:mhallster@gmail.com" =
+target=3D"_blank">mhallster@gmail.com</a>] <b>On Behalf Of </b>Mark =
+Hall<br><b>Sent:</b> Thursday, February 27, 2014 1:24 =
+AM</span><o:p></o:p></p><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><br><b>To:</=
+b> David Persons<br><b>Subject:</b> Re: exporting weka models to =
+pmml<o:p></o:p></p></div></div><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Hi =
+David,<o:p></o:p></p><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>The problem =
+is that you have &quot;missingValueTreatment&quot; declared in the pmml =
+file but not &quot;missingValueReplacement&quot;. The former is just for =
+informational uses (&quot;asMean&quot; is useless by itself if we don't =
+have access to tha training data from which to compute the mean) and the =
+later is what we really need. I modified the logit.pmml file and added =
+missingValueReplacement=3D&quot;3.1415&quot; for the &quot;ps&quot; =
+field - see the attached screenshot of the model loaded into the =
+Explorer.<o:p></o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Cheers,<o:p>=
+</o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Mark.<o:p></=
+o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;margin-bottom:12.0pt'>&nbsp;<o:p></o:p><=
+/p><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>On Thu, Feb =
+27, 2014 at 4:50 AM, David Persons &lt;<a =
+href=3D"mailto:david.persons@trefi.com" =
+target=3D"_blank">david.persons@trefi.com</a>&gt; =
+wrote:<o:p></o:p></p><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>Hi Mark,</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>&nbsp;</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>That&#8217;s what I thought, see the following file (everything is =
+still on the same line, will fix that too </span><span =
+style=3D'font-size:11.0pt;font-family:Wingdings;color:#1F497D'>J</span><s=
+pan =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>). When you read this file into WEKA it throws an =
+error:</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>&#8216;[Regression] WARNING: Instance to predict has missing value(s) =
+but there is no missing value handling meta data and no prior =
+probabilities/default value to fall back on. No prediction will be made =
+(zero probabilities output).&#8217;</span><o:p></o:p></p><p =
+class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>on line 725 in Regression, because miningSchema.hasTargetMetaData =
+fails, so that&#8217;s where the confusion started. Maybe something has =
+to change in importing of the PMML file into =
+WEKA?</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>&nbsp;</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>Cheers.</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>David</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>&nbsp;</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span =
+style=3D'font-size:10.0pt;font-family:"Tahoma","sans-serif"'>From:</span>=
+</b><span style=3D'font-size:10.0pt;font-family:"Tahoma","sans-serif"'> =
+<a href=3D"mailto:mhallster@gmail.com" =
+target=3D"_blank">mhallster@gmail.com</a> [mailto:<a =
+href=3D"mailto:mhallster@gmail.com" =
+target=3D"_blank">mhallster@gmail.com</a>] <b>On Behalf Of </b>Mark =
+Hall<br><b>Sent:</b> Wednesday, February 26, 2014 5:13 =
+AM</span><o:p></o:p></p><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><br><b>To:</=
+b> David Persons<br><b>Subject:</b> Re: exporting weka models to =
+pmml<o:p></o:p></p></div></div><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Hi =
+David,<o:p></o:p></p><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>No, you =
+won't have to muck around with Target. From memory, that is for making a =
+default prediction in the case that there are missing values present in =
+a test instance and no missing values treatment has been specified in =
+the mining schema.<o:p></o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>If you take =
+a look at line 698 in Regression, you'll see that it makes a call to =
+MappingInfo.instanceToSchema(). This maps the incoming instance values =
+to the format specified by the mining schema and also applies missing =
+value and outlier treatments. Line 291 in MappingInfo calls =
+miningSchema.applyMissingAndOutlierTreatments(), which in turn calls =
+MiningFieldMetaInfo.applyMissingValueTreatment() for each =
+attribute.<o:p></o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>So your =
+MiningFields need to look something like:<o:p></o:p></p></div><div><p =
+class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div><div><pre =
+style=3D'white-space:pre-wrap;word-wrap:break-word'><o:p>&nbsp;</o:p></pr=
+e><pre>&nbsp;<o:p></o:p></pre><pre>&nbsp;<o:p></o:p></pre><pre><span =
+style=3D'font-size:10.5pt'>&lt;MiningField name=3D&quot;foo&quot; =
+missingValueReplacement=3D&quot;3.14&quot; =
+missingValueTreatment=3D&quot;asMean&quot; =
+/&gt;</span><o:p></o:p></pre><pre =
+style=3D'white-space:pre-wrap;word-wrap:break-word'>&nbsp;<o:p></o:p></pr=
+e><pre>&nbsp;<o:p></o:p></pre><pre><span style=3D'font-size:10.5pt'>The =
+missingValueReplacement would be a string a for nominal attribute. The =
+missingValueTreatment field is for information only I =
+believe.</span><o:p></o:p></pre><pre =
+style=3D'white-space:pre-wrap;word-wrap:break-word'>&nbsp;<o:p></o:p></pr=
+e><pre><span =
+style=3D'font-size:10.5pt'>&nbsp;</span><o:p></o:p></pre><pre =
+style=3D'white-space:pre-wrap;word-wrap:break-word'><span =
+style=3D'font-size:10.5pt'>Cheers,</span><o:p></o:p></pre><pre =
+style=3D'white-space:pre-wrap;word-wrap:break-word'>&nbsp;<o:p></o:p></pr=
+e><pre><span =
+style=3D'font-size:10.5pt'>&nbsp;</span><o:p></o:p></pre><pre><span =
+style=3D'font-size:10.5pt'>Mark.</span><o:p></o:p></pre><pre =
+style=3D'white-space:pre-wrap;word-wrap:break-word'><o:p>&nbsp;</o:p></pr=
+e><pre>&nbsp;<o:p></o:p></pre><pre><span =
+style=3D'font-size:10.5pt'>&nbsp;</span><o:p></o:p></pre></div><div><p =
+class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;margin-bottom:12.0pt'>&nbsp;<o:p></o:p><=
+/p><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>On Tue, Feb =
+25, 2014 at 4:34 AM, David Persons &lt;<a =
+href=3D"mailto:david.persons@trefi.com" =
+target=3D"_blank">david.persons@trefi.com</a>&gt; =
+wrote:<o:p></o:p></p><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>Hi Mark,</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>&nbsp;</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>Do you have an example of how it is supposed to work using =
+MiningSchema and/or Targets? On line 724 of =
+weka.classifiers.pmml.consumer.Regression it is going to check =
+hasTargetMetaData on mining schema, so I probably have to create a =
+Target inside a Targets class somehow and add it to the MiningSchema? =
+But I do not see that in the definition in </span><a =
+href=3D"http://www.dmg.org/v3-2/MiningSchema.html" =
+target=3D"_blank">http://www.dmg.org/v3-2/MiningSchema.html</a><o:p></o:p=
+></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>&nbsp;</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>Regards David</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>&nbsp;</span></b><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>&nbsp;</span><o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span =
+style=3D'font-size:10.0pt;font-family:"Tahoma","sans-serif"'>From:</span>=
+</b><span style=3D'font-size:10.0pt;font-family:"Tahoma","sans-serif"'> =
+<a href=3D"mailto:mhallster@gmail.com" =
+target=3D"_blank">mhallster@gmail.com</a> [mailto:<a =
+href=3D"mailto:mhallster@gmail.com" =
+target=3D"_blank">mhallster@gmail.com</a>] <b>On Behalf Of </b>Mark =
+Hall</span><o:p></o:p></p><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><br><b>Sent:=
+</b> Monday, February 17, 2014 12:54 AM<o:p></o:p></p></div><div><div><p =
+class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b>To:</b> =
+David Persons<br><b>Subject:</b> Re: exporting weka models to =
+pmml<o:p></o:p></p></div></div><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Hi =
+David,<o:p></o:p></p><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>I've just =
+started to take a look at this. Aside from issue with slightly different =
+probability estimates (and this might just be due to small numerical =
+differences from rounding), the main problem I can see is with missing =
+values handling. ps is 78% missing and size is 94% missing in the data. =
+This is not a transformation dictionary thing, but instead can be =
+specified in the mining schema:<o:p></o:p></p></div><div><p =
+class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><a =
+href=3D"http://www.dmg.org/v3-2/MiningSchema.html" =
+target=3D"_blank">http://www.dmg.org/v3-2/MiningSchema.html</a><o:p></o:p=
+></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>The =
+ReplaceMissingValues filter uses the mean for numeric variables and the =
+mode for nominal ones. For Logistic, 100% missing attributes is not an =
+issue because they get removed by the RemoveUseless =
+filter.<o:p></o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Otherwise =
+it is looking pretty cool!<o:p></o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Cheers,<br>M=
+ark.<o:p></o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>P.S. the =
+xml is kind of hard to read - on my Mac it appears all on one line in =
+Emacs :-)<o:p></o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;margin-bottom:12.0pt'>&nbsp;<o:p></o:p><=
+/p><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>On Thu, Jan =
+30, 2014 at 1:49 AM, David Persons &lt;<a =
+href=3D"mailto:david.persons@trefi.com" =
+target=3D"_blank">david.persons@trefi.com</a>&gt; =
+wrote:<o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Hi =
+Mark,<br><br>I finally had some days to work on the PMML export. I got =
+some thoughts /<br>questions I like to share with you.<br><br>I started =
+with the Logistic classifier, the result is the logit.pmml file<br>that =
+is attached. I also attach the dataset on which the Logistic =
+classifier<br>is trained. Can you take a look at the resulting pmml =
+file? I used the PMML<br>Regression model instead of the PMML =
+GeneralRegression model. Not because of<br>a particular reason, but =
+because the first example I stumbled upon did it<br>that way. Do we need =
+to be able to export the GeneralRegression model? Is<br>the =
+GeneralRegression preferred above the Regression model somehow =
+since<br>PMML 4.1?<br><br>I tested the exported model by importing it in =
+WEKA and calling the<br>distributionForInstance function on the =
+resulting<br>weka.classifiers.pmml.consumer.Regression class for the =
+first instance in<br>the training set. The outcome differs from the =
+original Logistic model;<br>0.002058/0.997941 versus 0.004099/0.995900. =
+Not a big difference but a<br>difference anyway. I did not find an =
+explanation for the different outcome<br>yet, do you have an idea? Maybe =
+the paystaxes should be added to the<br>TransformationDictionary because =
+it is also changed by the<br>ReplaceMissingValues filter? Not sure yet =
+about how the DerivedField should<br>look like though.<br><br>The =
+LinearRegression / SimpleLogistic classifiers should be quite easy =
+to<br>export to PMML right now. I hope to do that soon and will try and =
+export the<br>MultilayerPerceptron after that. What is the most handy =
+way to share my code<br>with you so it can be added to the WEKA source =
+tree later on?<br><br>Regards,<br>David<o:p></o:p></p><div><p =
+class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><br><br>----=
+-Original Message-----<br>From: <a href=3D"mailto:mhallster@gmail.com" =
+target=3D"_blank">mhallster@gmail.com</a> [mailto:<a =
+href=3D"mailto:mhallster@gmail.com" =
+target=3D"_blank">mhallster@gmail.com</a>] On Behalf Of =
+Mark<br>Hall<o:p></o:p></p></div><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Sent: =
+Wednesday, May 08, 2013 10:07 PM<br>To: David Persons<br>Subject: Re: =
+exporting weka models to pmml<br><br>On Wed, May 8, 2013 at 10:18 PM, =
+David Persons &lt;<a href=3D"mailto:david.persons@trefi.com" =
+target=3D"_blank">david.persons@trefi.com</a>&gt;<br>wrote:<br>&gt; Hi =
+Mark,<br>&gt;<br>&gt; That's right, at the moment it is not necessary to =
+expose the training<br>&gt; data structure via a getter method. I think =
+it is good to add it to<br>&gt; the Classifier/Clusterer interface in =
+Weka 3.7 indeed.<br>&gt;<br>&gt; When I check out the latest developer =
+snapshot the following files<br>&gt; (which were present in 3.6.9) are =
+not in the src jar anymore:<br>&gt; =
+weka.classifiers.functions.RBFNetwork<br>&gt; =
+weka.classifiers.meta.MetaCost<br>&gt; =
+weka.classifiers.meta.MultiBoostAB<br>&gt; =
+weka.classifiers.meta.ClassificationViaClustering<br><br>These are now =
+all separate packages that can be downloaded via Weka's<br>package =
+manager (there is a command line and GUI package manager):<br><br><a =
+href=3D"http://weka.wikispaces.com/How+do+I+use+the+package+manager%3F" =
+target=3D"_blank">http://weka.wikispaces.com/How+do+I+use+the+package+man=
+ager%3F</a><br><br>Packages (including source) get installed to =
+${user.home}/wekafiles/packages<br><br>Cheers,<br>Mark.<br><br>P.S. You =
+can also see what packages are available at:<br><br><a =
+href=3D"http://weka.sourceforge.net/packageMetaData/" =
+target=3D"_blank">http://weka.sourceforge.net/packageMetaData/</a><br><br=
+><br>&gt;<br>&gt; cheers<br>&gt;<br>&gt; -----Original =
+Message-----<br>&gt; From: <a href=3D"mailto:mhallster@gmail.com" =
+target=3D"_blank">mhallster@gmail.com</a> [mailto:<a =
+href=3D"mailto:mhallster@gmail.com" =
+target=3D"_blank">mhallster@gmail.com</a>] On Behalf Of<br>&gt; Mark =
+Hall<br>&gt; Sent: Tuesday, May 07, 2013 11:35 PM<br>&gt; To: David =
+Persons<br>&gt; Subject: Re: exporting weka models to =
+pmml<br>&gt;<br>&gt; Hi David,<br>&gt;<br>&gt; Sounds great! The =
+toPMML() method will be local to each scheme that<br>&gt; implements =
+PMML output correct? So it is probably not necessary at the<br>&gt; =
+moment to expose the training data structure via a getter method? =
+I<br>&gt; agree that it is probably generally useful to have such a =
+method, but<br>&gt; I'd probably add it to the Classifier/Clusterer =
+interface (Weka 3.7).<br>&gt; This becomes a major API change - benign =
+for most application<br>&gt; developers, but drastic for anyone who has =
+binary serialized<br>&gt; classifiers as their models wont be loadable =
+after the change.<br>&gt;<br>&gt; I can't see a problem with RBFNetwork, =
+MultiBoostAB etc. in 3.7.9. I<br>&gt; just tried them with the iris data =
+and they are not grayed out in the<br>Explorer.<br>&gt; What data set =
+did you load and was the class attribute set<br>&gt; appropriately (i.e. =
+of the right type for the scheme in question)?<br>&gt;<br>&gt; =
+Cheers,<br>&gt; Mark.<br>&gt;<br>&gt; P.S. Let me know when I can take a =
+look at some code!<br>&gt;<br>&gt; On Wed, May 8, 2013 at 4:37 AM, David =
+Persons<br>&gt; &lt;<a href=3D"mailto:david.persons@trefi.com" =
+target=3D"_blank">david.persons@trefi.com</a>&gt;<br>&gt; =
+wrote:<br>&gt;&gt; Hi =
+Mark,<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; I played around a =
+bit with exporting to PMML. I now use JAXB to<br>&gt;&gt; generate Java =
+objects from the PMML 4.1 xsd file. These generated<br>&gt;&gt; objects =
+are then filled in the toPMML methods in the Logistic /<br>&gt;&gt; =
+MultilayerPerceptron classifiers. The created object can then =
+easily<br>&gt;&gt; be marshalled to XML / String. JAXB is part of Java =
+SE 1.6 and up, so<br>&gt;&gt; no extra libraries will be needed. =
+Probably, the exact same class<br>&gt;&gt; variables used in the =
+toString functions will be needed to produce<br>&gt;&gt; the PMML. The =
+toPMML function will actually look a bit like the<br>&gt;&gt; toString =
+methods.. I think in general it would be handy to have<br>&gt;&gt; =
+getters for all class variables used in the toString methods for =
+all<br>&gt;&gt; classifiers J But for now, can you make a getter for =
+Instances<br>&gt;&gt; m_structure in Logistic and for Instances =
+m_instances in<br>&gt;&gt; MultilayerPerceptron? Probably most/all =
+classifiers will have a Instances<br>class variable like =
+this?<br>&gt;&gt; So, I guess it is most handy to use a general name for =
+these getters.<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; Another =
+question. I was wondering, in the Weka Explorer of =
+developers<br>&gt;&gt; branch: 3.7.9 some classifiers / filters are =
+inactive. For example:<br>&gt;&gt; RBFNetwork, MetaCost, MultiBoostAB, =
+ClassificationViaClustering. They<br>&gt;&gt; are active in current =
+stable version 3.6.9. What is the reason they<br>&gt;&gt; are inactive =
+in 3.7.9? They can be used and called from =
+code?<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; Cheers, =
+David<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; From: <a =
+href=3D"mailto:mhallster@gmail.com" =
+target=3D"_blank">mhallster@gmail.com</a> [mailto:<a =
+href=3D"mailto:mhallster@gmail.com" =
+target=3D"_blank">mhallster@gmail.com</a>] On Behalf Of<br>&gt;&gt; Mark =
+Hall<br>&gt;&gt; Sent: Tuesday, March 19, 2013 9:18 =
+PM<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; To: David Persons<br>&gt;&gt; =
+Subject: Re: exporting weka models to =
+pmml<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&=
+gt; On Tue, Mar 19, 2013 at 11:57 PM, David Persons<br>&gt;&gt; &lt;<a =
+href=3D"mailto:david.persons@trefi.com" =
+target=3D"_blank">david.persons@trefi.com</a>&gt;<br>&gt;&gt; =
+wrote:<br>&gt;&gt;<br>&gt;&gt; Hi =
+Mark,<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; Ok, sounds good. I =
+will try doing it the described way for<br>&gt;&gt; MultiLayerPerceptron =
+and Logistic then. There are other issues with<br>&gt;&gt; higher =
+priority (as there always are J) so cannot say anything =
+about<br>&gt;&gt; when it will be finished. Some months from now =
+probably.<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; Great! Just =
+send me stuff to review as you get time. Also, let me<br>&gt;&gt; know =
+about changes needed (such as getter methods and visibility<br>&gt;&gt; =
+modifiers) to core Weka along the way and, if reasonable, I can =
+make<br>&gt;&gt; those in the subversion trunk. You can update and then =
+have at the<br>&gt;&gt; end just changes/new stuff that is =
+PMML-specific.<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt=
+;<br>&gt;&gt; A last question. What is the reason there are no getters =
+for the<br>&gt;&gt; weights / bias'es in MultiLayerPerceptron and other =
+Classifiers?<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; No =
+particular reason. Some of the code is quite old in Weka now =
+and,<br>&gt;&gt; at the time, it was not foreseen how folks might want =
+to develop with<br>&gt;&gt; some of these =
+algorithms.<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; =
+Cheers,<br>&gt;&gt; =
+Mark.<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;=
+&gt; Cheers<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; From: <a =
+href=3D"mailto:mhallster@gmail.com" =
+target=3D"_blank">mhallster@gmail.com</a> [mailto:<a =
+href=3D"mailto:mhallster@gmail.com" =
+target=3D"_blank">mhallster@gmail.com</a>] On Behalf Of<br>&gt;&gt; Mark =
+Hall<br>&gt;&gt; Sent: Saturday, March 16, 2013 8:45 =
+PM<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; To: David Persons<br>&gt;&gt; =
+Subject: Re: exporting weka models to =
+pmml<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; Hi =
+David,<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; My apologies for =
+the delay in replying - my inbox was under heavy<br>&gt;&gt; assault =
+last week and your reply got lost in the noise :-) This<br>&gt;&gt; =
+sounds reasonable to me. I would suggest that we could just make =
+the<br>&gt;&gt; actual schemes in Weka implement the PMMLProducer =
+interface directly.<br>&gt;&gt; If variables in schemes need to be moved =
+from private to protected<br>&gt;&gt; then we should do that in the core =
+and in any packages (&gt;=3D Weka<br>&gt;&gt; 3.7.2) that need it. PMML =
+export support would be a new feature in<br>&gt;&gt; 3.7, we can't add =
+it to 3.6 because 3.6 is feature frozen to<br>&gt;&gt; correspond to =
+what is described in the Witten, Frank and Hall data<br>&gt;&gt; mining =
+book. I would also suggest that the interface just have a<br>&gt;&gt; =
+simple toPMML() (and perhaps toPMML(String pmmlVersion)) =
+methods.<br>&gt;&gt; Perhaps they could just return the XML as a String =
+rather than (or in<br>&gt;&gt; addition to) the Document object? This =
+would facilitate easy output<br>&gt;&gt; on the command line as is =
+done<br>&gt; for graphs and trees in the dot format at =
+present.<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; As I said =
+before, I think a big part of the challenge will be with<br>&gt;&gt; =
+trying to support as much of the data pre-processing (via =
+Filters)<br>&gt;&gt; that classifiers do internally as possible. this is =
+not so much of a<br>&gt;&gt; big deal for MultilayerPerceptron as it =
+does its own internal<br>&gt;&gt; normalization and only uses the simple =
+unsupervised NominalToBinary<br>&gt;&gt; filter. In general I think that =
+applicable filters should implement<br>&gt;&gt; PMMLProducer too and =
+produce the corresponding PMML transformation<br>&gt;&gt; dictionary =
+element. This will possibly require more changes to core<br>&gt;&gt; =
+Weka to allow access to internal stuff computed by the =
+filter.<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; Anyhow, I'm =
+happy to have a collaborator on this project if you<br>&gt;&gt; decide =
+to go ahead.<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; =
+Cheers,<br>&gt;&gt; Mark.<br>&gt;&gt;<br>&gt;&gt; On Wed, Mar 13, 2013 =
+at 4:31 AM, David Persons<br>&gt;&gt; &lt;<a =
+href=3D"mailto:david.persons@trefi.com" =
+target=3D"_blank">david.persons@trefi.com</a>&gt;<br>&gt;&gt; =
+wrote:<br>&gt;&gt;<br>&gt;&gt; Hi =
+Mark,<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; We could create a =
+PMMLProducer interface with a method getXMLDocument<br>&gt;&gt; which =
+returns an org.w3c.dom.Document object and create a new =
+class<br>&gt;&gt; for each Classifier, MultilayerPerceptronSchema and =
+LogisticSchema<br>&gt;&gt; for example, which implement this interface. =
+Is that what you mean?<br>&gt;&gt; Until now we only use =
+MultilayerPerceptron and Logistic models so for<br>&gt;&gt; now I can =
+try and transform those to PMML in this =
+way.<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; One issue with this =
+approach is the new classes will need access to<br>&gt;&gt; some private =
+class variables of MultilayerPerceptron, Logistic and<br>&gt;&gt; all =
+the other Classifiers. One way to solve this is to create a<br>&gt;&gt; =
+method 'public Map&lt;String,Object&gt; getModelParameters' in =
+interface<br>&gt;&gt; Classifier which returns the classifier-specific =
+parameters. In case<br>&gt;&gt; of MultilayerPerceptron this Map would =
+include m_inputs, m_outputs,<br>&gt;&gt; m_neuralNodes and m_instances =
+(and maybe some more). Such a method<br>&gt;&gt; will come in handy for =
+other purposes as well. In our system, we use<br>&gt;&gt; the NN weights =
+to give an indication of attribute importance. Right<br>&gt;&gt; now we =
+retrieve the weights by parsing the string returned by the<br>&gt;&gt; =
+toString method of class MultilayerPerceptron. We do =
+something<br>&gt;&gt; similar for retrieving the beta's in the Logistic =
+model. This is<br>&gt;&gt; quite tedious of course and the =
+getModelParameters function will come<br>&gt;&gt; in handy here =
+as<br>&gt; well. What are your thoughts about =
+this?<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; =
+Cheers,<br>&gt;&gt;<br>&gt;&gt; =
+David<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;=
+&gt; From: <a href=3D"mailto:mhallster@gmail.com" =
+target=3D"_blank">mhallster@gmail.com</a> [mailto:<a =
+href=3D"mailto:mhallster@gmail.com" =
+target=3D"_blank">mhallster@gmail.com</a>] On Behalf Of<br>&gt;&gt; Mark =
+Hall<br>&gt;&gt; Sent: Thursday, March 07, 2013 9:25 PM<br>&gt;&gt; To: =
+David Persons<br>&gt;&gt; Subject: Re: exporting weka models to =
+pmml<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; Hi =
+David,<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; PMML export (and =
+import support for PMML 4.x) have been on my to-do<br>&gt;&gt; list for =
+a long time now. It's just a matter of priorities and time<br>&gt;&gt; =
+for<br>&gt; me.<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; My vague =
+thoughts along export support were to have a PMMLProducer<br>&gt;&gt; =
+interface that schemes could implement that would basically =
+return<br>&gt;&gt; the XML description of the object in question. The =
+difficulties<br>&gt;&gt; revolve around mapping to all the necessary =
+supporting elements -<br>&gt;&gt; e.g. mining schema, transformation =
+dictionary etc. And whether PMML<br>&gt;&gt; can represent<br>&gt; stuff =
+that Weka does (e.g.<br>&gt;&gt; Weka's SMO support vector machine has =
+options to fit logistic<br>&gt;&gt; regression models to the output of =
+the SVM and perform pairwise<br>&gt;&gt; coupling of the probability =
+estimates). Is it possible to represent<br>&gt;&gt; some of what can be =
+done with filter chaining in Weka (i.e. via the<br>&gt;&gt; =
+FilteredClassifier or<br>&gt;&gt; MultiFilter) in the transformation =
+dictionary? I've saw some PMML<br>&gt;&gt; produced by R once that =
+accomplished some of this by embedding R<br>&gt;&gt; function calls in =
+the meta data tags in the XML - hardly portable =
+:-)<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; Anyhow, I'd love to =
+hear you ideas on the subject and we're open to<br>&gt;&gt; =
+contributions of course.<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; =
+Cheers,<br>&gt;&gt; Mark.<br>&gt;&gt;<br>&gt;&gt; On Fri, Mar 8, 2013 at =
+6:17 AM, David Persons<br>&gt;&gt; &lt;<a =
+href=3D"mailto:david.persons@trefi.com" =
+target=3D"_blank">david.persons@trefi.com</a>&gt;<br>&gt;&gt; =
+wrote:<br>&gt;&gt;<br>&gt;&gt; Hi =
+Mark,<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; It is already =
+possible for some years to read pmml files into weka.<br>&gt;&gt; =
+Exporting to pmml is however not supported. Are there any issues =
+why<br>&gt;&gt; exporting to pmml is not supported yet? We are looking =
+to save weka<br>&gt;&gt; models as text files and I can spend some time =
+on it. Maybe, when you<br>&gt;&gt; explain to me how you want exporting =
+to pmml to be implemented I can<br>&gt;&gt; try to make it like that and =
+it can be used in the main weka source =
+tree?<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; =
+cheers,<br>&gt;&gt;<br>&gt;&gt; =
+David<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;=
+&gt; --<br>&gt;&gt; Mark Hall<br>&gt;&gt; Senior Developer/Consultant, =
+Pentaho Open Source Business<br>&gt;&gt; Intelligence Citadel =
+International, Suite 340, 5950 Hazeltine<br>&gt;&gt; National Dr., =
+Orlando, FL 32822, USA<br>&gt;&gt; <a href=3D"tel:%2B64%207%20348-7099" =
+target=3D"_blank">+64 7 348-7099</a> office, <a =
+href=3D"tel:%2B64%2021%20399-132" target=3D"_blank">+64 21 399-132</a> =
+mobile, <a href=3D"tel:%2B1%20815%20550-8637" target=3D"_blank">+1 815 =
+550-8637</a> fax,<br>&gt;&gt; Skype: mark.andrew.hall, Yahoo: =
+mark_andrew_hall Download the latest<br>&gt;&gt; release today &lt;<a =
+href=3D"http://www.sourceforge.net/projects/pentaho" =
+target=3D"_blank">http://www.sourceforge.net/projects/pentaho</a>&gt;<br>=
+&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt; =
+--<br>&gt;&gt; Mark Hall<br>&gt;&gt; Senior Developer/Consultant, =
+Pentaho Open Source Business<br>&gt;&gt; Intelligence Citadel =
+International, Suite 340, 5950 Hazeltine<br>&gt;&gt; National Dr., =
+Orlando, FL 32822, USA<br>&gt;&gt; <a href=3D"tel:%2B64%207%20348-7099" =
+target=3D"_blank">+64 7 348-7099</a> office, <a =
+href=3D"tel:%2B64%2021%20399-132" target=3D"_blank">+64 21 399-132</a> =
+mobile, <a href=3D"tel:%2B1%20815%20550-8637" target=3D"_blank">+1 815 =
+550-8637</a> fax,<br>&gt;&gt; Skype: mark.andrew.hall, Yahoo: =
+mark_andrew_hall Download the latest<br>&gt;&gt; release today &lt;<a =
+href=3D"http://www.sourceforge.net/projects/pentaho" =
+target=3D"_blank">http://www.sourceforge.net/projects/pentaho</a>&gt;<br>=
+&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;&gt;<br>&gt;<o:p></o:p></p></div>=
+</div></div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div></div></div></div></div></div></div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div></div></div></div></div></div></div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div></div></div></div></div></div></div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;margin-bottom:12.0pt'><o:p>&nbsp;</o:p><=
+/p></div></div></div></div></div></div></div></div></div></body></html>
+------=_NextPart_000_0038_01CF3F94.49EAD470--
+

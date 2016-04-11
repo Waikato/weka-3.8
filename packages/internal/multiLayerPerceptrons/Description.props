@@ -1,0 +1,46 @@
+# Template Description file for a Weka package
+#
+# 
+
+# Package name (required)
+PackageName=multiLayerPerceptrons
+
+# Version (required)
+Version=1.0.8
+
+#Date
+Date=2015-10-11
+
+# Title (required)
+Title=This package currently contains classes for training multilayer perceptrons with one hidden layer for classification and regression, and autoencoders.
+
+Category=Classification/regression, Preprocessing
+
+# Author (required)
+Author=Eibe Frank
+
+# Maintainer (required)
+Maintainer=Weka team <wekalist@list.scms.waikato.ac.nz>
+
+# License (required)
+License=GPL 3.0
+
+# Description (required)
+Description=This package currently contains classes for training multilayer perceptrons with one hidden layer, where the number of hidden units is user specified. Classification and regression are possible, and it is also possible to build an autoencoder.
+
+Changes=MLPClassifier and MLPRegressor have been refactored to reduce code duplication. Both classes now also support pluggable loss functions and activation functions (for the hidden layer).
+
+# Package URL for obtaining the package archive (required)
+PackageURL=http://prdownloads.sourceforge.net/weka/multiLayerPerceptrons1.0.8.zip?download
+
+# URL for further information
+URL=http://weka.sourceforge.net/doc.packages/multiLayerPerceptrons
+
+# Enhances various other packages ?
+# Enhances=packageName1,packageName2,...
+
+# Related to other packages?
+#Related=
+
+# Dependencies
+Depends=weka (>=3.7.6)

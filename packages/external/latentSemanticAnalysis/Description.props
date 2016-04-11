@@ -1,0 +1,44 @@
+# Description file for latentSemanticAnalysis
+#
+# 
+
+# Package name (required)
+PackageName=latentSemanticAnalysis
+
+# Version (required)
+Version=1.0.4
+
+#Date
+Date=2016-04-05
+
+# Title (required)
+Title=Performs latent semantic analysis and transformation of the data
+
+Category=Preprocessing
+
+# Author (required)
+Author=Amri Napolitano <amrifau@gmail.com>
+
+# Maintainer (required)
+Maintainer=Amri Napolitano <amrifau@gmail.com>
+
+# License (required)
+License=GPL 3.0
+
+# Description (required)
+Description=Performs latent semantic analysis and transformation of the data. Use in conjunction with a Ranker search. A low-rank approximation of the full data is found by specifying the number of singular values to use.
+
+# Changes
+Changes=Switched from JAMA to MTJ. With native BLAS/LAPACK libraries installed, LSA can now be run in reasonable time on text datasets. Fixed problem with non-unique attribute names being generated. Also, now always generates dense instances because LSA always produces dense data.
+
+# Package URL for obtaining the package archive (required)
+PackageURL=http://prdownloads.sourceforge.net/weka/latentSemanticAnalysis1.0.4.zip?download
+
+# URL for further information
+URL=http://weka.sourceforge.net/doc.packages/latentSemanticAnalysis
+
+# Related to other packages?
+Related=PCA
+
+# Dependencies
+Depends=weka (>=3.7.14-SNAPSHOT)

@@ -1,0 +1,46 @@
+# Template Description file for a Weka package
+#
+# 
+
+# Package name (required)
+PackageName=partialLeastSquares
+
+# Version (required)
+Version=1.0.4
+
+#Date
+Date=2015-12-22
+
+# Title (required)
+Title=Partial least squares filter and classifier for performing PLS regression.
+
+Category=Preprocessing
+
+# Author (required)
+Author=Peter Reutemann
+
+# Maintainer (required)
+Maintainer=Weka team <wekalist@list.scms.waikato.ac.nz>
+
+# License (required)
+License=GPL 3.0
+
+# Description (required)
+Description=This package contains a filter for computing partial least squares and transforming the input data into the PLS space. It also contains a classifier for performing PLS regression.
+
+Changes=Code clean-up: generic type arguments, elimination of FastVector, clean-up of option handling.
+
+# Package URL for obtaining the package archive (required)
+PackageURL=http://prdownloads.sourceforge.net/weka/partialLeastSquares1.0.4.zip?download
+
+# URL for further information
+URL=http://weka.sourceforge.net/doc.packages/partialLeastSquares
+
+# Enhances various other packages ?
+# Enhances=packageName1,packageName2,...
+
+# Related to other packages?
+#Related=WrapperSubsetEval
+
+# Dependencies
+Depends=weka (>=3.7.1)

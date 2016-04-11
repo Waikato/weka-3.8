@@ -1,0 +1,43 @@
+# Description file for Functional Trees
+#
+# 
+
+# Package name (required)
+PackageName=functionalTrees
+
+# Version (required)
+Version=1.0.3
+
+#Date
+Date=2013-10-22
+
+# Title (required)
+Title=Classifier for learning Functional Trees
+
+Category=Classification
+
+# Author (required)
+Author=Carlos Ferreira <cferreira@liaad.up.pt>
+
+# Maintainer (required)
+Maintainer=Carlos Ferreira <cferreira@liaad.up.pt>
+
+# License (required)
+License=GPL 3.0
+
+# Description (required)
+Description=Functional trees (decision trees with oblique splits and functions at the leaves)
+
+Changes=LogisticBase.java is now part of the package because new versions of this class are incompatible.
+
+# Package URL for obtaining the package archive (required)
+PackageURL=http://prdownloads.sourceforge.net/weka/functionalTrees1.0.3.zip?download
+
+# URL for further information
+URL=http://weka.sourceforge.net/doc.packages/functionalTrees
+
+# Related to other packages?
+#Related=LMT,J48
+
+# Dependencies
+Depends=weka (>=3.7.11)

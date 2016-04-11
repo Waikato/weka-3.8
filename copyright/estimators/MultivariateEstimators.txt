@@ -1,0 +1,314 @@
+Received: from outbound.appriver.com (98.129.23.1) by HT06.exg5.exghost.com
+ (98.129.23.206) with Microsoft SMTP Server id 8.3.297.1; Fri, 11 Jan 2013
+ 07:55:50 -0600
+Received: from [174.143.82.50] (HELO inbound.appriver.com)  by
+ outbound.appriver.com (CommuniGate Pro SMTP 5.3.5)  with ESMTP id 996746857
+ for mhall@pentaho.com; Fri, 11 Jan 2013 07:55:49 -0600
+X-Note-AR-ScanTimeLocal: 1/11/2013 7:55:49 AM
+X-Policy: pentaho.com
+X-Primary: mhall@pentaho.com
+X-Note: This Email was scanned by AppRiver SecureTide
+X-Virus-Scan: V-
+X-Note-SnifferID: 0
+X-Note: TCH-CT/SI:0-235/SG:5 1/11/2013 7:54:56 AM
+X-GBUdb-Analysis: 0, 209.85.223.169, Ugly c=0.412957 p=-0.418182 Source Normal
+X-Signature-Violations: 0-0-0-12867-c
+X-Note-419: 0 ms. Fail:0 Chk:1327 of 1327 total
+X-Note: SCH-CT/SI:0-1327/SG:1 1/11/2013 7:55:36 AM
+X-Note: Spam Tests Failed: 
+X-Country-Path: ->->->UNITED STATES->UNITED STATES
+X-Note-Sending-IP: 209.85.223.169
+X-Note-Reverse-DNS: mail-ie0-f169.google.com
+X-Note-Return-Path: kamathuday@gmail.com
+X-Note: User Rule Hits: 
+X-Note: Global Rule Hits: G328 G329 G330 G331 G335 G336 G443 G572 
+X-Note: Encrypt Rule Hits: 
+X-Note: Mail Class: VALID
+X-Note: Headers Injected
+Received: from [209.85.223.169] (HELO mail-ie0-f169.google.com)  by
+ inbound.appriver.com (CommuniGate Pro SMTP 5.4.1)  with ESMTPS id 302894228
+ for mhall@pentaho.com; Fri, 11 Jan 2013 07:55:49 -0600
+Received: by mail-ie0-f169.google.com with SMTP id c14so2297986ieb.14
+        for <mhall@pentaho.com>; Fri, 11 Jan 2013 05:55:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :content-type;
+        bh=gjOgRHFzfS/CtIVeWf0KdnTjHyHJTBWB8ECsSA04f7o=;
+        b=nK8nM7yzojE6eBNXGNEtUOD9UrtWVCZeQFNSLfYLLDpeehmwrmhuxL5zQoPswoMtro
+         1vYfX1NRa/fygHhU5y5HvZKFooK9cks/7SWqbmIwMThgixzcLX2EDSnZrSCK+WhoqCPJ
+         9lgcZtULt9rikbMpSwCmyYxD9AQP3xufhHNWopGxtd3zbHf8Bhoq9pj+GuJkN1qxGuC4
+         p0ydydc28b3l3YMOxxdPmVzPJJA5nBrMsz1zcs5hW6j56BRWHU6WFOQJKc9l/wQDjgJw
+         hpHC/Yme5ca04u4YsnTKc+iFZiLIrg92FDB4LiIs85yNTuiiH9+V7QYw9k2pV0ejZYAL
+         pedw==
+MIME-Version: 1.0
+Received: by 10.50.1.203 with SMTP id 11mr8372331igo.63.1357912548299; Fri, 11
+ Jan 2013 05:55:48 -0800 (PST)
+Received: by 10.64.20.105 with HTTP; Fri, 11 Jan 2013 05:55:48 -0800 (PST)
+In-Reply-To: <CD162563.5235%mhall@pentaho.com>
+References: <CA+gdfy4LBM=Yst_oO7kEjVuaUTX2XmRf1QbqAGxsqMNPfY-F1Q@mail.gmail.com>
+            <CD162563.5235%mhall@pentaho.com>
+Date: Fri, 11 Jan 2013 08:55:48 -0500
+Message-ID: <CA+gdfy5fkdUb0vjd0kAAXnTdaz7ytLU46e5nCm1sg8vbcQFrQA@mail.gmail.com>
+Subject: Re:
+From: Uday kamath <kamathuday@gmail.com>
+To: Mark Hall <mhall@pentaho.com>
+Return-Path: kamathuday@gmail.com
+Content-type: multipart/alternative;
+              boundary="B_3441181403_92481262"
+
+> This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
+
+--B_3441181403_92481262
+Content-type: text/plain;
+              charset="ISO-8859-1"
+Content-transfer-encoding: quoted-printable
+
+Mark
+No prooblems, just wanted to make sure it gets into system to help others a=
+s
+have heard many people on the forum asking for it and even i needed to  use
+it for my evolutionary stuff.
+Yeah i am fine with any copyrights you have, my goal was more to help peopl=
+e
+as i got benefitted by WEKA and you, a lot. You can also change the code,
+add yourself as author etc, have no qualms :-).
+I implemented only the Normal Estimator for now as it was more
+straightforward, but if i get chance will add kernel estimator too.
+Take care
+Uday
+
+On Fri, Jan 11, 2013 at 2:33 AM, Mark Hall <mhall@pentaho.com> wrote:
+> Hi Uday,
+>=20
+> I've looked at it only very briefly so far. Things were hectic just befor=
+e
+> Christmas and I've been on vacation for the past couple of weeks. I'm bac=
+k at
+> work next week so I'll look at it again then. I think we can just include=
+ it
+> in the estimators package. What uses these estimators in your project? Al=
+so,
+> you mentioned a MulltivariateKernelEstimator in your email, but only the
+> interface and normal estimator were attached.
+>=20
+> One other thing I need to ask =AD are you OK with giving the University of
+> Waikato copyright for these classes?
+>=20
+> Cheers,
+> Mark.
+>=20
+> From: Uday kamath <kamathuday@gmail.com>
+> Date: Friday, 11 January 2013 5:35 AM
+>=20
+> To: Mark Hall <mhall@pentaho.com>
+> Subject: Re:
+>=20
+>> Hey Mark
+>> Did you get time to look at this? Let me know.
+>> Take care
+>> Uday
+>>=20
+>> On Sun, Dec 9, 2012 at 10:11 PM, Mark Hall <mhall@pentaho.com> wrote:
+>>> Hi Uday,
+>>>=20
+>>> Thanks for that! I'll take a look at it when I've got a moment.
+>>>=20
+>>> Cheers,
+>>> Mark.
+>>>=20
+>>> From: Uday kamath <kamathuday@gmail.com>
+>>> Date: Monday, 10 December 2012 3:29 PM
+>>> To: Mark Hall <mhall@pentaho.com>
+>>> Subject: Re:
+>>>=20
+>>>> Attached.=20
+>>>> Uday
+>>>>=20
+>>>> On Sun, Dec 9, 2012 at 10:56 AM, Uday kamath <kamathuday@gmail.com> wr=
+ote:
+>>>>> Hey Mark
+>>>>> For the project here i wrote a MultivariateKernelEstimator and
+>>>>> MultivariateNormalDensityEstimator, let me know if this is useful and=
+ will
+>>>>> send it to be included in Weka.
+>>>>> Thanks
+>>>>> Uday
+>>>>=20
+>>>=20
+>>>=20
+>>=20
+>=20
+
+
+
+
+--B_3441181403_92481262
+Content-type: text/html;
+              charset="ISO-8859-1"
+Content-transfer-encoding: quoted-printable
+
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8">
+</head>
+<body>
+Mark<br>
+No prooblems, just wanted to make sure it gets into system to help others a=
+s have heard many people on the forum asking for it and even i needed to&nbs=
+p; use it for my evolutionary stuff.
+<br>
+Yeah i am fine with any copyrights you have, my goal was more to help peopl=
+e as i got benefitted by WEKA and you, a lot. You can also change the code, =
+add yourself as author etc, have no qualms :-).<br>
+I implemented only the Normal Estimator for now as it was more straightforw=
+ard, but if i get chance will add kernel estimator too.<br>
+Take care<br>
+Uday<br>
+<br>
+<div class=3D"gmail_quote">On Fri, Jan 11, 2013 at 2:33 AM, Mark Hall <span d=
+ir=3D"ltr">
+&lt;<a href=3D"mailto:mhall@pentaho.com" target=3D"_blank">mhall@pentaho.com</a=
+>&gt;</span> wrote:<br>
+<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #c=
+cc solid;padding-left:1ex">
+<div style=3D"font-size:14px;font-family:Calibri,sans-serif;word-wrap:break-w=
+ord">
+<div>Hi Uday,</div>
+<div><br>
+</div>
+<div>I've looked at it only very briefly so far. Things were hectic just be=
+fore Christmas and I've been on vacation for the past couple of weeks. I'm b=
+ack at work next week so I'll look at it again then. I think we can just inc=
+lude it in the estimators package.
+ What uses these estimators in your project? Also, you mentioned a Mulltiva=
+riateKernelEstimator in your email, but only the interface and normal estima=
+tor were attached.</div>
+<div><br>
+</div>
+<div>One other thing I need to ask =AD are you OK with giving the University =
+of Waikato copyright for these classes?</div>
+<div><br>
+</div>
+<div>Cheers,</div>
+<div>Mark.</div>
+<div><br>
+</div>
+<span>
+<div style=3D"border-right:medium none;padding-right:0in;padding-left:0in;pad=
+ding-top:3pt;text-align:left;font-size:11pt;border-bottom:medium none;font-f=
+amily:Calibri;border-top:#b5c4df 1pt solid;padding-bottom:0in;border-left:me=
+dium none">
+<span style=3D"font-weight:bold">From: </span>Uday kamath &lt;<a href=3D"mailto=
+:kamathuday@gmail.com" target=3D"_blank">kamathuday@gmail.com</a>&gt;<br>
+<span style=3D"font-weight:bold">Date: </span>Friday, 11 January 2013 5:35 AM=
+
+<div class=3D"im"><br>
+<span style=3D"font-weight:bold">To: </span>Mark Hall &lt;<a href=3D"mailto:mha=
+ll@pentaho.com" target=3D"_blank">mhall@pentaho.com</a>&gt;<br>
+<span style=3D"font-weight:bold">Subject: </span>Re:<br>
+</div>
+</div>
+<div class=3D"im">
+<div><br>
+</div>
+<blockquote style=3D"BORDER-LEFT:#b5c4df 5 solid;PADDING:0 0 0 5;MARGIN:0 0 0=
+ 5">
+<div>
+<div>Hey Mark<br>
+Did you get time to look at this? Let me know.<br>
+Take care<br>
+Uday<br>
+<br>
+<div class=3D"gmail_quote">On Sun, Dec 9, 2012 at 10:11 PM, Mark Hall <span d=
+ir=3D"ltr">
+&lt;<a href=3D"mailto:mhall@pentaho.com" target=3D"_blank">mhall@pentaho.com</a=
+>&gt;</span> wrote:<br>
+<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #c=
+cc solid;padding-left:1ex">
+<div style=3D"font-size:14px;font-family:Calibri,sans-serif;word-wrap:break-w=
+ord">
+<div>Hi Uday,</div>
+<div><br>
+</div>
+<div>Thanks for that! I'll take a look at it when I've got a moment.</div>
+<div><br>
+</div>
+<div>Cheers,</div>
+<div>Mark.</div>
+<div><br>
+</div>
+<span>
+<div style=3D"border-right:medium none;padding-right:0in;padding-left:0in;pad=
+ding-top:3pt;text-align:left;font-size:11pt;border-bottom:medium none;font-f=
+amily:Calibri;border-top:#b5c4df 1pt solid;padding-bottom:0in;border-left:me=
+dium none">
+<span style=3D"font-weight:bold">From: </span>Uday kamath &lt;<a href=3D"mailto=
+:kamathuday@gmail.com" target=3D"_blank">kamathuday@gmail.com</a>&gt;<br>
+<span style=3D"font-weight:bold">Date: </span>Monday, 10 December 2012 3:29 P=
+M<br>
+<span style=3D"font-weight:bold">To: </span>Mark Hall &lt;<a href=3D"mailto:mha=
+ll@pentaho.com" target=3D"_blank">mhall@pentaho.com</a>&gt;<br>
+<span style=3D"font-weight:bold">Subject: </span>Re:<br>
+</div>
+<div>
+<div>
+<div><br>
+</div>
+<blockquote style=3D"BORDER-LEFT:#b5c4df 5 solid;PADDING:0 0 0 5;MARGIN:0 0 0=
+ 5">
+<div>
+<div>Attached. <br>
+Uday<br>
+<br>
+<div class=3D"gmail_quote">On Sun, Dec 9, 2012 at 10:56 AM, Uday kamath <span=
+ dir=3D"ltr">
+&lt;<a href=3D"mailto:kamathuday@gmail.com" target=3D"_blank">kamathuday@gmail.=
+com</a>&gt;</span> wrote:<br>
+<blockquote style=3D"BORDER-LEFT:#ccc 1px solid;MARGIN:0px 0px 0px 0.8ex;PADD=
+ING-LEFT:1ex" class=3D"gmail_quote">
+Hey Mark<br>
+For the project here i wrote a MultivariateKernelEstimator and Multivariate=
+NormalDensityEstimator, let me know if this is useful and will send it to be=
+ included in Weka.<br>
+Thanks<span><font color=3D"#888888"><br>
+Uday<br>
+</font></span></blockquote>
+</div>
+<br>
+</div>
+</div>
+</blockquote>
+</div>
+</div>
+</span>
+<div><br>
+</div>
+<div>
+<div>
+<div><br>
+</div>
+</div>
+</div>
+</div>
+</blockquote>
+</div>
+<br>
+</div>
+</div>
+</blockquote>
+</div>
+</span>
+<div><br>
+</div>
+</div>
+</blockquote>
+</div>
+<br>
+</body>
+</html>
+
+
+--B_3441181403_92481262--
+

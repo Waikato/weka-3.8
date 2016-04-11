@@ -1,0 +1,47 @@
+# Description file for associationRulesVisualizer
+#
+# 
+
+# Package name (required)
+PackageName=associationRulesVisualizer
+
+# Version (required)
+Version=1.0.3
+
+#Date
+Date=2016-01-11
+
+# Title (required)
+Title=A visualization component for displaying association rules that uses a modified version of the Association Rules Viewer from DESS IAGL of Lille.
+
+Category=Visualization
+
+# Author (required)
+Author=D. Delautre, S. Demay and Mark Hall
+
+# Maintainer (required)
+Maintainer=Mark Hall <mhall@pentaho.com>
+
+# License (required)
+License=GPL 3.0
+
+# Description (required)
+Description=A visualization component for displaying association rules that uses a modified version of the Association Rules Viewer from DESS IAGL of Lille. Requires Java 3D to be installed.
+
+# Package URL for obtaining the package archive (required)
+PackageURL=http://prdownloads.sourceforge.net/weka/associationRulesVisualizer1.0.3.zip?download
+
+# Changes in this release
+Changes=Fixed a refresh bug that prevented switching back to the rules selection tab from the 3D viewer. Now depends on scatterPlot3D (which includes all the necessary Java3D libs).
+
+# URL for further information
+URL=http://www2.lifl.fr/~jourdan/download/arv.html
+
+# Related to other packages?
+Related=scatterPlot3D
+
+# Dependencies
+Depends=weka (>=3.7.4), scatterPlot3D (>= 1.0.6)
+
+# Special instructions to be displayed on installation of this package
+MessageToDisplayOnInstallation=

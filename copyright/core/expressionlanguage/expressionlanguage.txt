@@ -1,0 +1,24 @@
+Begin forwarded message:
+From: "Weber Benjamin" <benweber@student.ethz.ch>
+To: Eibe Frank <eibe@waikato.ac.nz>
+Subject: RE: Copyright
+Date: 20 January 2015 12:54:01 pm NZDT
+Hi Eibe,
+I was anyways under the assumption that it was part of the conditions of the scholarship.
+But just to make sure:
+I hereby explicitly state that I agree to give the full copyright over my code written as part of the internship at the University of Waikato (this includes all code committed to the weka repository written by me during the internship) to the University of Waikato.
+I hope this helps. Coding would be so much easier without the hassle of licenses and copyright. :)
+Cheers
+Ben
+________________________________________
+From: Eibe Frank [eibe@waikato.ac.nz]
+Sent: Tuesday, January 20, 2015 12:02 AM
+To: Weber  Benjamin
+Subject: Copyright
+Hi Ben,
+I just wanted to confirm with you that you are indeed happy to give UoW the copyright for the code you have written during your internship. I hope you are, because this is important for any changes to the core of WEKA!
+It looks like this wasn’t a condition of your scholarship (which it used to be in previous years if I remember correctly), so I thought I better double-check this with you.
+Giving copyright to UoW means the university can release the code under other licenses as well as the GPL license (e.g., commercial licenses that organisations might want to have for WEKA).
+Cheers,
+Eibe
+

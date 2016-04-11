@@ -1,0 +1,38 @@
+README
+======
+
+An overview of the libraries used in Weka:
+
+- junit.jar
+  Version:  3.8.2
+  URL:      http://junit.org/
+  
+- java-cup.jar
+  Version:  java-cup-src-11b-20150326
+  URL:      http://www2.cs.tum.edu/projects/cup/
+  
+- JFlex.jar
+  Version:  1.6.0
+  URL:      http://jflex.de/
+
+- commons-compress-1.10.jar
+  Version: 1.10
+  URL: https://commons.apache.org/proper/commons-compress/
+
+- bounce.jar (contains just the authentication dialog from the bounce project)
+  Version: 0.18
+  URL: http://www.edankert.com/bounce/index.html
+
+- mtj.jar
+  Version: 1.0.4 (modified Matrix.java to extend Serializable)
+  URL: https://github.com/fommil/matrix-toolkits-java
+
+- arpack_combined_all.jar
+  Version: 0.1
+  URL: http://icl.cs.utk.edu/f2j/
+
+- core.jar
+  Version: 1.1.2
+  URL: https://github.com/fommil/netlib-java
+
+Version: $Revision$

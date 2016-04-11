@@ -1,0 +1,56 @@
+# Description file for scatterPlot3D
+#
+# 
+
+# Package name (required)
+PackageName=scatterPlot3D
+
+# Version (required)
+Version=1.0.6
+
+#Date
+Date=2016-01-11
+
+# Title (required)
+Title=A visualization component for displaying a 3D scatter plot of the data using Java 3D.
+
+Category=Visualization
+
+# Author (required)
+Author=Mark Hall
+
+# Maintainer (required)
+Maintainer=Mark Hall <mhall@pentaho.com>
+
+# License (required)
+License=GPL 3.0
+
+# Description (required)
+Description=A visualization component for displaying a 3D scatter plot of the data using Java 3D.
+
+Changes=This version includes the latest Java3D classes and native libraries (32 and 64 bit) for Windows, Linux and Mac OSX. No special installation is required as the Java3D system loads the correct native library automatically. Users of Oracle Java 1.7 under Mac OSX should read the "MessageToDisplayOnInstallation" entry. More information about the updated version of Java3D used in this package can be found at http://gouessej.wordpress.com/2012/08/01/java-3d-est-de-retour-java-3d-is-back and http://jogamp.org/wiki/index.php/Downloading_and_installing_JOGL.
+
+# Package URL for obtaining the package archive (required)
+PackageURL=http://prdownloads.sourceforge.net/weka/scatterPlot3D1.0.6.zip?download
+
+# URL for further information
+URL=http://weka.sourceforge.net/doc.packages/scatterPlot3D
+
+# Related to other packages?
+#Related=
+
+# Dependencies
+Depends=weka (>=3.7.4)
+
+# Special instructions to be displayed on installation of this package
+MessageToDisplayOnInstallation=This package includes Java3D classes and native\n\
+ 32 and 64 bit libraries for Windows, Linux and Mac OSX. No special installation is\n\
+ required and the correct native libraries should be loaded automatically. The only\n\
+ exception to this is Mac OSX when using Oracle Java 1.7 - in this case, if Apple's\n\
+ Java 1.6 JVM is (or has been) installed, there will be an old version of Java3D\n\
+ jar files and native libraries in /System/Java/Extensions. These will need to be\n\
+ removed or they will interfere with the new version included in this package.\n\
+ Note that, as of writing, there is a positioning bug when running under Oracle\n\
+ Java 1.7 under Mac OSX. This results in the display being offset slightly in the\n\
+ Window. It can be rectified (temporarily) by resizing the Explorer/Knowledge Flow\n\
+ Window.

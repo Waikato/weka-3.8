@@ -1,0 +1,43 @@
+# Description file for ensembleLibrary
+#
+# 
+
+# Package name (required)
+PackageName=ensembleLibrary
+
+# Version (required)
+Version=1.0.5
+
+#Date
+Date=2014-11-14
+
+# Title (required)
+Title=Manages a libary of ensemble classifiers
+
+Category=Ensemble learning
+
+# Author (required)
+Author=Robert Jung <mrbobjung@gmail.com>
+
+# Maintainer (required)
+Maintainer=Robert Jung <mrbobjung@gmail.com>
+
+# License (required)
+License=GPL 3.0
+
+# Description (required)
+Description=Manages a libary of ensemble classifiers
+
+Changes=This release makes some progress towards fixing a bug that prevented a meta classifier from being added to the library. Thanks to Scott Turner for this.
+
+# Package URL for obtaining the package archive (required)
+PackageURL=http://prdownloads.sourceforge.net/weka/ensembleLibrary1.0.5.zip?download
+
+# URL for further information
+URL=http://weka.sourceforge.net/doc.packages/ensembleLibrary
+
+# Related to other packages?
+#Related=
+
+# Dependencies
+Depends=weka (>=3.7.1), simpleEducationalLearningSchemes (>=1.0.0), votingFeatureIntervals (>=1.0.0), conjunctiveRule (>=1.0.0), naiveBayesTree (>=1.0.0)

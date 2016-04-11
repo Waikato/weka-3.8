@@ -1,0 +1,44 @@
+# Template Description file for a Weka package
+#
+# 
+
+# Package name (required)
+PackageName=RBFNetwork
+
+# Version (required)
+Version=1.0.8
+
+#Date
+Date=2015-16-01
+
+# Title (required)
+Title= Classes that implement radial basis function networks.
+
+Category=Classification/regression
+
+# Author (required)
+Author=Eibe Frank
+
+# Maintainer (required)
+Maintainer=Weka team <wekalist@list.scms.waikato.ac.nz>
+
+# License (required)
+License=GPL 3.0
+
+# Description (required)
+Description= There are currently three classes in this package: RBFNetwork, which trains the hidden layer in an unsupervised manner, and RBFRegressor and RBFClassifier, which are fully supervised. RBFNetwork implements a normalized Gaussian radial basis function network. It uses the k-means clustering algorithm to provide the basis functions and learns either a logistic regression (discrete class problems) or linear regression (numeric class problems) on top of that. Symmetric multivariate Gaussians are fit to the data from each cluster. If the class is nominal it uses the given number of clusters per class. RBFRegressor implements Gaussian radial basis function networks for regression, trained in a fully supervised manner using WEKA's Optimization class by minimizing squared error with the BFGS method. It is possible to use conjugate gradient descent rather than BFGS updates, which is faster for cases with many parameters, and normalized basis functions instead of unnormalized ones. RBFClassifier is the equivalent of RBFRegressor for classification problems.
+
+Changes=RBFClassifier and RBFRegressor now have a reference to a technical report describing their implementation.
+
+# Package URL for obtaining the package archive (required)
+PackageURL=http://prdownloads.sourceforge.net/weka/RBFNetwork1.0.8.zip?download
+
+# URL for further information
+URL=http://weka.sourceforge.net/doc.packages/RBFNetwork
+
+# Enhances various other packages ?
+# Enhances=packageName1,packageName2,...
+
+
+# Dependencies
+Depends=weka (>=3.7.6)

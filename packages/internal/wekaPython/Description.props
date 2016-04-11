@@ -1,0 +1,50 @@
+# Template Description file for a Weka package
+#
+# 
+
+# Package name (required)
+PackageName=wekaPython
+
+# Version (required)
+Version=1.0.1
+
+#Date
+Date=2015-08-31
+
+# Title (required)
+Title=Class for building and using a decision table/naive Bayes hybrid classifier.
+
+Category=Python integration
+
+# Author (required)
+Author=Mark Hall
+
+# Maintainer (required)
+Maintainer=Weka team <wekalist@list.scms.waikato.ac.nz>
+
+# License (required)
+License=GPL 3.0
+
+# Description (required)
+Description=Integration with CPython for Weka. Python version 2.7.x or higher is required. Also requires the following packages to be installed in python: numpy, pandas, matplotlib and scikit-learn. This package provides a wrapper classifier and clusterer that, between them, cover 60+ scikit-learn algorithms. It also provides a general scripting step for the Knowlege Flow along with scripting plugin environments for the Explorer and Knowledge Flow.
+
+Changes=Small changes to ScikitLearnClassifier and ScikitLearnClusterer to accomodate the extra method now in the BatchPredictor interface.
+
+# Package URL for obtaining the package archive (required)
+PackageURL=http://prdownloads.sourceforge.net/weka/wekaPython1.0.1.zip?download
+
+# URL for further information
+URL=http://markahall.blogspot.co.nz/2015/06/cpython-integration-in-weka.html
+
+# Enhances various other packages ?
+# Enhances=packageName1,packageName2,...
+
+# Related to other packages?
+#Related=
+
+# Dependencies
+Depends=weka (>=3.7.13-SNAPSHOT)
+
+MessageToDisplayOnInstallation=This package requires python (2.7.x or 3.x) to be installed on your\n\
+ computer before it can be used. The python command must be in the PATH. Within python it requires the:\n\
+ following packages: numpy, pandas, matplotlib and scikit-learn.
