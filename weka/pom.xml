@@ -4,15 +4,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>nz.ac.waikato.cms.weka</groupId>
-  <artifactId>weka-dev</artifactId>
+  <artifactId>weka-stable</artifactId>
   <version>3.8.0-SNAPSHOT</version><!-- weka-version -->
   <packaging>jar</packaging>
 
-  <name>weka-dev</name>
+  <name>weka-stable</name>
   <description>The Waikato Environment for Knowledge Analysis (WEKA), a machine 
-  learning workbench. This version represents the developer version, the
-  "bleeding edge" of development, you could say. New functionality gets added
-  to this version.
+  learning workbench. This is the stable version. Apart from bugfixes, this version
+  does not receive any other updates.
   </description>
   <url>http://www.cms.waikato.ac.nz/ml/weka/</url>
   <organization>
@@ -51,9 +50,9 @@
   </parent>
 
   <scm>
-    <connection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/trunk/weka</connection>
-    <developerConnection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/trunk/weka</developerConnection>
-    <url>https://svn.cms.waikato.ac.nz/svn/weka/trunk/weka</url>
+    <connection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/weka</connection>
+    <developerConnection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/weka</developerConnection>
+    <url>https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/weka</url>
   </scm>
 
   <profiles>
