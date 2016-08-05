@@ -48,9 +48,9 @@ Provides a time series forecasting environment for Weka. Includes a wrapper for 
   </parent>
 
   <scm>
-    <connection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/trunk/packages/internal/timeseriesForecasting</connection>
-    <developerConnection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/trunk/packages/internal/timeseriesForecasting</developerConnection>
-    <url>https://svn.cms.waikato.ac.nz/svn/weka/trunk/packages/internal/timeseriesForecasting</url>
+    <connection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/internal/timeseriesForecasting</connection>
+    <developerConnection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/internal/timeseriesForecasting</developerConnection>
+    <url>https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/internal/timeseriesForecasting</url>
   </scm>
 
   <profiles>
