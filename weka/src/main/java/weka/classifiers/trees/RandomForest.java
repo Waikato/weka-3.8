@@ -21,44 +21,36 @@
 
 package weka.classifiers.trees;
 
+import weka.classifiers.AbstractClassifier;
+import weka.classifiers.Classifier;
+import weka.classifiers.meta.Bagging;
+import weka.core.Capabilities;
+import weka.core.Option;
+import weka.core.OptionHandler;
+import weka.core.RevisionUtils;
+import weka.core.TechnicalInformation;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
+import weka.core.Utils;
+import weka.core.WekaException;
+import weka.gui.ProgrammaticProperty;
+
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
-import weka.classifiers.AbstractClassifier;
-import weka.classifiers.Classifier;
-import weka.classifiers.meta.Bagging;
-import weka.core.AdditionalMeasureProducer;
-import weka.core.Aggregateable;
-import weka.core.Capabilities;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.Option;
-import weka.core.OptionHandler;
-import weka.core.PartitionGenerator;
-import weka.core.Randomizable;
-import weka.core.RevisionUtils;
-import weka.core.TechnicalInformation;
-import weka.core.TechnicalInformation.Field;
-import weka.core.TechnicalInformation.Type;
-import weka.core.TechnicalInformationHandler;
-import weka.core.Utils;
-import weka.core.WeightedInstancesHandler;
-import weka.gui.ProgrammaticProperty;
-
 /**
- <!-- globalinfo-start -->
- * Class for constructing a forest of random trees.<br>
+ * <!-- globalinfo-start --> Class for constructing a forest of random trees.<br>
  * <br>
  * For more information see: <br>
  * <br>
- * Leo Breiman (2001). Random Forests. Machine Learning. 45(1):5-32.
- * <br><br>
- <!-- globalinfo-end -->
+ * Leo Breiman (2001). Random Forests. Machine Learning. 45(1):5-32. <br>
+ * <br>
+ * <!-- globalinfo-end -->
  * 
- <!-- technical-bibtex-start -->
- * BibTeX:
+ * <!-- technical-bibtex-start --> BibTeX:
+ * 
  * <pre>
  * &#64;article{Breiman2001,
  *    author = {Leo Breiman},
@@ -70,78 +62,126 @@ import weka.gui.ProgrammaticProperty;
  *    year = {2001}
  * }
  * </pre>
- * <br><br>
- <!-- technical-bibtex-end -->
  * 
- <!-- options-start -->
- * Valid options are: <p>
+ * <br>
+ * <br>
+ * <!-- technical-bibtex-end -->
  * 
- * <pre> -P
+ * <!-- options-start --> Valid options are:
+ * <p>
+ * 
+ * <pre>
+ * -P
  *  Size of each bag, as a percentage of the
- *  training set size. (default 100)</pre>
+ *  training set size. (default 100)
+ * </pre>
  * 
- * <pre> -O
- *  Calculate the out of bag error.</pre>
+ * <pre>
+ * -O
+ *  Calculate the out of bag error.
+ * </pre>
  * 
- * <pre> -store-out-of-bag-predictions
- *  Whether to store out of bag predictions in internal evaluation object.</pre>
+ * <pre>
+ * -store-out-of-bag-predictions
+ *  Whether to store out of bag predictions in internal evaluation object.
+ * </pre>
  * 
- * <pre> -output-out-of-bag-complexity-statistics
- *  Whether to output complexity-based statistics when out-of-bag evaluation is performed.</pre>
+ * <pre>
+ * -output-out-of-bag-complexity-statistics
+ *  Whether to output complexity-based statistics when out-of-bag evaluation is performed.
+ * </pre>
  * 
- * <pre> -print
- *  Print the individual classifiers in the output</pre>
+ * <pre>
+ * -print
+ *  Print the individual classifiers in the output
+ * </pre>
  * 
- * <pre> -I &lt;num&gt;
+ * <pre>
+ * -attribute-importance
+ *  Compute and output attribute importance (mean impurity decrease method)
+ * </pre>
+ * 
+ * <pre>
+ * -I &lt;num&gt;
  *  Number of iterations.
- *  (current value 100)</pre>
+ *  (current value 100)
+ * </pre>
  * 
- * <pre> -num-slots &lt;num&gt;
+ * <pre>
+ * -num-slots &lt;num&gt;
  *  Number of execution slots.
  *  (default 1 - i.e. no parallelism)
- *  (use 0 to auto-detect number of cores)</pre>
+ *  (use 0 to auto-detect number of cores)
+ * </pre>
  * 
- * <pre> -K &lt;number of attributes&gt;
+ * <pre>
+ * -K &lt;number of attributes&gt;
  *  Number of attributes to randomly investigate. (default 0)
- *  (&lt;1 = int(log_2(#predictors)+1)).</pre>
+ *  (&lt;1 = int(log_2(#predictors)+1)).
+ * </pre>
  * 
- * <pre> -M &lt;minimum number of instances&gt;
+ * <pre>
+ * -M &lt;minimum number of instances&gt;
  *  Set minimum number of instances per leaf.
- *  (default 1)</pre>
+ *  (default 1)
+ * </pre>
  * 
- * <pre> -V &lt;minimum variance for split&gt;
+ * <pre>
+ * -V &lt;minimum variance for split&gt;
  *  Set minimum numeric class variance proportion
- *  of train variance for split (default 1e-3).</pre>
+ *  of train variance for split (default 1e-3).
+ * </pre>
  * 
- * <pre> -S &lt;num&gt;
+ * <pre>
+ * -S &lt;num&gt;
  *  Seed for random number generator.
- *  (default 1)</pre>
+ *  (default 1)
+ * </pre>
  * 
- * <pre> -depth &lt;num&gt;
+ * <pre>
+ * -depth &lt;num&gt;
  *  The maximum depth of the tree, 0 for unlimited.
- *  (default 0)</pre>
+ *  (default 0)
+ * </pre>
  * 
- * <pre> -N &lt;num&gt;
- *  Number of folds for backfitting (default 0, no backfitting).</pre>
+ * <pre>
+ * -N &lt;num&gt;
+ *  Number of folds for backfitting (default 0, no backfitting).
+ * </pre>
  * 
- * <pre> -U
- *  Allow unclassified instances.</pre>
+ * <pre>
+ * -U
+ *  Allow unclassified instances.
+ * </pre>
  * 
- * <pre> -B
- *  Break ties randomly when several attributes look equally good.</pre>
+ * <pre>
+ * -B
+ *  Break ties randomly when several attributes look equally good.
+ * </pre>
  * 
- * <pre> -output-debug-info
+ * <pre>
+ * -output-debug-info
  *  If set, classifier is run in debug mode and
- *  may output additional info to the console</pre>
+ *  may output additional info to the console
+ * </pre>
  * 
- * <pre> -do-not-check-capabilities
+ * <pre>
+ * -do-not-check-capabilities
  *  If set, classifier capabilities are not checked before classifier is built
- *  (use with caution).</pre>
+ *  (use with caution).
+ * </pre>
  * 
- * <pre> -num-decimal-places
- *  The number of decimal places for the output of numbers in the model (default 2).</pre>
+ * <pre>
+ * -num-decimal-places
+ *  The number of decimal places for the output of numbers in the model (default 2).
+ * </pre>
  * 
- <!-- options-end -->
+ * <pre>
+ * -batch-size
+ *  The desired batch size for batch prediction  (default 100).
+ * </pre>
+ * 
+ * <!-- options-end -->
  * 
  * @author Richard Kirkby (rkirkby@cs.waikato.ac.nz)
  * @version $Revision$
@@ -151,15 +191,20 @@ public class RandomForest extends Bagging {
   /** for serialization */
   static final long serialVersionUID = 1116839470751428698L;
 
+  /** True to compute attribute importance */
+  protected boolean m_computeAttributeImportance;
+
   /**
    * The default number of iterations to perform.
    */
+  @Override
   protected int defaultNumberOfIterations() {
     return 100;
   }
 
   /**
-   * Constructor that sets base classifier for bagging to RandomTre and default number of iterations to 100.
+   * Constructor that sets base classifier for bagging to RandomTre and default
+   * number of iterations to 100.
    */
   public RandomForest() {
 
@@ -173,11 +218,12 @@ public class RandomForest extends Bagging {
   /**
    * Returns default capabilities of the base classifier.
    *
-   * @return      the capabilities of the base classifier
+   * @return the capabilities of the base classifier
    */
   public Capabilities getCapabilities() {
 
-    // Cannot use the main RandomTree object because capabilities checking has been turned off
+    // Cannot use the main RandomTree object because capabilities checking has
+    // been turned off
     // for that object.
     return (new RandomTree()).getCapabilities();
   }
@@ -201,7 +247,7 @@ public class RandomForest extends Bagging {
   @Override
   protected String[] defaultClassifierOptions() {
 
-    String[] args = {"-do-not-check-capabilities"};
+    String[] args = { "-do-not-check-capabilities" };
     return args;
   }
 
@@ -246,10 +292,12 @@ public class RandomForest extends Bagging {
    * @param newClassifier the RandomTree to use.
    * @exception if argument is not a RandomTree
    */
+  @Override
   @ProgrammaticProperty
   public void setClassifier(Classifier newClassifier) {
     if (!(newClassifier instanceof RandomTree)) {
-      throw new IllegalArgumentException("RandomForest: Argument of setClassifier() must be a RandomTree.");
+      throw new IllegalArgumentException(
+        "RandomForest: Argument of setClassifier() must be a RandomTree.");
     }
     super.setClassifier(newClassifier);
   }
@@ -260,10 +308,12 @@ public class RandomForest extends Bagging {
    * @param representUsingWeights must be set to true.
    * @exception if argument is not true
    */
+  @Override
   @ProgrammaticProperty
   public void setRepresentCopiesUsingWeights(boolean representUsingWeights) {
     if (!representUsingWeights) {
-      throw new IllegalArgumentException("RandomForest: Argument of setRepresentCopiesUsingWeights() must be true.");
+      throw new IllegalArgumentException(
+        "RandomForest: Argument of setRepresentCopiesUsingWeights() must be true.");
     }
     super.setRepresentCopiesUsingWeights(representUsingWeights);
   }
@@ -275,7 +325,7 @@ public class RandomForest extends Bagging {
    *         explorer/experimenter gui
    */
   public String numFeaturesTipText() {
-    return ((RandomTree)getClassifier()).KValueTipText();
+    return ((RandomTree) getClassifier()).KValueTipText();
   }
 
   /**
@@ -285,7 +335,7 @@ public class RandomForest extends Bagging {
    */
   public int getNumFeatures() {
 
-    return ((RandomTree)getClassifier()).getKValue();
+    return ((RandomTree) getClassifier()).getKValue();
   }
 
   /**
@@ -295,7 +345,37 @@ public class RandomForest extends Bagging {
    */
   public void setNumFeatures(int newNumFeatures) {
 
-    ((RandomTree)getClassifier()).setKValue(newNumFeatures);
+    ((RandomTree) getClassifier()).setKValue(newNumFeatures);
+  }
+
+  /**
+   * Returns the tip text for this property
+   *
+   * @return tip text for this property suitable for displaying in the
+   *         explorer/experimenter gui
+   */
+  public String computeAttributeImportanceTipText() {
+    return "Compute attribute importance via mean impurity decrease";
+  }
+
+  /**
+   * Set whether to compute and output attribute importance scores
+   *
+   * @param computeAttributeImportance true to compute attribute importance
+   *          scores
+   */
+  public void setComputeAttributeImportance(boolean computeAttributeImportance) {
+    m_computeAttributeImportance = computeAttributeImportance;
+    ((RandomTree)m_Classifier).setComputeImpurityDecreases(computeAttributeImportance);
+  }
+
+  /**
+   * Get whether to compute and output attribute importance scores
+   *
+   * @return true if computing attribute importance scores
+   */
+  public boolean getComputeAttributeImportance() {
+    return m_computeAttributeImportance;
   }
 
   /**
@@ -305,7 +385,7 @@ public class RandomForest extends Bagging {
    *         explorer/experimenter gui
    */
   public String maxDepthTipText() {
-    return ((RandomTree)getClassifier()).maxDepthTipText();
+    return ((RandomTree) getClassifier()).maxDepthTipText();
   }
 
   /**
@@ -314,7 +394,7 @@ public class RandomForest extends Bagging {
    * @return the maximum depth.
    */
   public int getMaxDepth() {
-    return ((RandomTree)getClassifier()).getMaxDepth();
+    return ((RandomTree) getClassifier()).getMaxDepth();
   }
 
   /**
@@ -323,7 +403,7 @@ public class RandomForest extends Bagging {
    * @param value the maximum depth.
    */
   public void setMaxDepth(int value) {
-    ((RandomTree)getClassifier()).setMaxDepth(value);
+    ((RandomTree) getClassifier()).setMaxDepth(value);
   }
 
   /**
@@ -333,7 +413,7 @@ public class RandomForest extends Bagging {
    *         explorer/experimenter gui
    */
   public String breakTiesRandomlyTipText() {
-    return ((RandomTree)getClassifier()).breakTiesRandomlyTipText();
+    return ((RandomTree) getClassifier()).breakTiesRandomlyTipText();
   }
 
   /**
@@ -343,7 +423,7 @@ public class RandomForest extends Bagging {
    */
   public boolean getBreakTiesRandomly() {
 
-    return ((RandomTree)getClassifier()).getBreakTiesRandomly();
+    return ((RandomTree) getClassifier()).getBreakTiesRandomly();
   }
 
   /**
@@ -353,7 +433,7 @@ public class RandomForest extends Bagging {
    */
   public void setBreakTiesRandomly(boolean newBreakTiesRandomly) {
 
-    ((RandomTree)getClassifier()).setBreakTiesRandomly(newBreakTiesRandomly);
+    ((RandomTree) getClassifier()).setBreakTiesRandomly(newBreakTiesRandomly);
   }
 
   /**
@@ -364,7 +444,7 @@ public class RandomForest extends Bagging {
   public void setDebug(boolean debug) {
 
     super.setDebug(debug);
-    ((RandomTree)getClassifier()).setDebug(debug);
+    ((RandomTree) getClassifier()).setDebug(debug);
   }
 
   /**
@@ -373,7 +453,7 @@ public class RandomForest extends Bagging {
   public void setNumDecimalPlaces(int num) {
 
     super.setNumDecimalPlaces(num);
-    ((RandomTree)getClassifier()).setNumDecimalPlaces(num);
+    ((RandomTree) getClassifier()).setNumDecimalPlaces(num);
   }
 
   /**
@@ -385,7 +465,7 @@ public class RandomForest extends Bagging {
   public void setBatchSize(String size) {
 
     super.setBatchSize(size);
-    ((RandomTree)getClassifier()).setBatchSize(size);
+    ((RandomTree) getClassifier()).setBatchSize(size);
   }
 
   /**
@@ -399,9 +479,76 @@ public class RandomForest extends Bagging {
     if (m_Classifiers == null) {
       return "RandomForest: No model built yet.";
     }
-    StringBuffer buffer = new StringBuffer("RandomForest\n\n");
+    StringBuilder buffer = new StringBuilder("RandomForest\n\n");
     buffer.append(super.toString());
+
+    if (getComputeAttributeImportance()) {
+      try {
+        double[] nodeCounts = new double[m_data.numAttributes()];
+        double[] impurityScores =
+          computeAverageImpurityDecreasePerAttribute(nodeCounts);
+        int[] sortedIndices = Utils.sort(impurityScores);
+        buffer
+          .append("\n\nAttribute importance based on average impurity decrease "
+            + "(and number of nodes using that attribute)\n\n");
+        for (int i = sortedIndices.length - 1; i >= 0; i--) {
+          int index = sortedIndices[i];
+          if (index != m_data.classIndex()) {
+            buffer
+              .append(
+                Utils.doubleToString(impurityScores[index], 10,
+                  getNumDecimalPlaces())).append(" (")
+              .append(Utils.doubleToString(nodeCounts[index], 6, 0))
+              .append(")  ").append(m_data.attribute(index).name())
+              .append("\n");
+          }
+        }
+      } catch (WekaException ex) {
+        // ignore
+      }
+    }
+
     return buffer.toString();
+  }
+
+  /**
+   * Computes the average impurity decrease per attribute over the trees
+   *
+   * @param nodeCounts an optional array that, if non-null, will hold the count
+   *          of the number of nodes at which each attribute was used for
+   *          splitting
+   * @return the average impurity decrease per attribute over the trees
+   */
+  public double[] computeAverageImpurityDecreasePerAttribute(
+    double[] nodeCounts) throws WekaException {
+
+    if (m_Classifiers == null) {
+      throw new WekaException("Classifier has not been built yet!");
+    }
+
+    if (!getComputeAttributeImportance()) {
+      throw new WekaException("Stats for attribute importance have not "
+        + "been collected!");
+    }
+
+    double[] impurityDecreases = new double[m_data.numAttributes()];
+    if (nodeCounts == null) {
+      nodeCounts = new double[m_data.numAttributes()];
+    }
+    for (Classifier c : m_Classifiers) {
+      double[][] forClassifier = ((RandomTree) c).getImpurityDecreases();
+      for (int i = 0; i < m_data.numAttributes(); i++) {
+        impurityDecreases[i] += forClassifier[i][0];
+        nodeCounts[i] += forClassifier[i][1];
+      }
+    }
+    for (int i = 0; i < m_data.numAttributes(); i++) {
+      if (nodeCounts[i] > 0) {
+        impurityDecreases[i] /= nodeCounts[i];
+      }
+    }
+
+    return impurityDecreases;
   }
 
   /**
@@ -415,37 +562,43 @@ public class RandomForest extends Bagging {
     Vector<Option> newVector = new Vector<Option>();
 
     newVector.addElement(new Option(
-            "\tSize of each bag, as a percentage of the\n"
-                    + "\ttraining set size. (default 100)",
-            "P", 1, "-P"));
+      "\tSize of each bag, as a percentage of the\n"
+        + "\ttraining set size. (default 100)", "P", 1, "-P"));
+
+    newVector.addElement(new Option("\tCalculate the out of bag error.", "O",
+      0, "-O"));
+
+    newVector
+      .addElement(new Option(
+        "\tWhether to store out of bag predictions in internal evaluation object.",
+        "store-out-of-bag-predictions", 0, "-store-out-of-bag-predictions"));
+
+    newVector
+      .addElement(new Option(
+        "\tWhether to output complexity-based statistics when out-of-bag evaluation is performed.",
+        "output-out-of-bag-complexity-statistics", 0,
+        "-output-out-of-bag-complexity-statistics"));
+
+    newVector
+      .addElement(new Option(
+        "\tPrint the individual classifiers in the output", "print", 0,
+        "-print"));
 
     newVector.addElement(new Option(
-            "\tCalculate the out of bag error.",
-            "O", 0, "-O"));
+      "\tCompute and output attribute importance (mean impurity decrease "
+        + "method)", "attribute-importance", 0, "-attribute-importance"));
 
-    newVector.addElement(new Option(
-            "\tWhether to store out of bag predictions in internal evaluation object.",
-            "store-out-of-bag-predictions", 0, "-store-out-of-bag-predictions"));
-
-    newVector.addElement(new Option(
-            "\tWhether to output complexity-based statistics when out-of-bag evaluation is performed.",
-            "output-out-of-bag-complexity-statistics", 0, "-output-out-of-bag-complexity-statistics"));
-
-    newVector.addElement(new Option(
-            "\tPrint the individual classifiers in the output", "print", 0, "-print"));
-
-    newVector.addElement(new Option(
-            "\tNumber of iterations.\n"
-                    + "\t(current value " + getNumIterations() + ")",
-            "I", 1, "-I <num>"));
+    newVector.addElement(new Option("\tNumber of iterations.\n"
+      + "\t(current value " + getNumIterations() + ")", "I", 1, "-I <num>"));
 
     newVector.addElement(new Option("\tNumber of execution slots.\n"
-            + "\t(default 1 - i.e. no parallelism)\n"
-            + "\t(use 0 to auto-detect number of cores)", "num-slots", 1,
-            "-num-slots <num>"));
+      + "\t(default 1 - i.e. no parallelism)\n"
+      + "\t(use 0 to auto-detect number of cores)", "num-slots", 1,
+      "-num-slots <num>"));
 
     // Add base classifier options
-    List<Option> list = Collections.list(((OptionHandler)getClassifier()).listOptions());
+    List<Option> list =
+      Collections.list(((OptionHandler) getClassifier()).listOptions());
     newVector.addAll(list);
 
     return newVector.elements();
@@ -479,6 +632,10 @@ public class RandomForest extends Bagging {
       result.add("-print");
     }
 
+    if (getComputeAttributeImportance()) {
+      result.add("-attribute-importance");
+    }
+
     result.add("-I");
     result.add("" + getNumIterations());
 
@@ -491,7 +648,8 @@ public class RandomForest extends Bagging {
 
     // Add base classifier options
     Vector<String> classifierOptions = new Vector<String>();
-    Collections.addAll(classifierOptions, ((OptionHandler)getClassifier()).getOptions());
+    Collections.addAll(classifierOptions,
+      ((OptionHandler) getClassifier()).getOptions());
     Option.deleteFlagString(classifierOptions, "-do-not-check-capabilities");
     result.addAll(classifierOptions);
 
@@ -502,75 +660,121 @@ public class RandomForest extends Bagging {
    * Parses a given list of options.
    * <p/>
    * 
-   <!-- options-start -->
-   * Valid options are: <p>
+   * <!-- options-start --> Valid options are:
+   * <p>
    * 
-   * <pre> -P
+   * <pre>
+   * -P
    *  Size of each bag, as a percentage of the
-   *  training set size. (default 100)</pre>
+   *  training set size. (default 100)
+   * </pre>
    * 
-   * <pre> -O
-   *  Calculate the out of bag error.</pre>
+   * <pre>
+   * -O
+   *  Calculate the out of bag error.
+   * </pre>
    * 
-   * <pre> -store-out-of-bag-predictions
-   *  Whether to store out of bag predictions in internal evaluation object.</pre>
+   * <pre>
+   * -store-out-of-bag-predictions
+   *  Whether to store out of bag predictions in internal evaluation object.
+   * </pre>
    * 
-   * <pre> -output-out-of-bag-complexity-statistics
-   *  Whether to output complexity-based statistics when out-of-bag evaluation is performed.</pre>
+   * <pre>
+   * -output-out-of-bag-complexity-statistics
+   *  Whether to output complexity-based statistics when out-of-bag evaluation is performed.
+   * </pre>
    * 
-   * <pre> -print
-   *  Print the individual classifiers in the output</pre>
+   * <pre>
+   * -print
+   *  Print the individual classifiers in the output
+   * </pre>
    * 
-   * <pre> -I &lt;num&gt;
+   * <pre>
+   * -attribute-importance
+   *  Compute and output attribute importance (mean impurity decrease method)
+   * </pre>
+   * 
+   * <pre>
+   * -I &lt;num&gt;
    *  Number of iterations.
-   *  (current value 100)</pre>
+   *  (current value 100)
+   * </pre>
    * 
-   * <pre> -num-slots &lt;num&gt;
+   * <pre>
+   * -num-slots &lt;num&gt;
    *  Number of execution slots.
    *  (default 1 - i.e. no parallelism)
-   *  (use 0 to auto-detect number of cores)</pre>
+   *  (use 0 to auto-detect number of cores)
+   * </pre>
    * 
-   * <pre> -K &lt;number of attributes&gt;
+   * <pre>
+   * -K &lt;number of attributes&gt;
    *  Number of attributes to randomly investigate. (default 0)
-   *  (&lt;1 = int(log_2(#predictors)+1)).</pre>
+   *  (&lt;1 = int(log_2(#predictors)+1)).
+   * </pre>
    * 
-   * <pre> -M &lt;minimum number of instances&gt;
+   * <pre>
+   * -M &lt;minimum number of instances&gt;
    *  Set minimum number of instances per leaf.
-   *  (default 1)</pre>
+   *  (default 1)
+   * </pre>
    * 
-   * <pre> -V &lt;minimum variance for split&gt;
+   * <pre>
+   * -V &lt;minimum variance for split&gt;
    *  Set minimum numeric class variance proportion
-   *  of train variance for split (default 1e-3).</pre>
+   *  of train variance for split (default 1e-3).
+   * </pre>
    * 
-   * <pre> -S &lt;num&gt;
+   * <pre>
+   * -S &lt;num&gt;
    *  Seed for random number generator.
-   *  (default 1)</pre>
+   *  (default 1)
+   * </pre>
    * 
-   * <pre> -depth &lt;num&gt;
+   * <pre>
+   * -depth &lt;num&gt;
    *  The maximum depth of the tree, 0 for unlimited.
-   *  (default 0)</pre>
+   *  (default 0)
+   * </pre>
    * 
-   * <pre> -N &lt;num&gt;
-   *  Number of folds for backfitting (default 0, no backfitting).</pre>
+   * <pre>
+   * -N &lt;num&gt;
+   *  Number of folds for backfitting (default 0, no backfitting).
+   * </pre>
    * 
-   * <pre> -U
-   *  Allow unclassified instances.</pre>
+   * <pre>
+   * -U
+   *  Allow unclassified instances.
+   * </pre>
    * 
-   * <pre> -B
-   *  Break ties randomly when several attributes look equally good.</pre>
+   * <pre>
+   * -B
+   *  Break ties randomly when several attributes look equally good.
+   * </pre>
    * 
-   * <pre> -output-debug-info
+   * <pre>
+   * -output-debug-info
    *  If set, classifier is run in debug mode and
-   *  may output additional info to the console</pre>
+   *  may output additional info to the console
+   * </pre>
    * 
-   * <pre> -do-not-check-capabilities
+   * <pre>
+   * -do-not-check-capabilities
    *  If set, classifier capabilities are not checked before classifier is built
-   *  (use with caution).</pre>
+   *  (use with caution).
+   * </pre>
    * 
-   * <pre> -num-decimal-places
-   *  The number of decimal places for the output of numbers in the model (default 2).</pre>
+   * <pre>
+   * -num-decimal-places
+   *  The number of decimal places for the output of numbers in the model (default 2).
+   * </pre>
    * 
-   <!-- options-end -->
+   * <pre>
+   * -batch-size
+   *  The desired batch size for batch prediction  (default 100).
+   * </pre>
+   * 
+   * <!-- options-end -->
    * 
    * @param options the list of options as an array of strings
    * @throws Exception if an option is not supported
@@ -587,11 +791,16 @@ public class RandomForest extends Bagging {
 
     setCalcOutOfBag(Utils.getFlag('O', options));
 
-    setStoreOutOfBagPredictions(Utils.getFlag("store-out-of-bag-predictions", options));
+    setStoreOutOfBagPredictions(Utils.getFlag("store-out-of-bag-predictions",
+      options));
 
-    setOutputOutOfBagComplexityStatistics(Utils.getFlag("output-out-of-bag-complexity-statistics", options));
+    setOutputOutOfBagComplexityStatistics(Utils.getFlag(
+      "output-out-of-bag-complexity-statistics", options));
 
     setPrintClassifiers(Utils.getFlag("print", options));
+
+    setComputeAttributeImportance(Utils
+      .getFlag("attribute-importance", options));
 
     String iterations = Utils.getOption('I', options);
     if (iterations.length() != 0) {
@@ -607,7 +816,10 @@ public class RandomForest extends Bagging {
       setNumExecutionSlots(1);
     }
 
-    RandomTree classifier = ((RandomTree)AbstractClassifier.forName(defaultClassifierString(), options));
+    RandomTree classifier =
+      ((RandomTree) AbstractClassifier.forName(defaultClassifierString(),
+        options));
+    classifier.setComputeImpurityDecreases(m_computeAttributeImportance);
     setDoNotCheckCapabilities(classifier.getDoNotCheckCapabilities());
     setSeed(classifier.getSeed());
     setDebug(classifier.getDebug());
@@ -640,4 +852,3 @@ public class RandomForest extends Bagging {
     runClassifier(new RandomForest(), argv);
   }
 }
-
