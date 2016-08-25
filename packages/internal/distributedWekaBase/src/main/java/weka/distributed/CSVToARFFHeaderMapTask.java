@@ -146,6 +146,9 @@ public class CSVToARFFHeaderMapTask implements OptionHandler, Serializable {
   protected boolean m_computeSummaryStats = true;
   /** A map of attribute names to summary statistics */
   protected Map<String, Stats> m_summaryStats = new HashMap<String, Stats>();
+  /** Decimal places for summary stats */
+  protected int m_decimalPlaces = 2;
+
   /**
    * Whether to treat zeros as missing values when computing summary stats for
    * numeric attributes
@@ -468,6 +471,9 @@ public class CSVToARFFHeaderMapTask implements OptionHandler, Serializable {
             + "at the expense of time and space (default="
             + NumericStats.Q_COMPRESSION + ").", "compression", 1,
           "-compression <number>"));
+
+      result.add(new Option("\tNumber of decimal places for summary stats.\n\t"
+			    + "(default = 2)", "decimal-places", 1, "-decimal-places <num>"));
     }
 
     return result.elements();
@@ -514,6 +520,9 @@ public class CSVToARFFHeaderMapTask implements OptionHandler, Serializable {
 
       result.add("-compression");
       result.add("" + getCompressionLevelForQuartileEstimation());
+
+      result.add("-decimal-places");
+      result.add("" + getNumDecimalPlaces());
     }
 
     if (getTreatZerosAsMissing()) {
@@ -592,6 +601,11 @@ public class CSVToARFFHeaderMapTask implements OptionHandler, Serializable {
       if (tmpStr.length() > 0) {
         setCompressionLevelForQuartileEstimation(Double.parseDouble(tmpStr));
       }
+
+      tmpStr = Utils.getOption("decimal-places", options);
+      if (tmpStr.length() > 0) {
+	  setNumDecimalPlaces(Integer.parseInt(tmpStr));
+      }
     }
 
     while (true) {
@@ -612,6 +626,25 @@ public class CSVToARFFHeaderMapTask implements OptionHandler, Serializable {
       m_nominalDefaultLabelSpecs.add(tmpStr);
     }
   }
+
+    /**
+     * Set the number of decimal places for outputting summary stats
+     *
+     * @param numDecimalPlaces number of decimal places to use
+     */
+    public void setNumDecimalPlaces(int numDecimalPlaces) {
+	m_decimalPlaces = numDecimalPlaces;
+    }
+
+    /**
+     * Get the number of decimal places for outputting summary stats
+     *
+     * @return number of decimal places to use
+     */
+    public int getNumDecimalPlaces() {
+	return m_decimalPlaces;
+    }
+
 
   /**
    * Get whether to treat zeros as missing values for numeric attributes when
