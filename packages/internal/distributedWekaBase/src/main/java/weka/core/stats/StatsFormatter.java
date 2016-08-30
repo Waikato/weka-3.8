@@ -210,14 +210,16 @@ public class StatsFormatter {
     builder.append(
       formatNumber(stats[ArffSummaryNumericMetric.SUMSQ.ordinal()],
         decimalPlaces)).append(" ");
-    builder
-      .append(
-        formatNumber(stats[ArffSummaryNumericMetric.MIN.ordinal()],
-          decimalPlaces)).append(" ");
-    builder
-      .append(
-        formatNumber(stats[ArffSummaryNumericMetric.MAX.ordinal()],
-          decimalPlaces)).append(" ");
+    double min = stats[ArffSummaryNumericMetric.MIN.ordinal()];
+    if (Utils.isMissingValue(min)) {
+      min = 0;
+    }
+    builder.append(formatNumber(min, decimalPlaces)).append(" ");
+    double max = stats[ArffSummaryNumericMetric.MAX.ordinal()];
+    if (Utils.isMissingValue(max)) {
+      max = 0;
+    }
+    builder.append(formatNumber(max, decimalPlaces)).append(" ");
     builder.append(
       formatNumber(stats[ArffSummaryNumericMetric.MEAN.ordinal()],
         decimalPlaces)).append(" ");
@@ -225,17 +227,21 @@ public class StatsFormatter {
       formatNumber(stats[ArffSummaryNumericMetric.STDDEV.ordinal()],
         decimalPlaces)).append(" ");
     if (computeQuantiles) {
-      builder
-        .append(
-          formatNumber(stats[ArffSummaryNumericMetric.FIRSTQUARTILE.ordinal()],
-            2)).append(" ");
-      builder.append(
-        formatNumber(stats[ArffSummaryNumericMetric.MEDIAN.ordinal()],
-          decimalPlaces)).append(" ");
-      builder
-        .append(formatNumber(
-          stats[ArffSummaryNumericMetric.THIRDQUARTILE.ordinal()],
-          decimalPlaces));
+      double firstQ = stats[ArffSummaryNumericMetric.FIRSTQUARTILE.ordinal()];
+      if (Utils.isMissingValue(firstQ)) {
+        firstQ = 0;
+      }
+      builder.append(formatNumber(firstQ, 2)).append(" ");
+      double median = stats[ArffSummaryNumericMetric.MEDIAN.ordinal()];
+      if (Utils.isMissingValue(median)) {
+        median = 0;
+      }
+      builder.append(formatNumber(median, decimalPlaces)).append(" ");
+      double thirdQ = stats[ArffSummaryNumericMetric.THIRDQUARTILE.ordinal()];
+      if (Utils.isMissingValue(thirdQ)) {
+        thirdQ = 0;
+      }
+      builder.append(formatNumber(thirdQ, decimalPlaces));
     }
     builder.append("\n");
   }
