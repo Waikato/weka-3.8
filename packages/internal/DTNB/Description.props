@@ -42,5 +42,5 @@ URL=http://weka.sourceforge.net/doc.packages/DTNB
 # Related to other packages?
 #Related=
 
-# Dependencies (prevent 3.9.0 from installing)
-Depends=weka (>=3.8.1-SNAPSHOT|<3.9.0)
+# Dependencies
+Depends=weka (>=3.7.11)
