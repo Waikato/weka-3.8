@@ -35,9 +35,9 @@
   <mailingLists>
     <mailingList>
       <name>wekalist</name>
-      <subscribe>https://list.scms.waikato.ac.nz/mailman/listinfo/wekalist</subscribe>
-      <unsubscribe>https://list.scms.waikato.ac.nz/mailman/listinfo/wekalist</unsubscribe>
-      <archive>https://list.scms.waikato.ac.nz/mailman/htdig/wekalist/</archive>
+      <subscribe>https://list.waikato.ac.nz/mailman/listinfo/wekalist</subscribe>
+      <unsubscribe>https://list.waikato.ac.nz/mailman/listinfo/wekalist</unsubscribe>
+      <archive>https://list.waikato.ac.nz/mailman/htdig/wekalist/</archive>
     </mailingList>
   </mailingLists>
 
@@ -48,9 +48,9 @@
   </parent>
 
   <scm>
-    <connection>scm:svn:https://svn.scms.waikato.ac.nz/svn/weka/trunk/packages/internal/scriptingClassifiers</connection>
-    <developerConnection>scm:svn:https://svn.scms.waikato.ac.nz/svn/weka/trunk/packages/internal/scriptingClassifiers</developerConnection>
-    <url>https://svn.scms.waikato.ac.nz/svn/weka/trunk/packages/internal/scriptingClassifiers</url>
+    <connection>scm:svn:https://svn.scms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/internal/scriptingClassifiers</connection>
+    <developerConnection>scm:svn:https://svn.scms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/internal/scriptingClassifiers</developerConnection>
+    <url>https://svn.scms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/internal/scriptingClassifiers</url>
   </scm>
 
   <profiles>
@@ -95,7 +95,7 @@
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>
       <artifactId>weka-dev</artifactId>
-      <version>[3.7.1,)</version>
+      <version>[3.8.1,)</version>
     </dependency>
 
     <dependency>
@@ -114,7 +114,7 @@
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>
       <artifactId>weka-dev</artifactId>
-      <version>[3.7.1,)</version>
+      <version>[3.8.1,)</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
