@@ -48,9 +48,9 @@ Simple server for executing Weka tasks.
   </parent>
 
   <scm>
-    <connection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/trunk/packages/internal/wekaServer</connection>
-    <developerConnection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/trunk/packages/internal/wekaServer</developerConnection>
-    <url>https://svn.cms.waikato.ac.nz/svn/weka/trunk/packages/internal/wekaServer</url>
+    <connection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/internal/wekaServer</connection>
+    <developerConnection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/internal/wekaServer</developerConnection>
+    <url>https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/internal/wekaServer</url>
   </scm>
 
   <profiles>
@@ -95,7 +95,7 @@ Simple server for executing Weka tasks.
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>
       <artifactId>weka-dev</artifactId>
-      <version>[3.8.0,)</version>
+      <version>[3.8.1,)</version>
     </dependency>
 
     <dependency>
@@ -167,7 +167,7 @@ Simple server for executing Weka tasks.
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>
       <artifactId>weka-dev</artifactId>
-      <version>[3.8.0,)</version>
+      <version>[3.8.1,)</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
