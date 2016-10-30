@@ -49,9 +49,9 @@
   </parent>
 
   <scm>
-    <connection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/trunk/packages/external/J48graft</connection>
-    <developerConnection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/trunk/packages/external/J48graft</developerConnection>
-    <url>https://svn.cms.waikato.ac.nz/svn/weka/trunk/packages/external/J48graft</url>
+    <connection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/external/J48graft</connection>
+    <developerConnection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/external/J48graft</developerConnection>
+    <url>https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/external/J48graft</url>
   </scm>
 
   <profiles>
@@ -96,13 +96,13 @@
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>
       <artifactId>weka-dev</artifactId>
-      <version>[3.7.1,)</version>
+      <version>[3.8.1,)</version>
     </dependency>
 
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>
       <artifactId>weka-dev</artifactId>
-      <version>[3.7.1,)</version>
+      <version>[3.8.1,)</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
