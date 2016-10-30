@@ -48,9 +48,9 @@
   </parent>
 
   <scm>
-    <connection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/trunk/packages/internal/predictiveApriori</connection>
-    <developerConnection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/trunk/packages/internal/predictiveApriori</developerConnection>
-    <url>https://svn.cms.waikato.ac.nz/svn/weka/trunk/packages/internal/predictiveApriori</url>
+    <connection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/internal/predictiveApriori</connection>
+    <developerConnection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/internal/predictiveApriori</developerConnection>
+    <url>https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/internal/predictiveApriori</url>
   </scm>
 
   <profiles>
@@ -95,13 +95,13 @@
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>
       <artifactId>weka-dev</artifactId>
-      <version>[3.7.1,)</version>
+      <version>[3.8.1,)</version>
     </dependency>
 
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>
       <artifactId>weka-dev</artifactId>
-      <version>[3.7.1,)</version>
+      <version>[3.8.1,)</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
