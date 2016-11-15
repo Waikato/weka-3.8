@@ -60,8 +60,8 @@
   <path id="package.class.path">
     <pathelement path="${proj.cp}"/>
     <dirset dir="${packages_internal}">
-        <include name="**/${build}/classes"/>
-        <include name="**/${build}/testcases"/>
+      <include name="**/${build}/classes"/>
+      <include name="**/${build}/testcases"/>
    </dirset>
    <dirset dir="${packages_external}">
      <include name="**/${build}/classes"/>
@@ -353,6 +353,9 @@
     </antcall>
     <antcall target="${packageCommand}_internal">
       <param name="packageName" value="iterativeAbsoluteErrorRegression"/>
+    </antcall>
+    <antcall target="${packageCommand}_internal">
+      <param name="packageName" value="wekaDeepLearning4j"/>
     </antcall>
   </target>
 
