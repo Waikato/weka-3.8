@@ -15,16 +15,11 @@
 
 /*
  * PartitionedMultiFilter.java
- * Copyright (C) 2006-2012 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2006-2016 University of Waikato, Hamilton, New Zealand
  *
  */
 
 package weka.filters.unsupervised.attribute;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Vector;
 
 import weka.core.Attribute;
 import weka.core.DenseInstance;
@@ -39,6 +34,11 @@ import weka.core.Utils;
 import weka.filters.AllFilter;
 import weka.filters.Filter;
 import weka.filters.SimpleBatchFilter;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Vector;
 
 /**
  * <!-- globalinfo-start --> A filter that applies filters on subsets of
@@ -715,7 +715,9 @@ public class PartitionedMultiFilter extends SimpleBatchFilter {
           if (m == processed[n].classIndex()) {
             continue;
           }
-          if (result.attribute(index).isString()) {
+	  if (processed[n].instance(i).isMissing(m)) {
+            values[index] = Utils.missingValue();
+          } else if (result.attribute(index).isString()) {
             values[index] = result.attribute(index).addStringValue(
               processed[n].instance(i).stringValue(m));
           } else if (result.attribute(index).isRelationValued()) {
@@ -731,7 +733,9 @@ public class PartitionedMultiFilter extends SimpleBatchFilter {
       // unused attributes
       if (!getRemoveUnused()) {
         for (n = 0; n < m_IndicesUnused.length; n++) {
-          if (result.attribute(index).isString()) {
+	  if (inst.isMissing(m_IndicesUnused[n])) {
+            values[index] = Utils.missingValue();
+          } else if (result.attribute(index).isString()) {
             values[index] = result.attribute(index).addStringValue(
               inst.stringValue(m_IndicesUnused[n]));
           } else if (result.attribute(index).isRelationValued()) {
@@ -746,7 +750,15 @@ public class PartitionedMultiFilter extends SimpleBatchFilter {
 
       // class
       if (instances.classIndex() > -1) {
-        values[values.length - 1] = inst.value(instances.classIndex());
+	index = values.length - 1;
+	if (inst.classIsMissing())
+	  values[index] = Utils.missingValue();
+	else if (result.attribute(index).isString())
+	  values[index] = result.attribute(index).addStringValue(inst.stringValue(instances.classIndex()));
+	else if (result.attribute(index).isRelationValued())
+	  values[index] = result.attribute(index).addRelation(inst.relationalValue(instances.classIndex()));
+	else
+	  values[index] = inst.value(instances.classIndex());
       }
 
       // generate and add instance
