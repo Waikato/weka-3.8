@@ -33,7 +33,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -132,6 +134,12 @@ public class ResultHistoryPanel extends JPanel {
      * @param index the index of the entry deleted
      */
     void entryDeleted(String name, int index);
+
+    /**
+     * @param names
+     * @param indexes
+     */
+    void entriesDeleted(List<String> names, List<Integer> indexes);
   }
 
   /**
@@ -144,20 +152,21 @@ public class ResultHistoryPanel extends JPanel {
     if (text != null) {
       m_Printer = new PrintableComponent(m_SingleText);
     }
-    m_List.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    //m_List.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    m_List.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     m_List.addMouseListener(new RMouseAdapter() {
       private static final long serialVersionUID = -9015397020486290479L;
 
       @Override
       public void mouseClicked(MouseEvent e) {
         if ((e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
-          if (((e.getModifiers() & InputEvent.SHIFT_DOWN_MASK) == 0)
-            && ((e.getModifiers() & InputEvent.CTRL_DOWN_MASK) == 0)) {
-            int index = m_List.locationToIndex(e.getPoint());
-            if ((index != -1) && (m_SingleText != null)) {
-              setSingle((String) m_Model.elementAt(index));
-            }
-          }
+//          if (((e.getModifiers() & InputEvent.SHIFT_DOWN_MASK) == 0)
+//            && ((e.getModifiers() & InputEvent.CTRL_DOWN_MASK) == 0)) {
+//            int index = m_List.locationToIndex(e.getPoint());
+//            if ((index != -1) && (m_SingleText != null)) {
+//              setSingle((String) m_Model.elementAt(index));
+//            }
+//          }
         } else {
           // if there are stored objects then assume that the storer
           // will handle popping up the text in a seperate frame
@@ -178,14 +187,16 @@ public class ResultHistoryPanel extends JPanel {
       @Override
       public void keyReleased(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_DELETE) {
-          int selected = m_List.getSelectedIndex();
-          if (selected != -1) {
-            String element = m_Model.elementAt(selected).toString();
-            removeResult(element);
-            if (m_deleteListener != null) {
-              m_deleteListener.entryDeleted(element, selected);
-            }
-          }
+          removeResults(m_List.getSelectedIndices());
+
+//          int selected = m_List.getSelectedIndex();
+//          if (selected != -1) {
+//            String element = m_Model.elementAt(selected).toString();
+//            removeResult(element);
+//            if (m_deleteListener != null) {
+//              m_deleteListener.entryDeleted(element, selected);
+//            }
+//          }
         }
       }
     });
@@ -194,14 +205,16 @@ public class ResultHistoryPanel extends JPanel {
         @Override
         public void valueChanged(ListSelectionEvent e) {
           if (!e.getValueIsAdjusting()) {
-            ListSelectionModel lm = (ListSelectionModel) e.getSource();
-            for (int i = e.getFirstIndex(); i <= e.getLastIndex(); i++) {
-              if (lm.isSelectedIndex(i)) {
-                // m_AttSummaryPanel.setAttribute(i);
-                if ((i != -1) && (m_SingleText != null)) {
-                  setSingle((String) m_Model.elementAt(i));
+            if (m_List.getSelectedIndices().length <= 1) {
+              ListSelectionModel lm = (ListSelectionModel) e.getSource();
+              for (int i = e.getFirstIndex(); i <= e.getLastIndex(); i++) {
+                if (lm.isSelectedIndex(i)) {
+                  // m_AttSummaryPanel.setAttribute(i);
+                  if ((i != -1) && (m_SingleText != null)) {
+                    setSingle((String) m_Model.elementAt(i));
+                  }
+                  break;
                 }
-                break;
               }
             }
           }
@@ -244,9 +257,40 @@ public class ResultHistoryPanel extends JPanel {
    * @param result the StringBuffer that contains the result text
    */
   public void addResult(String name, StringBuffer result) {
+    String nameCopy = name;
+    int i = 0;
+    while (m_Results.containsKey(nameCopy)) {
+      nameCopy = name + "_" + i++;
+    }
 
-    m_Model.addElement(name);
-    m_Results.put(name, result);
+    m_Model.addElement(nameCopy);
+    m_Results.put(nameCopy, result);
+  }
+
+  /**
+   * Remove the entries at the specified indices in the list
+   *
+   * @param selectedI the entries to remove
+   */
+  public void removeResults(int[] selectedI) {
+    if (selectedI != null && selectedI.length > 0) {
+      List<String> elsToDelete = new ArrayList<String>();
+      for (int i : selectedI) {
+        elsToDelete.add(m_Model.elementAt(i).toString());
+      }
+      removeResults(elsToDelete);
+    }
+  }
+
+  /**
+   * Remove the specified entries from the list
+   *
+   * @param entries the entries to remove
+   */
+  public void removeResults(List<String> entries) {
+    for (String el : entries) {
+      removeResult(el);
+    }
   }
 
   /**
@@ -284,7 +328,13 @@ public class ResultHistoryPanel extends JPanel {
    * @param o the object
    */
   public void addObject(String name, Object o) {
-    m_Objs.put(name, o);
+    String nameCopy = name;
+    int i = 0;
+    while (m_Objs.containsKey(nameCopy)) {
+      nameCopy = name + "_" + i++;
+    }
+
+    m_Objs.put(nameCopy, o);
   }
 
   /**
