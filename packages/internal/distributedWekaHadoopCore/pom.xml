@@ -48,9 +48,9 @@ This package provides loaders and savers for HDFS, plus Hadoop jobs and tasks th
   </parent>
 
   <scm>
-    <connection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/trunk/packages/internal/distributedWekaHadoopCore</connection>
-    <developerConnection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/trunk/packages/internal/distributedWekaHadoopCore</developerConnection>
-    <url>https://svn.cms.waikato.ac.nz/svn/weka/trunk/packages/internal/distributedWekaHadoopCore</url>
+    <connection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/internal/distributedWekaHadoopCore</connection>
+    <developerConnection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/internal/distributedWekaHadoopCore</developerConnection>
+    <url>https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/internal/distributedWekaHadoopCore</url>
   </scm>
 
   <profiles>
@@ -95,7 +95,7 @@ This package provides loaders and savers for HDFS, plus Hadoop jobs and tasks th
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>
       <artifactId>weka-dev</artifactId>
-      <version>[3.8.0,)</version>
+      <version>[3.8.1,)</version>
     </dependency>
 
     <dependency>
@@ -113,7 +113,7 @@ This package provides loaders and savers for HDFS, plus Hadoop jobs and tasks th
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>
       <artifactId>weka-dev</artifactId>
-      <version>[3.8.0,)</version>
+      <version>[3.8.1,)</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
