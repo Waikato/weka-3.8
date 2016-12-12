@@ -35,7 +35,7 @@ PackageURL=http://prdownloads.sourceforge.net/weka/wekaServer1.0.7.zip?download
 URL=http://wiki.pentaho.com/display/DATAMINING/Weka+Server
 
 # Changes in this release
-Changes=Changes to support running when loaded by a child classloader
+Changes=Fixed a weird issue that affected Explorer-based tasks and plugin evaluation metrics
 
 # Enhances various other packages ?
 # Enhances=packageName1,packageName2,...
