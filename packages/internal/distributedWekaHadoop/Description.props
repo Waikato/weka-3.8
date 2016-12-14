@@ -29,7 +29,7 @@ License=GPL 3.0
 Description=Provides loaders and savers for HDFS, plus Hadoop jobs and tasks that wrap the tasks provided in distributedWekaBase. Either this package or distributedWekaHadoop2 should be installed, but not both. Which one you choose depends on whether you are running Hadoop 1.x or 2.x. This package will cause distributedWekaBase, distributedWekaHadoopCore and distributedWekaHadoopLibs to be installed. The later contains client libraries for Apache Hadoop 1.x. If you are running against a different distribution then these libraries will need to be replaced with the client hadoop libraries from your distribution.
 
 # Changes in this release
-#Changes=
+Changes=Updated to work with child classloaders
 
 # Package URL for obtaining the package archive (required)
 PackageURL=http://prdownloads.sourceforge.net/weka/distributedWekaHadoop1.0.17.zip?download
