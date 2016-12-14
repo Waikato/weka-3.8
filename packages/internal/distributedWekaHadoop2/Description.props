@@ -44,7 +44,7 @@ URL=http://markahall.blogspot.co.nz/2013/10/weka-and-hadoop-part-1.html
 # Related=packageName1,packageName2,...
 
 # Inject these dependencies at load time
-InjectDependencies=distributedWekaHadoopCore:distributedWekaHadoopLibs2
+InjectDependencies=distributedWekaHadoopCore:distributedWekaHadoop2Libs
 
 # Package(s) that can't be installed along side this one
 Precludes=distributedWekaHadoop
