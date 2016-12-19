@@ -9,7 +9,7 @@ PackageName=JDBCDriversDummyPackage
 Version=1.0.1
 
 #Date
-Date=2016-10-27
+Date=2016-12-20
 
 # Title (required)
 Title=Dummy package that provides a place to drop JDBC driver jar files so that they get loaded by the system.
@@ -37,9 +37,8 @@ PackageURL=http://prdownloads.sourceforge.net/weka/JDBCDriversDummyPackage1.0.1.
 # Special instructions to be displayed on installation of this package
 MessageToDisplayOnInstallation=This package is a dummy package that provides\n\
  a location to drop JDBC driver jar files so that they get loaded into the classpath\n\
- by the system. Driver jar files may be placed in either:\n\
- ${WEKA_HOME}/packages/JDBCDriversDummyPackage OR\n\
- ${WEKA_HOME}/packages/JDBCDriversDummyPackage/lib
+ by the system. Driver jar files should be placed in:\n\
+ ${WEKA_HOME}/packages/JDBCDriversDummyPackage
 
 # Enhances various other packages ?
 # Enhances=packageName1,packageName2,...
