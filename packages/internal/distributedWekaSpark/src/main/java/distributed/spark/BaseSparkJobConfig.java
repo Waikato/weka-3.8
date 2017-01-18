@@ -28,12 +28,22 @@ import org.apache.spark.api.java.JavaSparkContext;
 import weka.core.ClassloaderUtil;
 import weka.core.Option;
 import weka.core.Utils;
+import weka.core.WekaException;
+import weka.core.WekaPackageClassLoaderManager;
 import weka.core.WekaPackageManager;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -58,34 +68,66 @@ public abstract class BaseSparkJobConfig extends DistributedJobConfig {
       + "distributedWekaBase" + File.separator + "distributedWekaBase.jar";
 
   /** The path to the opencsv.jar */
-  public static final String OPEN_CSV_JAR =
-    WekaPackageManager.PACKAGES_DIR.toString() + File.separator
-      + "distributedWekaBase" + File.separator + "lib" + File.separator
-      + "opencsv-2.3.jar";
+  public static final String OPEN_CSV_JAR = WekaPackageManager.PACKAGES_DIR
+    .toString()
+    + File.separator
+    + "distributedWekaBase"
+    + File.separator
+    + "lib" + File.separator + "opencsv-2.3.jar";
 
   /** The path to the jfreechart jar */
-  public static final String JFREECHART_JAR =
-    WekaPackageManager.PACKAGES_DIR.toString() + File.separator
-      + "distributedWekaBase" + File.separator + "lib" + File.separator
-      + "jfreechart-1.0.13.jar";
+  public static final String JFREECHART_JAR = WekaPackageManager.PACKAGES_DIR
+    .toString()
+    + File.separator
+    + "distributedWekaBase"
+    + File.separator
+    + "lib" + File.separator + "jfreechart-1.0.13.jar";
 
   /** The path to the jcommon jar */
-  public static final String JCOMMON_JAR =
-    WekaPackageManager.PACKAGES_DIR.toString() + File.separator
-      + "distributedWekaBase" + File.separator + "lib" + File.separator
-      + "jcommon-1.0.16.jar";
+  public static final String JCOMMON_JAR = WekaPackageManager.PACKAGES_DIR
+    .toString()
+    + File.separator
+    + "distributedWekaBase"
+    + File.separator
+    + "lib" + File.separator + "jcommon-1.0.16.jar";
 
   /** The path to the colt.jar */
-  public static final String COLT_JAR =
-    WekaPackageManager.PACKAGES_DIR.toString() + File.separator
-      + "distributedWekaBase" + File.separator + "lib" + File.separator
-      + "colt-1.2.0.jar";
+  public static final String COLT_JAR = WekaPackageManager.PACKAGES_DIR
+    .toString()
+    + File.separator
+    + "distributedWekaBase"
+    + File.separator
+    + "lib" + File.separator + "colt-1.2.0.jar";
 
   /** The path to the la4j.jar */
-  public static final String LA4J_JAR =
-    WekaPackageManager.PACKAGES_DIR.toString() + File.separator
-      + "distributedWekaBase" + File.separator + "lib" + File.separator
-      + "la4j-0.4.5.jar";
+  public static final String LA4J_JAR = WekaPackageManager.PACKAGES_DIR
+    .toString()
+    + File.separator
+    + "distributedWekaBase"
+    + File.separator
+    + "lib" + File.separator + "la4j-0.4.5.jar";
+
+  /** The path to the t-digest.jar */
+  public static final String TDIGEST_JAR = WekaPackageManager.PACKAGES_DIR
+    .toString()
+    + File.separator
+    + "distributedWekaBase"
+    + File.separator
+    + "lib" + File.separator + "t-digest-3.1.jar";
+
+  protected static List<String> s_runtimeLibraries = new ArrayList<>();
+
+  static {
+    try {
+      // main distrubuted Weka spark jar + jars from distributed Weka base
+      s_runtimeLibraries.addAll(Arrays.asList(DISTRIBUTED_WEKA_SPARK_JAR,
+        DISTRIBUTED_WEKA_BASE_JAR, OPEN_CSV_JAR, JFREECHART_JAR, JCOMMON_JAR,
+        COLT_JAR, LA4J_JAR, TDIGEST_JAR));
+
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
+  }
 
   public static final String MASTER_HOST = "sparkMasterHost";
   public static final String MASTER_PORT = "sparkMasterPort";
@@ -103,8 +145,8 @@ public abstract class BaseSparkJobConfig extends DistributedJobConfig {
    * this path will be populated automatically by scanning for weka.jar in the
    * classpath.
    */
-  protected static String DEFAULT_WEKA_JAR_PATH =
-    System.getProperty("user.home") + File.separator + "weka.jar";
+  protected static String DEFAULT_WEKA_JAR_PATH = System
+    .getProperty("user.home") + File.separator + "weka.jar";
 
   // Attempt to locate the weka.jar in the classpath and set a
   // the default path to it
@@ -133,12 +175,11 @@ public abstract class BaseSparkJobConfig extends DistributedJobConfig {
 
     options.addAll(Collections.list(super.listOptions()));
 
-    options.add(new Option(
-      "\tThe host that the master is running on "
-        + "(include the protocol in the case of spark or mesos clusters\n\t("
-        + "eg \"spark://\", \"mesos://\"); can also use \"local[*]\" to run\n\t"
-        + "locally using all the CPU cores on your machine.",
-      "master", 1, "-master <host>"));
+    options.add(new Option("\tThe host that the master is running on "
+      + "(include the protocol in the case of spark or mesos clusters\n\t("
+      + "eg \"spark://\", \"mesos://\"); can also use \"local[*]\" to run\n\t"
+      + "locally using all the CPU cores on your machine.", "master", 1,
+      "-master <host>"));
 
     options.add(new Option("\tThe port that the master is running on", "port",
       1, "-port <num>"));
@@ -150,23 +191,23 @@ public abstract class BaseSparkJobConfig extends DistributedJobConfig {
     options.addElement(new Option("\tPath to the weka.jar file", "weka-jar", 1,
       "-weka-jar <path to weka.jar>"));
 
-    options.addElement(
-      new Option("\tAdditional Weka packages to use.", "weka-packages", 1,
-        "-weka-packages <comma-separated list of package names>"));
+    options.addElement(new Option("\tAdditional Weka packages to use.",
+      "weka-packages", 1,
+      "-weka-packages <comma-separated list of package names>"));
+
+    options
+      .addElement(new Option(
+        "\tTotal available cluster memory (in Gb). Used in"
+          + "in automaticaly determining a caching strategy.\n\t"
+          + "Default = -1 (unknown - i.e. just use default strategy of MEMORY_AND_DISK)",
+        "cluster-mem", 1, "-cluster-mem <Gb>"));
+
+    options.addElement(new Option("\tFraction of Java heap to use for Spark's "
+      + "memory cache.\n\tDefault = 0.6.", "mem-fraction", 1,
+      "-mem-fraction <fraction>"));
 
     options.addElement(new Option(
-      "\tTotal available cluster memory (in Gb). Used in"
-        + "in automaticaly determining a caching strategy.\n\t"
-        + "Default = -1 (unknown - i.e. just use default strategy of MEMORY_AND_DISK)",
-      "cluster-mem", 1, "-cluster-mem <Gb>"));
-
-    options.addElement(new Option(
-      "\tFraction of Java heap to use for Spark's "
-        + "memory cache.\n\tDefault = 0.6.",
-      "mem-fraction", 1, "-mem-fraction <fraction>"));
-
-    options.addElement(
-      new Option("\tIn memory data overhead factor (as a multiple of\n\t"
+      "\tIn memory data overhead factor (as a multiple of\n\t"
         + "on-disk size). Used when determining a caching strategy.\n\t"
         + "Default = 3.", "overhead", 1, "-overhead <number>"));
 
@@ -620,27 +661,111 @@ public abstract class BaseSparkJobConfig extends DistributedJobConfig {
     return context;
   }
 
+  private void writeJarFromStream(InputStream inStream, File destination)
+    throws IOException {
+
+    BufferedInputStream bis = null;
+    BufferedOutputStream bos = null;
+    try {
+      bis = new BufferedInputStream(inStream);
+      bos = new BufferedOutputStream(new FileOutputStream(destination));
+      copyStreams(bis, bos);
+    } finally {
+      if (bos != null) {
+        bos.flush();
+        bos.close();
+      }
+      if (bis != null) {
+        bis.close();
+      }
+    }
+  }
+
+  private static void copyStreams(InputStream input, OutputStream output)
+    throws IOException {
+    int count;
+    byte data[] = new byte[1024];
+    while ((count = input.read(data, 0, 1024)) != -1) {
+      output.write(data, 0, count);
+    }
+  }
+
   /**
    * Adds necessary Weka libraries to the supplied SparkContext
    *
    * @param context the context to add dependencies to
    * @param job the job that is using the context
+   * @throws WekaException if a problem occurs
    */
   public void addWekaLibrariesToSparkContext(JavaSparkContext context,
-    DistributedJob job) {
+    DistributedJob job) throws WekaException {
+
+    File wekaJarFile = new File(getPathToWekaJar());
+    if (!wekaJarFile.exists()) {
+      throw new WekaException("The path to the weka jar file '"
+        + wekaJarFile.toString() + "' does not seem to exist!");
+    }
+
     context.addJar(getPathToWekaJar());
-    context.addJar(DISTRIBUTED_WEKA_BASE_JAR);
-    context.addJar(DISTRIBUTED_WEKA_SPARK_JAR);
-    context.addJar(OPEN_CSV_JAR);
-    context.addJar(JFREECHART_JAR);
-    context.addJar(JCOMMON_JAR);
-    context.addJar(LA4J_JAR);
-    context.addJar(COLT_JAR);
+
+    // now extract mtj-related jars from the weka.jar if necessary
+    File mtjTmpDir =
+      new File(WekaPackageManager.PACKAGES_DIR.toString() + File.separator
+        + "distributedWekaSpark" + File.separator + "mtj");
+    if (!mtjTmpDir.exists()) {
+      if (!mtjTmpDir.mkdirs()) {
+        throw new WekaException("Was unable to create a directory ("
+          + mtjTmpDir.toString() + ") in order to extract and store required "
+          + "mtj jar files");
+      }
+    }
+    File mtjFile = new File(mtjTmpDir.toString() + File.separator + "mtj.jar");
+    File coreFile =
+      new File(mtjTmpDir.toString() + File.separator + "core.jar");
+    File arpackFile =
+      new File(mtjTmpDir.toString() + File.separator
+        + "arpack_combined_all.jar");
+    if (!mtjFile.exists() || !coreFile.exists() || !arpackFile.exists()) {
+      // extract from weka.jar
+      ClassLoader coreClassLoader =
+        WekaPackageClassLoaderManager.getWekaPackageClassLoaderManager()
+          .getClass().getClassLoader();
+      InputStream mtjCoreInputStream =
+        coreClassLoader.getResourceAsStream("core.jar");
+      InputStream arpackAllInputStream =
+        coreClassLoader.getResourceAsStream("arpack_combined_all.jar");
+      InputStream mtjInputStream =
+        coreClassLoader.getResourceAsStream("mtj.jar");
+
+      try {
+        writeJarFromStream(mtjInputStream, mtjFile);
+        writeJarFromStream(mtjCoreInputStream, coreFile);
+        writeJarFromStream(arpackAllInputStream, arpackFile);
+      } catch (Exception ex) {
+        throw new WekaException(ex);
+      }
+    }
+
+    context.addJar(mtjFile.toString());
+    context.addJar(coreFile.toString());
+    context.addJar(arpackFile.toString());
+
+    for (String jar : s_runtimeLibraries) {
+      if (new File(jar).exists()) {
+        context.addJar(jar);
+      } else {
+        System.err.println("WARNING: runtime lib '" + jar + "' does not seem "
+          + "to exist on disk - skipping");
+      }
+    }
 
     // Other dependencies and user selected packages
-    List<String> wekaPackageNames = job.getAdditionalWekaPackageNames(this);
-    if (wekaPackageNames.size() > 0) {
-      addWekaPackageLibrariesToContext(wekaPackageNames, context);
+    if (!DistributedJobConfig.isEmpty(getWekaPackages())) {
+      setUserSuppliedProperty(DistributedJob.WEKA_ADDITIONAL_PACKAGES_KEY, getWekaPackages());
+      List<String> wekaPackageNames = job.getAdditionalWekaPackageNames(this);
+      if (wekaPackageNames.size() > 0) {
+        addWekaPackageLibrariesToContext(wekaPackageNames, context);
+      }
     }
   }
 
