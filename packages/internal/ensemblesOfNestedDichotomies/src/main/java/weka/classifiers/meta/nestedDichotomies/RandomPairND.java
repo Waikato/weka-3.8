@@ -165,16 +165,14 @@ public class RandomPairND extends RandomizableSingleClassifierEnhancer implement
     TechnicalInformation additional;
 
     result = new TechnicalInformation(TechnicalInformation.Type.INPROCEEDINGS);
-    additional = result.add(TechnicalInformation.Type.INPROCEEDINGS);
-    additional.setValue(TechnicalInformation.Field.AUTHOR, "Tim Leathart and Bernhard Pfahringer and Eibe Frank");
-    additional.setValue(TechnicalInformation.Field.TITLE,
+    result.setValue(TechnicalInformation.Field.AUTHOR, "Tim Leathart and Bernhard Pfahringer and Eibe Frank");
+    result.setValue(TechnicalInformation.Field.TITLE,
             "Building Ensembles of Adaptive Nested Dichotomies with Random-Pair Selection");
-    additional.setValue(TechnicalInformation.Field.BOOKTITLE,
+    result.setValue(TechnicalInformation.Field.BOOKTITLE,
             "Fifteenth European Conference on Machine Learning and Principles and Practice of Knowledge Discovery");
-    additional.setValue(TechnicalInformation.Field.YEAR, "2016");
-    additional.setValue(TechnicalInformation.Field.PUBLISHER, "Springer");
+    result.setValue(TechnicalInformation.Field.YEAR, "2016");
+    result.setValue(TechnicalInformation.Field.PUBLISHER, "Springer");
 
-    result = new TechnicalInformation(TechnicalInformation.Type.INPROCEEDINGS);
     additional = result.add(TechnicalInformation.Type.INPROCEEDINGS);
     additional.setValue(TechnicalInformation.Field.AUTHOR, "Eibe Frank and Stefan Kramer");
     additional.setValue(TechnicalInformation.Field.TITLE,
@@ -582,8 +580,9 @@ public class RandomPairND extends RandomizableSingleClassifierEnhancer implement
   public String globalInfo() {
 
     return "A meta classifier for handling multi-class datasets with 2-class "
-      + "classifiers by building a nested dichotomy with random-pair selection "
-      + "to select the class subsets." ;
+            + "classifiers by building a nested dichotomy with random-pair selection "
+            + "to select the class subsets.\n\n"
+            + "For more info, check\n\n" + getTechnicalInformation().toString();
   }
 
   /**
