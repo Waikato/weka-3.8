@@ -20,12 +20,6 @@
 
 package weka.filters.unsupervised.attribute;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Vector;
-
 import weka.core.Attribute;
 import weka.core.Capabilities;
 import weka.core.Capabilities.Capability;
@@ -38,6 +32,12 @@ import weka.core.RevisionUtils;
 import weka.core.SparseInstance;
 import weka.core.Utils;
 import weka.filters.SimpleBatchFilter;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Vector;
 
 /**
  * <!-- globalinfo-start --> A filter for turning numeric attributes into
@@ -351,7 +351,9 @@ public class NumericToNominal extends SimpleBatchFilter {
         if (isDate) {
           values.add(data.attribute(i).formatDate(o.doubleValue()));
         } else {
-          values.add(Utils.doubleToString(o.doubleValue(), MAX_DECIMALS));
+          String label = Utils.doubleToString(o.doubleValue(), MAX_DECIMALS);
+          if (!values.contains(label))
+            values.add(label);
         }
       }
       Attribute newAtt = new Attribute(data.attribute(i).name(), values);
