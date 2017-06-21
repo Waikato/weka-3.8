@@ -593,7 +593,7 @@ public class TestInstances implements Cloneable, Serializable, OptionHandler,
     tmpStr = Utils.getOption('W', options);
     if (tmpStr.length() > 0) {
       cls = Class.forName(tmpStr);
-      if (ClassDiscovery.hasInterface(CapabilitiesHandler.class, cls)) {
+      if (InheritanceUtils.hasInterface(CapabilitiesHandler.class, cls)) {
         initialized = true;
         handler = (CapabilitiesHandler) cls.newInstance();
         if (handler instanceof OptionHandler) {

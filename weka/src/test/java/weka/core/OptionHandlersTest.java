@@ -241,7 +241,7 @@ public class OptionHandlersTest extends TestCase {
           // does class implement OptionHandler?
           try {
             Class<?> cls = Class.forName(classname);
-            if (!ClassDiscovery.hasInterface(OptionHandler.class, cls)) {
+            if (!InheritanceUtils.hasInterface(OptionHandler.class, cls)) {
               continue;
             }
           } catch (Exception e) {

@@ -35,7 +35,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
-import weka.core.ClassDiscovery;
+import weka.core.InheritanceUtils;
 
 /**
  * Represents a TableModel with sorting functionality.
@@ -389,7 +389,7 @@ public class SortedTableModel extends AbstractTableModel implements
     initializeIndices();
 
     // determine the column type: 0=string/other, 1=comparable
-    if (ClassDiscovery.hasInterface(Comparable.class,
+    if (InheritanceUtils.hasInterface(Comparable.class,
       getColumnClass(mSortColumn))) {
       columnType = 1;
     } else {
