@@ -8,7 +8,7 @@ PackageName=distributedWekaSparkDev
 Version=1.0.0
 
 #Date (year-month-day)
-Date=2017-06-29
+Date=2017-07-28
 
 # Title (required)
 Title=Spark wrappers for Weka
@@ -44,7 +44,7 @@ URL=http://markahall.blogspot.co.nz/2015/03/weka-and-spark.html
 # Related=packageName1,packageName2,...
 
 # Dependencies (format: packageName (equality/inequality version_number)
-Depends=weka (>=3.8.1), distributedWekaBase (>=1.0.17)
+Depends=weka (>=3.8.1-SNAPSHOT|<3.9.0), distributedWekaBase (>=1.0.17)
 
 # Message to display in installation. Can be used to provide
 # special instructions (e.g. manual stuff needed to complete
