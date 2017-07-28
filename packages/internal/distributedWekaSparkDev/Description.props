@@ -35,7 +35,7 @@ Changes=Fixed a bug where MTJ-related jar files were not getting into the classp
 PackageURL=http://downloads.sourceforge.net/weka/weka-packages/distributedWekaSparkDev1.0.0.zip
 
 # URL for further information
-URL=http://markahall.blogspot.co.nz/2015/03/weka-and-spark.html
+URL=http://markahall.blogspot.co.nz/2017/07/integrating-spark-mllib-into-weka.html
 
 # Enhances various other packages ?
 # Enhances=packageName1,packageName2,...
