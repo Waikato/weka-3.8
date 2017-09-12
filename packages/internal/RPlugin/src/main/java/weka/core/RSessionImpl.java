@@ -27,6 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.awt.GraphicsEnvironment;
 import java.util.Locale;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.rosuda.JRI.Mutex;
 import org.rosuda.REngine.REXP;
@@ -82,7 +85,7 @@ import org.rosuda.REngine.REngineOutputInterface;
  * @version $Revision$
  */
 public class RSessionImpl implements RSessionAPI, REngineCallbacks,
-  REngineOutputInterface {
+                                     REngineOutputInterface {
 
   /** The current session holder */
   private static Object s_sessionHolder;
@@ -92,6 +95,10 @@ public class RSessionImpl implements RSessionAPI, REngineCallbacks,
 
   /** The REngine */
   private static REngine s_engine;
+
+  /** Thread the lets R process unrelated events every so often, such
+      as requests sent to R's web server */
+  private static ScheduledExecutorService s_executor;
 
   /**
    * Maintains a list of listeners that are interested in graphics produced by
@@ -107,7 +114,7 @@ public class RSessionImpl implements RSessionAPI, REngineCallbacks,
     if (s_engine == null) {
       try {
         s_engine = REngine.engineForClass("org.rosuda.REngine.JRI.JRIEngine",
-          new String[] { "--no-save" }, s_sessionSingleton, false);
+          new String[] { "--slave" }, s_sessionSingleton, false);
 
         // install a default mirror to use for package downloads so that R
         // does not try and start a tcl/tk interface for mirror selection!
@@ -115,6 +122,11 @@ public class RSessionImpl implements RSessionAPI, REngineCallbacks,
         s_engine.parseAndEval("local({r <- getOption(\"repos\"); "
           + "r[\"CRAN\"] <- \"http://cloud.r-project.org\"; "
           + "options(repos=r)})");
+   
+        s_engine.parseAndEval("local(options(help_type = \"html\"))");
+        s_executor = Executors.newScheduledThreadPool(1);
+        s_executor.scheduleAtFixedRate(new RniIdle(s_engine), 100, 100, TimeUnit.MILLISECONDS);
+          
       } catch (Exception ex) {
         // R engine not available for one reason or another
         System.err.println("Unable to establish R engine (" + ex.getMessage()

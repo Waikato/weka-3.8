@@ -423,7 +423,8 @@ public class JavaGDConsolePanel extends JPanel implements JavaGDListener {
     JPanel consolePan = new JPanel();
     consolePan.setLayout(new BorderLayout());
     JScrollPane consoleScroller = new JScrollPane(m_rConsole);
-    consoleScroller.setBorder(BorderFactory.createTitledBorder("R console"));
+    consoleScroller.setBorder(BorderFactory.
+      createTitledBorder("R console (requires R >= 3.4.0)"));
     consolePan.add(consoleScroller, BorderLayout.CENTER);
     // add(consolePan, BorderLayout.SOUTH);
     consolePan.setMinimumSize(new Dimension(810, 100));
@@ -497,83 +498,54 @@ public class JavaGDConsolePanel extends JPanel implements JavaGDListener {
 
               int promptPos = m_rConsole.getText().lastIndexOf(">>> ") + 4;
               if (m_rConsole.getCaretPosition() >= promptPos) {
-                // try {
-                // String lastTyped =
-                // m_rConsole.getDocument().getText(m_docLength, newLenKnth);
 
                 String text = m_rConsole.getText();
                 String lastTyped = text.substring(text.lastIndexOf(">>> ") + 4,
-                  text.length());
-                // System.out.println(lastTyped);
-                lastTyped = lastTyped.replace("\n", "");
-                String origLastTyped = lastTyped;
-                boolean wrap = true;
-                wrap = wrap && !lastTyped.startsWith("print(");
-                wrap = wrap && !lastTyped.startsWith("library(");
-                wrap = wrap && !lastTyped.startsWith("install.packages(");
-                wrap = wrap && !lastTyped.startsWith("plot(");
-                wrap = wrap && !lastTyped.equals("q()");
-                if (lastTyped.indexOf("=") >= 0) {
-                  wrap = wrap && (lastTyped.indexOf("(") < 0
-                    ? false : lastTyped.indexOf("=") > lastTyped.indexOf("("));
-                }
-                if (lastTyped.indexOf("<-") >= 0) {
-                  wrap = wrap && (lastTyped.indexOf("(") < 0
-                    ? false : lastTyped.indexOf("<-") > lastTyped.indexOf("("));
-                }
+                                                  text.length() - 1); // remove newline at the end
                 if (lastTyped.length() > 0) {
-                  if (wrap) {
-                    lastTyped = "print(" + lastTyped + ")";
-                  }
                   RSession eng = null;
                   try {
-                    if (lastTyped.equals("q()")) {
+                    if (lastTyped.matches(".*;[ ]*q\\(.*") || lastTyped.matches("[ ]*q\\(.*")) {
                       m_rConsole.getDocument().insertString(
-                        m_rConsole.getText().length(), "q() ignored. R "
+                        m_rConsole.getText().length(), "q() is not supported. R "
                           + "will exit when Weka quits.\n", null);
+                    } else if (lastTyped.matches(".*;[ ]*quit\\(.*") || lastTyped.matches("[ ]*quit\\(.*")) {
+                      m_rConsole.getDocument().insertString(
+                        m_rConsole.getText().length(), "q() is not supported. R "
+                          + "will exit when Weka quits.\n", null);
+                    } else if (lastTyped.matches(".*;[ ]*readline\\(.*") || lastTyped.matches("[ ]*readline\\(.*")) {
+                      m_rConsole.getDocument().insertString(
+                        m_rConsole.getText().length(), "readline() is not supported.\n", null);
                     } else {
-                      // m_statusLab.setText("Working...");
-                      // m_statusLab.repaint();
                       m_statusLogger.statusMessage("Working...");
                       eng = RSession.acquireSession(JavaGDConsolePanel.this);
                       eng.setLog(JavaGDConsolePanel.this, m_rLogger);
                       eng.clearConsoleBuffer(JavaGDConsolePanel.this);
-                      REXP result = eng.parseAndEval(JavaGDConsolePanel.this, lastTyped);
-                      boolean getOutput = !(result instanceof REXPNull);
-                    /*if (result != null) {
-                      if (result instanceof REXPString) {
-                        System.err.println( ( (REXPString) result ).toDebugString() );
-                      }
-                    }*/
-
-                      String consoleOut = null;
-                      if (getOutput) {
-                        consoleOut = eng.getConsoleBuffer(JavaGDConsolePanel.this);
-                      }
+                      REXP result = eng.parseAndEval(JavaGDConsolePanel.this, 
+                                                     "withAutoprint({" + lastTyped + "}, echo = FALSE)");
+                      String consoleOut = eng.getConsoleBuffer(JavaGDConsolePanel.this);
                       if (consoleOut != null && consoleOut.length() > 0) {
                         m_rConsole.getDocument()
                           .insertString(m_rConsole.getText().length(),
-                            consoleOut + "\n", null);
+                            consoleOut, null);
                       }
 
-                      // m_statusLab.setText("Ready.");
                       m_statusLogger.statusMessage("Ready.");
                     }
                   } catch (Exception ex) {
                     ex.printStackTrace();
-                    // m_statusLab.setText("An error occurred - check log.");
                     m_statusLogger
                       .statusMessage("An error occurred.");
                     try {
                       m_rConsole.getDocument()
                         .insertString(m_rConsole.getText().length(),
-                          ex.getMessage() + ": '" + origLastTyped +"'\n", null);
+                          ex.getMessage() + ": '" + lastTyped +"'\n", null);
                     } catch (BadLocationException e1) {
                       e1.printStackTrace();
                     }
                   } finally {
                     RSession.releaseSession(JavaGDConsolePanel.this);
-                    m_historyBuffer.add(origLastTyped);
+                    m_historyBuffer.add(lastTyped);
                     m_historyPos = m_historyBuffer.size() - 1;
                     m_firstHistoryAccess = true;
                   }
@@ -622,6 +594,7 @@ public class JavaGDConsolePanel extends JPanel implements JavaGDListener {
             if (m_historyPos > 0 && !m_firstHistoryAccess) {
               m_historyPos--;
             }
+            m_firstHistoryAccess = false;
 
             if (m_historyBuffer.size() > 0) {
               String history = m_historyBuffer.get(m_historyPos);
@@ -640,13 +613,7 @@ public class JavaGDConsolePanel extends JPanel implements JavaGDListener {
                 e1.printStackTrace();
               }
             }
-
-            if (m_historyPos > 0 && m_firstHistoryAccess) {
-              m_historyPos--;
-              m_firstHistoryAccess = false;
-            }
           } else if (keyV.equalsIgnoreCase("down")) {
-
             if (m_historyBuffer.size() > 0
               && m_historyPos < m_historyBuffer.size() - 1) {
               // if (m_historyPos < m_historyBuffer.size() - 1) {
