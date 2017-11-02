@@ -602,13 +602,13 @@
   <target name="compile" depends="init_compile" 
    description="Compile weka and deposit class files in build/classes">
     <javac srcdir="${src}" 
-      fork="yes" memoryMaximumSize="${javac_max_memory}"
+      fork="yes" memoryMaximumSize="${javac_max_memory}" 
       destdir="${build}/classes"
       optimize="${optimization}"
       debug="${debug}"
       includeantruntime="false"
       deprecation="${deprecation}"
-      source="1.8" target="1.8">
+      source="1.8" target="1.8" release="8">
 
       <classpath refid="project.class.path" /> 
     </javac>
@@ -723,7 +723,7 @@
             debug="${debug}"
             includeantruntime="false"
             deprecation="${deprecation}"
-            source="1.8" target="1.8">
+            source="1.8" target="1.8" release="8">
        <classpath refid="project.class.path" /> 
      </javac>
      <copy todir="${build}/testcases" >
