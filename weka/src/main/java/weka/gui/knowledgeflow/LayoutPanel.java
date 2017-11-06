@@ -21,10 +21,7 @@
 
 package weka.gui.knowledgeflow;
 
-import weka.core.EnvironmentHandler;
-import weka.core.Instances;
-import weka.core.WekaException;
-import weka.core.WekaPackageClassLoaderManager;
+import weka.core.*;
 import weka.core.converters.FileSourcedConverter;
 import weka.gui.Perspective;
 import weka.gui.knowledgeflow.VisibleLayout.LayoutOperation;
@@ -35,10 +32,7 @@ import weka.knowledgeflow.StepManagerImpl;
 import weka.knowledgeflow.steps.Loader;
 import weka.knowledgeflow.steps.Note;
 
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -1198,12 +1192,13 @@ public class LayoutPanel extends PrintablePanel {
         .getManagedStep());
       ((StepInteractiveViewer) viewer).setMainKFPerspective(m_visLayout
         .getMainPerspective());
-      JFrame jf = new JFrame(viewerName);
+      JFrame jf = Utils.getWekaJFrame(viewerName, this);
       ((StepInteractiveViewer) viewer).setParentWindow(jf);
       ((StepInteractiveViewer) viewer).init();
       jf.setLayout(new BorderLayout());
       jf.add((JComponent) viewer, BorderLayout.CENTER);
       jf.pack();
+      jf.setLocationRelativeTo(SwingUtilities.getWindowAncestor(this));
       jf.setVisible(true);
       ((StepInteractiveViewer) viewer).nowVisible();
     } catch (IOException e) {

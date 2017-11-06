@@ -85,12 +85,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.TableModel;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -323,7 +318,16 @@ public class PreprocessPanel extends AbstractPerspective implements
     });
     m_OpenDBBut.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        SqlViewerDialog dialog = new SqlViewerDialog(null);
+        JFrame frame = null;
+        Window window = SwingUtilities.getWindowAncestor(PreprocessPanel.this);
+        if (window instanceof JFrame) {
+          frame = (JFrame)window;
+        }
+        SqlViewerDialog dialog = new SqlViewerDialog(frame);
+        dialog.pack();
+        dialog.setSize(800, 700);
+        dialog.setIconImage(((Frame) SwingUtilities.getWindowAncestor(PreprocessPanel.this)).getIconImage());
+        dialog.setLocationRelativeTo(SwingUtilities.getWindowAncestor(PreprocessPanel.this));
         dialog.setVisible(true);
         if (dialog.getReturnValue() == JOptionPane.OK_OPTION)
           setInstancesFromDBQ(dialog.getURL(), dialog.getUser(),
@@ -517,7 +521,7 @@ public class PreprocessPanel extends AbstractPerspective implements
             as.setColoringIndex(m_AttVisualizePanel.getColoringIndex());
             as.setInstances(m_Instances);
 
-            final javax.swing.JFrame jf = new javax.swing.JFrame();
+            final javax.swing.JFrame jf = Utils.getWekaJFrame("All attributes", PreprocessPanel.this);
             jf.getContentPane().setLayout(new java.awt.BorderLayout());
 
             jf.getContentPane().add(as, java.awt.BorderLayout.CENTER);
@@ -528,7 +532,9 @@ public class PreprocessPanel extends AbstractPerspective implements
                 jf.dispose();
               }
             });
-            jf.setSize(830, 600);
+            jf.pack();
+            jf.setSize(1000, 600);
+            jf.setLocationRelativeTo(SwingUtilities.getWindowAncestor(PreprocessPanel.this));
             jf.setVisible(true);
           } catch (Exception ex) {
             ex.printStackTrace();
@@ -1161,6 +1167,9 @@ public class PreprocessPanel extends AbstractPerspective implements
             dialog.getContentPane().add(generateButton, BorderLayout.EAST);
             dialog.getContentPane().add(showOutputCheckBox, BorderLayout.SOUTH);
             dialog.pack();
+            dialog.setSize(1000,130);
+            dialog.setIconImage(((Frame) SwingUtilities.getWindowAncestor(PreprocessPanel.this)).getIconImage());
+            dialog.setLocationRelativeTo(SwingUtilities.getWindowAncestor(PreprocessPanel.this));
 
             // display dialog
             dialog.setVisible(true);
@@ -1186,7 +1195,7 @@ public class PreprocessPanel extends AbstractPerspective implements
    * @param data the data to display
    */
   protected void showGeneratedInstances(String data) {
-    final JDialog dialog = new JDialog();
+    final JDialog dialog = new JDialog(SwingUtilities.getWindowAncestor(PreprocessPanel.this));
     final JButton saveButton = new JButton("Save");
     final JButton closeButton = new JButton("Close");
     final JTextArea textData = new JTextArea(data);
@@ -1244,6 +1253,8 @@ public class PreprocessPanel extends AbstractPerspective implements
       dialog.getHeight() > screen.getHeight() * 0.8 ? (int) (screen.getHeight() * 0.8)
         : dialog.getHeight();
     dialog.setSize(width, height);
+    dialog.pack();
+    dialog.setLocationRelativeTo(SwingUtilities.getWindowAncestor(PreprocessPanel.this));
 
     // display dialog
     dialog.setVisible(true);
@@ -1272,12 +1283,10 @@ public class PreprocessPanel extends AbstractPerspective implements
     PropertyDialog pd;
     if (PropertyDialog.getParentDialog(this) != null)
       pd =
-        new PropertyDialog(PropertyDialog.getParentDialog(this), convEd, 100,
-          100);
+        new PropertyDialog(PropertyDialog.getParentDialog(this), convEd, -1, -1);
     else
       pd =
-        new PropertyDialog(PropertyDialog.getParentFrame(this), convEd, 100,
-          100);
+        new PropertyDialog(PropertyDialog.getParentFrame(this), convEd, -1, -1);
     pd.setVisible(true);
   }
 
@@ -1583,6 +1592,10 @@ public class PreprocessPanel extends AbstractPerspective implements
     copy = new Instances(m_Instances);
     copy.setClassIndex(classIndex);
     dialog = new ViewerDialog(null);
+    dialog.pack();
+    dialog.setSize(1000, 600);
+    dialog.setIconImage(((Frame) SwingUtilities.getWindowAncestor(PreprocessPanel.this)).getIconImage());
+    dialog.setLocationRelativeTo(SwingUtilities.getWindowAncestor(PreprocessPanel.this));
     result = dialog.showDialog(copy);
     if (result == ViewerDialog.APPROVE_OPTION) {
       try {
