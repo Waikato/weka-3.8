@@ -20,17 +20,8 @@
 
 package weka.filters.unsupervised.attribute;
 
-import weka.core.Attribute;
-import weka.core.Capabilities;
+import weka.core.*;
 import weka.core.Capabilities.Capability;
-import weka.core.DenseInstance;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.Option;
-import weka.core.Range;
-import weka.core.RevisionUtils;
-import weka.core.SparseInstance;
-import weka.core.Utils;
 import weka.filters.SimpleBatchFilter;
 
 import java.util.ArrayList;
@@ -47,27 +38,27 @@ import java.util.Vector;
  * attribute, containing values from 1 to 5.
  * <p/>
  * <!-- globalinfo-end -->
- * 
+ *
  * <!-- options-start --> Valid options are:
  * <p/>
- * 
+ *
  * <pre>
  * -R &lt;col1,col2-col4,...&gt;
  *  Specifies list of columns to discretize. First and last are valid indexes.
  *  (default: first-last)
  * </pre>
- * 
+ *
  * <pre>
  * -V
  *  Invert matching sense of column indexes.
  * </pre>
- * 
+ *
  * <!-- options-end -->
- * 
+ *
  * @author fracpete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
  */
-public class NumericToNominal extends SimpleBatchFilter {
+public class NumericToNominal extends SimpleBatchFilter implements WeightedInstancesHandler, WeightedAttributesHandler {
 
   /** for serialization */
   private static final long serialVersionUID = -6614630932899796239L;
@@ -83,7 +74,7 @@ public class NumericToNominal extends SimpleBatchFilter {
 
   /**
    * Returns a string describing this filter
-   * 
+   *
    * @return a description of the filter suitable for displaying in the
    *         explorer/experimenter gui
    */
@@ -98,7 +89,7 @@ public class NumericToNominal extends SimpleBatchFilter {
 
   /**
    * Gets an enumeration describing the available options.
-   * 
+   *
    * @return an enumeration of all the available options.
    */
   @Override
@@ -120,23 +111,23 @@ public class NumericToNominal extends SimpleBatchFilter {
   /**
    * Parses a given list of options.
    * <p/>
-   * 
+   *
    * <!-- options-start --> Valid options are:
    * <p/>
-   * 
+   *
    * <pre>
    * -R &lt;col1,col2-col4,...&gt;
    *  Specifies list of columns to Discretize. First and last are valid indexes.
    *  (default: first-last)
    * </pre>
-   * 
+   *
    * <pre>
    * -V
    *  Invert matching sense of column indexes.
    * </pre>
-   * 
+   *
    * <!-- options-end -->
-   * 
+   *
    * @param options the list of options as an array of strings
    * @throws Exception if an option is not supported
    */
@@ -163,7 +154,7 @@ public class NumericToNominal extends SimpleBatchFilter {
 
   /**
    * Gets the current settings of the filter.
-   * 
+   *
    * @return an array of strings suitable for passing to setOptions
    */
   @Override
@@ -187,7 +178,7 @@ public class NumericToNominal extends SimpleBatchFilter {
 
   /**
    * Returns the tip text for this property
-   * 
+   *
    * @return tip text for this property suitable for displaying in the
    *         explorer/experimenter gui
    */
@@ -199,7 +190,7 @@ public class NumericToNominal extends SimpleBatchFilter {
 
   /**
    * Gets whether the supplied columns are to be worked on or the others.
-   * 
+   *
    * @return true if the supplied columns will be worked on
    */
   public boolean getInvertSelection() {
@@ -210,7 +201,7 @@ public class NumericToNominal extends SimpleBatchFilter {
    * Sets whether selected columns should be worked on or all the others apart
    * from these. If true all the other columns are considered for
    * "nominalization".
-   * 
+   *
    * @param value the new invert setting
    */
   public void setInvertSelection(boolean value) {
@@ -219,7 +210,7 @@ public class NumericToNominal extends SimpleBatchFilter {
 
   /**
    * Returns the tip text for this property
-   * 
+   *
    * @return tip text for this property suitable for displaying in the
    *         explorer/experimenter gui
    */
@@ -232,7 +223,7 @@ public class NumericToNominal extends SimpleBatchFilter {
 
   /**
    * Gets the current range selection
-   * 
+   *
    * @return a string containing a comma separated list of ranges
    */
   public String getAttributeIndices() {
@@ -242,7 +233,7 @@ public class NumericToNominal extends SimpleBatchFilter {
   /**
    * Sets which attributes are to be "nominalized" (only numeric attributes
    * among the selection will be transformed).
-   * 
+   *
    * @param value a string representing the list of attributes. Since the string
    *          will typically come from a user, attributes are indexed from 1. <br>
    *          eg: first-3,5,6-last
@@ -255,7 +246,7 @@ public class NumericToNominal extends SimpleBatchFilter {
   /**
    * Sets which attributes are to be transoformed to nominal. (only numeric
    * attributes among the selection will be transformed).
-   * 
+   *
    * @param value an array containing indexes of attributes to nominalize. Since
    *          the array will typically come from a program, attributes are
    *          indexed from 0.
@@ -267,7 +258,7 @@ public class NumericToNominal extends SimpleBatchFilter {
 
   /**
    * Returns the Capabilities of this filter.
-   * 
+   *
    * @return the capabilities of this object
    * @see Capabilities
    */
@@ -293,7 +284,7 @@ public class NumericToNominal extends SimpleBatchFilter {
    * case the output format cannot be returned immediately, i.e.,
    * immediateOutputFormat() returns false, then this method will be called from
    * batchFinished().
-   * 
+   *
    * @param inputFormat the input format to base the output format on
    * @return the output format
    * @throws Exception in case the determination goes wrong

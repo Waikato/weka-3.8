@@ -40,8 +40,7 @@ import weka.core.Utils;
  * @author Eibe Frank (eibe@cs.waikato.ac.nz)
  * @version $Revision$
  */
-public class ClassifierTree implements Drawable, Serializable,
-  CapabilitiesHandler, RevisionHandler {
+public class ClassifierTree implements Drawable, Serializable, RevisionHandler, CapabilitiesHandler {
 
   /** for serialization */
   static final long serialVersionUID = -8722249377542734193L;
@@ -110,18 +109,10 @@ public class ClassifierTree implements Drawable, Serializable,
 
     PRINTED_NODES = 0;
   }
-
-  /**
-   * Constructor.
-   */
-  public ClassifierTree(ModelSelection toSelectLocModel) {
-
-    m_toSelectModel = toSelectLocModel;
-  }
-
+  
   /**
    * Returns default capabilities of the classifier tree.
-   * 
+   *
    * @return the capabilities of this classifier tree
    */
   @Override
@@ -133,15 +124,20 @@ public class ClassifierTree implements Drawable, Serializable,
   }
 
   /**
+   * Constructor.
+   */
+  public ClassifierTree(ModelSelection toSelectLocModel) {
+
+    m_toSelectModel = toSelectLocModel;
+  }
+
+  /**
    * Method for building a classifier tree.
    * 
    * @param data the data to build the tree from
    * @throws Exception if something goes wrong
    */
   public void buildClassifier(Instances data) throws Exception {
-
-    // can classifier tree handle the data?
-    getCapabilities().testWithFail(data);
 
     // remove instances with missing class
     data = new Instances(data);

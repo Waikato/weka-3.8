@@ -25,18 +25,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import weka.core.Attribute;
-import weka.core.Capabilities;
+import weka.core.*;
 import weka.core.Capabilities.Capability;
-import weka.core.DenseInstance;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.Option;
-import weka.core.OptionHandler;
-import weka.core.Range;
-import weka.core.RevisionUtils;
-import weka.core.SparseInstance;
-import weka.core.Utils;
 import weka.filters.Filter;
 import weka.filters.StreamableFilter;
 import weka.filters.UnsupervisedFilter;
@@ -76,14 +66,18 @@ import weka.filters.UnsupervisedFilter;
  * -V
  *  Invert matching sense of column indexes.
  * </pre>
- * 
+ *
+ * <pre>-spread-attribute-weight
+ *  When generating binary attributes, spread weight of old
+ *  attribute across new attributes. Do not give each new attribute the old weight.</pre>
+ *
  * <!-- options-end -->
  * 
  * @author Eibe Frank (eibe@cs.waikato.ac.nz)
  * @version $Revision$
  */
 public class NominalToBinary extends Filter implements UnsupervisedFilter,
-  OptionHandler, StreamableFilter {
+  OptionHandler, StreamableFilter, WeightedAttributesHandler, WeightedInstancesHandler {
 
   /** for serialization */
   static final long serialVersionUID = -1130642825710549138L;
@@ -99,6 +93,9 @@ public class NominalToBinary extends Filter implements UnsupervisedFilter,
 
   /** Whether we need to transform at all */
   private boolean m_needToTransform = false;
+
+  /** Whether to spread attribute weight when creating binary attributes */
+  protected boolean m_SpreadAttributeWeight = false;
 
   /** Constructor - initialises the filter */
   public NominalToBinary() {
@@ -214,6 +211,10 @@ public class NominalToBinary extends Filter implements UnsupervisedFilter,
     newVector.addElement(new Option(
             "\tInvert matching sense of column indexes.", "V", 0, "-V"));
 
+    newVector.addElement(new Option("\tWhen generating binary attributes, spread weight of old "
+            + "attribute across new attributes. Do not give each new attribute the old weight.\n\t",
+            "spread-attribute-weight", 0, "-spread-attribute-weight"));
+
     return newVector.elements();
   }
 
@@ -246,7 +247,11 @@ public class NominalToBinary extends Filter implements UnsupervisedFilter,
    * -V
    *  Invert matching sense of column indexes.
    * </pre>
-   * 
+   *
+   * <pre>-spread-attribute-weight
+   *  When generating binary attributes, spread weight of old
+   *  attribute across new attributes. Do not give each new attribute the old weight.</pre>
+   *
    * <!-- options-end -->
    * 
    * @param options the list of options as an array of strings
@@ -270,6 +275,8 @@ public class NominalToBinary extends Filter implements UnsupervisedFilter,
     if (getInputFormat() != null) {
       setInputFormat(getInputFormat());
     }
+
+    setSpreadAttributeWeight(Utils.getFlag("spread-attribute-weight", options));
 
     Utils.checkForRemainingOptions(options);
   }
@@ -300,7 +307,42 @@ public class NominalToBinary extends Filter implements UnsupervisedFilter,
       options.add("-V");
     }
 
+    if (getSpreadAttributeWeight()) {
+      options.add("-spread-attribute-weight");
+    }
+
     return options.toArray(new String[0]);
+  }
+
+  /**
+   * Returns the tip text for this property
+   *
+   * @return tip text for this property suitable for displaying in the
+   *         explorer/experimenter gui
+   */
+  public String spreadAttributeWeightTipText() {
+    return "When generating binary attributes, spread weight of old attribute across new attributes. " +
+            "Do not give each new attribute the old weight.";
+  }
+
+  /**
+   * If true, when generating binary attributes, spread weight of old
+   * attribute across new attributes. Do not give each new attribute the old weight.
+   *
+   * @param p whether weight is spread
+   */
+  public void setSpreadAttributeWeight(boolean p) {
+    m_SpreadAttributeWeight = p;
+  }
+
+  /**
+   * If true, when generating binary attributes, spread weight of old
+   * attribute across new attributes. Do not give each new attribute the old weight.
+   *
+   * @return whether weight is spread
+   */
+  public boolean getSpreadAttributeWeight() {
+    return m_SpreadAttributeWeight;
   }
 
   /**
@@ -478,7 +520,9 @@ public class NominalToBinary extends Filter implements UnsupervisedFilter,
             if (att.numValues() == 2) {
               value = "=" + att.value(1);
             }
-            newAtts.add(new Attribute(att.name() + value));
+            Attribute a = new Attribute(att.name() + value);
+            a.setWeight(att.weight());
+            newAtts.add(a);
           } else {
             newAtts.add((Attribute) att.copy());
           }
@@ -493,12 +537,24 @@ public class NominalToBinary extends Filter implements UnsupervisedFilter,
             attributeName = new StringBuffer(att.name() + "=");
             attributeName.append(att.value(k));
             if (m_Numeric) {
-              newAtts.add(new Attribute(attributeName.toString()));
+              Attribute a = new Attribute(attributeName.toString());
+              if (getSpreadAttributeWeight()) {
+                a.setWeight(att.weight() / att.numValues());
+              } else {
+                a.setWeight(att.weight());
+              }
+              newAtts.add(a);
             } else {
               vals = new ArrayList<String>(2);
               vals.add("f");
               vals.add("t");
-              newAtts.add(new Attribute(attributeName.toString(), vals));
+              Attribute a = new Attribute(attributeName.toString(), vals);
+              if (getSpreadAttributeWeight()) {
+                a.setWeight(att.weight() / att.numValues());
+              } else {
+                a.setWeight(att.weight());
+              }
+              newAtts.add(a);
             }
           }
         }
