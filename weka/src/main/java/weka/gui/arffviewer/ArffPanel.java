@@ -82,6 +82,7 @@ public class ArffPanel extends JPanel implements ActionListener,
   private JMenuItem menuItemSetMissingValues;
   private JMenuItem menuItemReplaceValues;
   private JMenuItem menuItemRenameAttribute;
+  private JMenuItem menuItemSetAttributeWeight;
   private JMenuItem menuItemAttributeAsClass;
   private JMenuItem menuItemDeleteAttribute;
   private JMenuItem menuItemDeleteAttributes;
@@ -89,6 +90,7 @@ public class ArffPanel extends JPanel implements ActionListener,
   private JMenuItem menuItemDeleteSelectedInstance;
   private JMenuItem menuItemDeleteAllSelectedInstances;
   private JMenuItem menuItemInsertInstance;
+  private JMenuItem menuItemSetInstanceWeight;
   private JMenuItem menuItemSearch;
   private JMenuItem menuItemClearSearch;
   private JMenuItem menuItemUndo;
@@ -178,6 +180,8 @@ public class ArffPanel extends JPanel implements ActionListener,
     menuItemReplaceValues.addActionListener(this);
     menuItemRenameAttribute = new JMenuItem("Rename attribute...");
     menuItemRenameAttribute.addActionListener(this);
+    menuItemSetAttributeWeight = new JMenuItem("Set attribute weight...");
+    menuItemSetAttributeWeight.addActionListener(this);
     menuItemAttributeAsClass = new JMenuItem("Attribute as class");
     menuItemAttributeAsClass.addActionListener(this);
     menuItemDeleteAttribute = new JMenuItem("Delete attribute");
@@ -191,6 +195,7 @@ public class ArffPanel extends JPanel implements ActionListener,
     menuItemOptimalColWidths = new JMenuItem("Optimal column width (all)");
     menuItemOptimalColWidths.addActionListener(this);
     menuItemInsertInstance = new JMenuItem("Insert new instance");
+    menuItemSetInstanceWeight = new JMenuItem("Set instance weight");
 
     // row popup
     menuItemUndo = new JMenuItem("Undo");
@@ -207,6 +212,7 @@ public class ArffPanel extends JPanel implements ActionListener,
       new JMenuItem("Delete ALL selected instances");
     menuItemDeleteAllSelectedInstances.addActionListener(this);
     menuItemInsertInstance.addActionListener(this);
+    menuItemSetInstanceWeight.addActionListener(this);
 
     // table
     m_TableArff = new ArffTable();
@@ -243,6 +249,7 @@ public class ArffPanel extends JPanel implements ActionListener,
       m_PopupHeader.add(menuItemReplaceValues);
       m_PopupHeader.addSeparator();
       m_PopupHeader.add(menuItemRenameAttribute);
+      m_PopupHeader.add(menuItemSetAttributeWeight);
       m_PopupHeader.add(menuItemAttributeAsClass);
       m_PopupHeader.add(menuItemDeleteAttribute);
       m_PopupHeader.add(menuItemDeleteAttributes);
@@ -268,6 +275,7 @@ public class ArffPanel extends JPanel implements ActionListener,
       m_PopupRows.add(menuItemDeleteSelectedInstance);
       m_PopupRows.add(menuItemDeleteAllSelectedInstances);
       m_PopupRows.add(menuItemInsertInstance);
+      m_PopupRows.add(menuItemSetInstanceWeight);
     }
   }
 
@@ -286,7 +294,7 @@ public class ArffPanel extends JPanel implements ActionListener,
     isNull = (model.getInstances() == null);
     hasColumns = !isNull && (model.getInstances().numAttributes() > 0);
     hasRows = !isNull && (model.getInstances().numInstances() > 0);
-    attSelected = hasColumns && (m_CurrentCol > 0);
+    attSelected = hasColumns && model.isAttribute(m_CurrentCol);
     isNumeric = attSelected && (model.getAttributeAt(m_CurrentCol).isNumeric());
 
     menuItemUndo.setEnabled(canUndo());
@@ -298,9 +306,11 @@ public class ArffPanel extends JPanel implements ActionListener,
     menuItemSetMissingValues.setEnabled(attSelected);
     menuItemReplaceValues.setEnabled(attSelected);
     menuItemRenameAttribute.setEnabled(attSelected);
+    menuItemSetAttributeWeight.setEnabled(attSelected);
     menuItemDeleteAttribute.setEnabled(attSelected);
     menuItemDeleteAttributes.setEnabled(attSelected);
-    menuItemSortInstances.setEnabled(hasRows && attSelected);
+    menuItemAttributeAsClass.setEnabled(attSelected);
+    menuItemSortInstances.setEnabled(hasRows && (attSelected || m_CurrentCol == 1));
     menuItemDeleteSelectedInstance.setEnabled(hasRows
       && m_TableArff.getSelectedRow() > -1);
     menuItemDeleteAllSelectedInstances.setEnabled(hasRows
@@ -619,7 +629,7 @@ public class ArffPanel extends JPanel implements ActionListener,
 
     mean = 0;
     for (i = 0; i < model.getRowCount(); i++) {
-      mean += model.getInstances().instance(i).value(m_CurrentCol - 1);
+      mean += model.getInstances().instance(i).value(model.getAttributeIndex(m_CurrentCol));
     }
     mean = mean / model.getRowCount();
 
@@ -848,6 +858,39 @@ public class ArffPanel extends JPanel implements ActionListener,
   }
 
   /**
+   * sets the weight for the current attribute
+   */
+  public void setAttributeWeight() {
+    ArffSortedTableModel model;
+    double newWeight = Double.NaN;
+
+    // no column selected?
+    if (m_CurrentCol == -1) {
+      return;
+    }
+
+    model = (ArffSortedTableModel) m_TableArff.getModel();
+
+    // really an attribute column?
+    if (model.getAttributeAt(m_CurrentCol) == null) {
+      return;
+    }
+
+    try {
+      newWeight = Double.parseDouble(ComponentHelper.showInputBox(getParent(), "Set attribute weight...",
+                      "Enter a new weight for the attribute", model.getAttributeAt(m_CurrentCol).weight()));
+    } catch (Exception ex) {
+      // Silently ignore
+    }
+    if (Double.isNaN(newWeight)) {
+      return;
+    }
+
+    setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+    model.setAttributeWeightAt(m_CurrentCol, newWeight);
+    setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+  }
+  /**
    * deletes the currently selected instance
    */
   public void deleteInstance() {
@@ -868,6 +911,30 @@ public class ArffPanel extends JPanel implements ActionListener,
   public void addInstance() {
     int index = m_TableArff.getSelectedRow();
     ((ArffSortedTableModel) m_TableArff.getModel()).insertInstance(index);
+  }
+
+  /**
+   * Allows setting the weight of the instance at the selected row.
+   */
+  public void setInstanceWeight() {
+    int index = m_TableArff.getSelectedRow();
+    if (index == -1) {
+      return;
+    }
+    String newWeight =
+            ComponentHelper.showInputBox(getParent(), "Set instance weight...",
+                    "Enter new instance weight",
+                    ((ArffSortedTableModel) m_TableArff.getModel()).getInstances().instance(index).weight());
+    if (newWeight == null) {
+      return;
+    }
+    double weight = 1.0;
+    try {
+      weight = Double.parseDouble(newWeight);
+    } catch (Exception ex) {
+      return;
+    }
+    ((ArffSortedTableModel) m_TableArff.getModel()).setInstanceWeight(index, weight);
   }
 
   /**
@@ -982,6 +1049,8 @@ public class ArffPanel extends JPanel implements ActionListener,
       setValues(menuItemReplaceValues);
     } else if (o == menuItemRenameAttribute) {
       renameAttribute();
+    } else if (o == menuItemSetAttributeWeight) {
+      setAttributeWeight();
     } else if (o == menuItemAttributeAsClass) {
       attributeAsClass();
     } else if (o == menuItemDeleteAttribute) {
@@ -994,8 +1063,8 @@ public class ArffPanel extends JPanel implements ActionListener,
       deleteInstances();
     } else if (o == menuItemInsertInstance) {
       addInstance();
-    } else if (o == menuItemSortInstances) {
-      sortInstances();
+    } else if (o == menuItemSetInstanceWeight) {
+      setInstanceWeight();
     } else if (o == menuItemSearch) {
       search();
     } else if (o == menuItemClearSearch) {

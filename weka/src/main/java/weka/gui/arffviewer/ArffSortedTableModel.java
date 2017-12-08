@@ -128,7 +128,31 @@ public class ArffSortedTableModel
   public void setReadOnly(boolean value) {
     ((ArffTableModel) getModel()).setReadOnly(value);
   }
-  
+
+  /**
+   * Returns the attribute index for the given column index.
+   *
+   * @param columnIndex the column index
+   *
+   * @return the attribute index
+   */
+  public int getAttributeIndex(int columnIndex) {
+
+    return ((ArffTableModel) getModel()).getAttributeIndex(columnIndex);
+  }
+
+  /**
+   * Check if given index is in range of column indices for attributes
+   *
+   * @param columnIndex the column index
+   *
+   * @return true if the column corresponds to attribute
+   */
+  public boolean isAttribute(int columnIndex) {
+
+    return ((ArffTableModel) getModel()).isAttribute(columnIndex);
+  }
+
   /**
    * returns the double value of the underlying Instances object at the
    * given position, -1 if out of bounds
@@ -208,7 +232,17 @@ public class ArffSortedTableModel
   public void renameAttributeAt(int columnIndex, String newName) {
     ((ArffTableModel) getModel()).renameAttributeAt(columnIndex, newName);
   }
-  
+
+  /**
+   * sets the weight of the attribute at the given col index
+   *
+   * @param columnIndex		the index of the column
+   * @param weight		the new weight of the attribute
+   */
+  public void setAttributeWeightAt(int columnIndex, double weight) {
+    ((ArffTableModel) getModel()).setAttributeWeightAt(columnIndex, weight);
+  }
+
   /**
    * sets the attribute at the given col index as the new class attribute
    * 
@@ -236,7 +270,16 @@ public class ArffSortedTableModel
   public void insertInstance(int index) {
     ((ArffTableModel) getModel()).insertInstance(index);
   }
-  
+
+  /**
+   * Sets the weight of the selected instance
+   *
+   * @param index the index of the instance
+   * @param weight the weight
+   */
+  public void setInstanceWeight(int index, double weight) {
+    ((ArffTableModel) getModel()).setInstanceWeight(index, weight);
+  }
   /**
    * deletes the instances at the given positions
    * 
