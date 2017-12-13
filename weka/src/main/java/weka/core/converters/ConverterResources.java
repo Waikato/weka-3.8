@@ -43,41 +43,41 @@ public class ConverterResources {
    * the core loaders - hardcoded list necessary for RMI/Remote Experiments
    * (comma-separated list).
    */
-  public final static String CORE_FILE_LOADERS = ArffLoader.class
+  public final static String CORE_FILE_LOADERS = weka.core.converters.ArffLoader.class
     .getName()
     + ","
     // + weka.core.converters.C45Loader.class.getName() + ","
-    + CSVLoader.class.getName()
+    + weka.core.converters.CSVLoader.class.getName()
     + ","
-    + DatabaseConverter.class.getName()
+    + weka.core.converters.DatabaseConverter.class.getName()
     + ","
     // + weka.core.converters.LibSVMLoader.class.getName() + ","
     // + weka.core.converters.MatlabLoader.class.getName() + ","
     // + weka.core.converters.SVMLightLoader.class.getName() + ","
-    + SerializedInstancesLoader.class.getName()
+    + weka.core.converters.SerializedInstancesLoader.class.getName()
     + ","
-    + TextDirectoryLoader.class.getName()
+    + weka.core.converters.TextDirectoryLoader.class.getName()
     + ","
-    + XRFFLoader.class.getName();
+    + weka.core.converters.XRFFLoader.class.getName();
 
   /**
    * the core savers - hardcoded list necessary for RMI/Remote Experiments
    * (comma-separated list).
    */
-  public final static String CORE_FILE_SAVERS = ArffSaver.class
+  public final static String CORE_FILE_SAVERS = weka.core.converters.ArffSaver.class
     .getName()
     + ","
     // + weka.core.converters.C45Saver.class.getName() + ","
-    + CSVSaver.class.getName()
+    + weka.core.converters.CSVSaver.class.getName()
     + ","
-    + DatabaseConverter.class.getName()
+    + weka.core.converters.DatabaseConverter.class.getName()
     + ","
     // + weka.core.converters.LibSVMSaver.class.getName() + ","
     // + weka.core.converters.MatlabSaver.class.getName() + ","
     // + weka.core.converters.SVMLightSaver.class.getName() + ","
-    + SerializedInstancesSaver.class.getName()
+    + weka.core.converters.SerializedInstancesSaver.class.getName()
     + ","
-    + XRFFSaver.class.getName();
+    + weka.core.converters.XRFFSaver.class.getName();
 
   /** all available loaders (extension &lt;-&gt; classname). */
   protected static Hashtable<String, String> m_FileLoaders;
@@ -93,7 +93,7 @@ public class ConverterResources {
    *
    * @param classname the class to check
    * @return true if the class is one of the core loaders
-   * @see #CORE_FILE_LOADERS
+   * @see ConverterResources#CORE_FILE_LOADERS
    */
   public static boolean isCoreFileLoader(String classname) {
     boolean result;
@@ -110,7 +110,7 @@ public class ConverterResources {
    *
    * @param classname the class to check
    * @return true if the class is one of the core savers
-   * @see #CORE_FILE_SAVERS
+   * @see ConverterResources#CORE_FILE_SAVERS
    */
   public static boolean isCoreFileSaver(String classname) {
     boolean result;
@@ -171,18 +171,18 @@ public class ConverterResources {
 
       // loaders
       m_FileLoaders = getFileConverters(
-        props.getProperty(Loader.class.getName(), CORE_FILE_LOADERS),
+        props.getProperty(Loader.class.getName(), ConverterResources.CORE_FILE_LOADERS),
         new String[] { FileSourcedConverter.class.getName() });
 
       // URL loaders
       m_URLFileLoaders = getFileConverters(
-        props.getProperty(Loader.class.getName(), CORE_FILE_LOADERS),
+        props.getProperty(Loader.class.getName(), ConverterResources.CORE_FILE_LOADERS),
         new String[] { FileSourcedConverter.class.getName(),
           URLSourcedLoader.class.getName() });
 
       // savers
       m_FileSavers = getFileConverters(
-        props.getProperty(Saver.class.getName(), CORE_FILE_SAVERS),
+        props.getProperty(Saver.class.getName(), ConverterResources.CORE_FILE_SAVERS),
         new String[] { FileSourcedConverter.class.getName() });
     } catch (Exception e) {
       e.printStackTrace();
@@ -191,12 +191,12 @@ public class ConverterResources {
       // loaders
       if (m_FileLoaders.size() == 0) {
         classnames = PluginManager.getPluginNamesOfTypeList(AbstractFileLoader.class
-	  .getName());
+          .getName());
         if (classnames.size() > 0) {
           m_FileLoaders = getFileConverters(classnames,
             new String[] { FileSourcedConverter.class.getName() });
         } else {
-          m_FileLoaders = getFileConverters(CORE_FILE_LOADERS,
+          m_FileLoaders = getFileConverters(ConverterResources.CORE_FILE_LOADERS,
             new String[] { FileSourcedConverter.class.getName() });
         }
       }
@@ -204,13 +204,13 @@ public class ConverterResources {
       // URL loaders
       if (m_URLFileLoaders.size() == 0) {
         classnames = PluginManager.getPluginNamesOfTypeList(AbstractFileLoader.class
-	  .getName());
+          .getName());
         if (classnames.size() > 0) {
           m_URLFileLoaders = getFileConverters(classnames,
             new String[] { FileSourcedConverter.class.getName(),
               URLSourcedLoader.class.getName() });
         } else {
-          m_URLFileLoaders = getFileConverters(CORE_FILE_LOADERS,
+          m_URLFileLoaders = getFileConverters(ConverterResources.CORE_FILE_LOADERS,
             new String[] { FileSourcedConverter.class.getName(),
               URLSourcedLoader.class.getName() });
         }
@@ -219,12 +219,12 @@ public class ConverterResources {
       // savers
       if (m_FileSavers.size() == 0) {
         classnames = PluginManager.getPluginNamesOfTypeList(AbstractFileSaver.class
-	  .getName());
+          .getName());
         if (classnames.size() > 0) {
           m_FileSavers = getFileConverters(classnames,
             new String[] { FileSourcedConverter.class.getName() });
         } else {
-          m_FileSavers = getFileConverters(CORE_FILE_SAVERS,
+          m_FileSavers = getFileConverters(ConverterResources.CORE_FILE_SAVERS,
             new String[] { FileSourcedConverter.class.getName() });
         }
       }
