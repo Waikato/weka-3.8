@@ -5,7 +5,7 @@
 
   <groupId>nz.ac.waikato.cms.weka</groupId>
   <artifactId>distributedWekaBase</artifactId>
-  <version>1.0.17-SNAPSHOT</version>
+  <version>1.0.17</version>
   <packaging>jar</packaging>
 
   <name>distributedWekaBase</name>
@@ -48,9 +48,9 @@ This package provides generic configuration class and distributed map/reduce sty
   </parent>
 
   <scm>
-    <connection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/internal/distributedWekaBase</connection>
-    <developerConnection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/internal/distributedWekaBase</developerConnection>
-    <url>https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/internal/distributedWekaBase</url>
+    <connection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/tags/distributedWekaBase-1.0.17</connection>
+    <developerConnection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/tags/distributedWekaBase-1.0.17</developerConnection>
+    <url>https://svn.cms.waikato.ac.nz/svn/weka/tags/distributedWekaBase-1.0.17</url>
   </scm>
 
   <profiles>
@@ -224,8 +224,8 @@ This package provides generic configuration class and distributed map/reduce sty
           <artifactId>maven-compiler-plugin</artifactId>
           <version>2.0.2</version>
           <configuration>
-            <source>1.8</source>
-            <target>1.8</target>
+            <source>1.7</source>
+            <target>1.7</target>
           </configuration>
         </plugin>
 
