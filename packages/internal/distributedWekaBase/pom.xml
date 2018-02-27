@@ -5,7 +5,7 @@
 
   <groupId>nz.ac.waikato.cms.weka</groupId>
   <artifactId>distributedWekaBase</artifactId>
-  <version>1.0.17</version>
+  <version>1.0.18-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>distributedWekaBase</name>
@@ -48,9 +48,9 @@ This package provides generic configuration class and distributed map/reduce sty
   </parent>
 
   <scm>
-    <connection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/tags/distributedWekaBase-1.0.17</connection>
-    <developerConnection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/tags/distributedWekaBase-1.0.17</developerConnection>
-    <url>https://svn.cms.waikato.ac.nz/svn/weka/tags/distributedWekaBase-1.0.17</url>
+    <connection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/internal/distributedWekaBase</connection>
+    <developerConnection>scm:svn:https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/internal/distributedWekaBase</developerConnection>
+    <url>https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/packages/internal/distributedWekaBase</url>
   </scm>
 
   <profiles>
