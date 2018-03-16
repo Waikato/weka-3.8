@@ -21,6 +21,22 @@
 
 package weka.gui.sql;
 
+import weka.core.Memory;
+import weka.core.WekaPackageManager;
+import weka.gui.LookAndFeel;
+import weka.gui.sql.event.ConnectionEvent;
+import weka.gui.sql.event.ConnectionListener;
+import weka.gui.sql.event.HistoryChangedEvent;
+import weka.gui.sql.event.HistoryChangedListener;
+import weka.gui.sql.event.QueryExecuteEvent;
+import weka.gui.sql.event.QueryExecuteListener;
+import weka.gui.sql.event.ResultChangedEvent;
+import weka.gui.sql.event.ResultChangedListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
@@ -31,22 +47,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Properties;
-
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
-import weka.core.Memory;
-import weka.gui.LookAndFeel;
-import weka.gui.sql.event.ConnectionEvent;
-import weka.gui.sql.event.ConnectionListener;
-import weka.gui.sql.event.HistoryChangedEvent;
-import weka.gui.sql.event.HistoryChangedListener;
-import weka.gui.sql.event.QueryExecuteEvent;
-import weka.gui.sql.event.QueryExecuteListener;
-import weka.gui.sql.event.ResultChangedEvent;
-import weka.gui.sql.event.ResultChangedListener;
 
 /**
  * Represents a little tool for querying SQL databases.
@@ -287,7 +287,7 @@ public class SqlViewer extends JPanel implements ConnectionListener,
    * @return the history file
    */
   protected String getHistoryFilename() {
-    return System.getProperties().getProperty("user.home") + File.separatorChar
+    return WekaPackageManager.PROPERTIES_DIR.getAbsolutePath() + File.separatorChar
       + HISTORY_FILE;
   }
 
