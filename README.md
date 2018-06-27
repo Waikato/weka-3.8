@@ -1,5 +1,7 @@
 # WEKA (stable version)
 
+Read-only git mirror of Weka's subversion repository.
+
 ## Source code
 
 The official WEKA source code of the stable version is available from this URL:
