@@ -50,9 +50,9 @@ import weka.filters.UnsupervisedFilter;
  * <!-- globalinfo-start -->
  * A filter to perform the Piecewise Aggregate Approximation transformation to time series.<br/>
  * <br/>
- * It uses the "N/n not equal an integer" generalization. Furthermore, it's extended to handle weights for data points in time series.<br/>
+ * It uses the "N/n not equal an integer" generalization. Furthermore, it is extended to handle weights for data points in time series.<br/>
  * <br/>
- * Warning: The lower bounding property may not hold for the distance measure when weights are used or N/n isn't equal to an integer!<br/>
+ * Warning: The lower bounding property may not hold for the distance measure when weights are used or N/n is not equal to an integer!<br/>
  * <br/>
  * For more information see:<br/>
  * Byoung-Kee Yi, Christos Faloutsos: Fast Time Sequence Indexing for Arbitrary L_p Norms. In: Proceedings of the 26th VLDB Conference, 385-394, 2000.<br/>
@@ -100,17 +100,10 @@ public class PAATransformer extends SimpleStreamFilter
   }
 
   /** which attributes to transform (must be time series) */
-  protected Range m_TimeSeriesAttributes = 
-      new Range(getDefaultAttributes().getRanges());
+  protected Range m_TimeSeriesAttributes = new Range(getDefaultAttributes().getRanges());
 
   /** the compression factor w for the PAA transformation */
   protected int m_W = DEFAULT_W; // invariant: m_W >= 1
-  
-  /** attribute locations of untouched strings */
-  private StringLocator m_StringAttributes = null;
-  
-  /** attribute locations of untouched relations */
-  private RelationalLocator m_RelationalAttributes = null;
 
   /**
    * Returns the Capabilities of this filter.    
@@ -194,7 +187,7 @@ public class PAATransformer extends SimpleStreamFilter
       options.add("" + m_W);
     }
     
-    if (!m_TimeSeriesAttributes.equals(getDefaultAttributes())) {
+    if (!m_TimeSeriesAttributes.getRanges().equals("")) {
       options.add("-R");
       options.add(m_TimeSeriesAttributes.getRanges());
     }
@@ -242,15 +235,11 @@ public class PAATransformer extends SimpleStreamFilter
       throw new Exception("Parameter W must be bigger than 0!");
     
     String timeSeriesAttributes = Utils.getOption('R', options);
-    if (timeSeriesAttributes.length() != 0)
+    if (timeSeriesAttributes.length() != 0) {
       m_TimeSeriesAttributes = new Range(timeSeriesAttributes);
-    
-    if (Utils.getFlag('V', options))
-      m_TimeSeriesAttributes.setInvert(true);
-    
-    if (getInputFormat() != null)
-      setInputFormat(getInputFormat());
-    
+    }
+    m_TimeSeriesAttributes.setInvert(Utils.getFlag('V', options));
+
     Utils.checkForRemainingOptions(options);
   }
   
@@ -344,9 +333,9 @@ public class PAATransformer extends SimpleStreamFilter
         "A filter to perform the Piecewise Aggregate Approximation " +
         "transformation to time series.\n\n" +
         "It uses the \"N/n not equal an integer\" generalization. " +
-        "Furthermore, it's extended to handle weights for data points in time series.\n\n" +
+        "Furthermore, it is extended to handle weights for data points in a time series.\n\n" +
         "Warning: The lower bounding property may not hold for the distance measure " +
-        "when weights are used or N/n isn't equal to an integer!\n\n" +
+        "when weights are used or N/n is not equal to an integer!\n\n" +
         "For more information see:\n" +
         getTechnicalInformation().toString()
     ;
@@ -391,23 +380,38 @@ public class PAATransformer extends SimpleStreamFilter
   }
 
   /**
-   * Returns true if the output format is immediately available after the input
-   * format has been set and not only after all the data has been seen
-   * (see {@link #batchFinished()}).</p>
-   * 
-   * @return <code>true</code>
+   * This method needs to be called before the filter is used to transform instances. Will return true
+   * for this filter because the output format can be collected immediately.
+   *
+   * This specialised version of setInputFormat() calls the setInputFormat() method in SimpleFilter and then sets the
+   * output locators for relational and string attributes correctly. We also set the input locators correctly here.
    */
   @Override
-  protected boolean hasImmediateOutputFormat() {
-    return true;
+  public boolean setInputFormat(Instances instanceInfo) throws Exception {
+    super.setInputFormat(instanceInfo);
+
+    // Find attributes that have not been selected
+    m_TimeSeriesAttributes.setInvert(!m_TimeSeriesAttributes.getInvert());
+
+    // Make sure only string and relational attributes that are not in the selected range for the time
+    // series are covered by the output locators.
+    initOutputLocators(outputFormatPeek(), m_TimeSeriesAttributes.getSelection());
+
+    // Make sure only string and relational attributes that are not in the selected range for the time
+    // series are covered by the input locators.
+    initInputLocators(inputFormatPeek(), m_TimeSeriesAttributes.getSelection());
+
+    // Restore selected attributes
+    m_TimeSeriesAttributes.setInvert(!m_TimeSeriesAttributes.getInvert());
+
+    return hasImmediateOutputFormat();
   }
 
   /**
-   * Determines the output format based on the input format and returns this
+   * Determines the output format based on the input format and returns this.
    */
   @Override
-  protected Instances determineOutputFormat(Instances inputFormat)
-    throws Exception {
+  protected Instances determineOutputFormat(Instances inputFormat) throws Exception {
 
     m_TimeSeriesAttributes.setUpper(inputFormat.numAttributes() - 1);
     
@@ -415,82 +419,52 @@ public class PAATransformer extends SimpleStreamFilter
       Attribute attribute = getInputFormat().attribute(index);
 
       // time series must be relational
-      if (!attribute.isRelationValued())
-        throw new Exception(String.format(
-            "Attribute '%s' isn't relational!",
-            attribute.name()
-            ));
+      if (!attribute.isRelationValued()) {
+        throw new Exception(String.format("Attribute '%s' isn't relational!", attribute.name()));
+      }
       
       // time series must contain only numeric attributes
       Instances timeSeries = attribute.relation();
-      for (int i = 0; i < timeSeries.numAttributes(); i++)
-        if (!timeSeries.attribute(i).isNumeric())
-          throw new Exception(String.format(
-              "Attribute '%s' inside relational attribute '%s' isn't numeric!",
-              timeSeries.attribute(i).name(), attribute.name()
-              ));
-
+      for (int i = 0; i < timeSeries.numAttributes(); i++) {
+        if (!timeSeries.attribute(i).isNumeric()) {
+          throw new Exception(String.format("Attribute '%s' inside relational attribute '%s' isn't numeric!",
+                  timeSeries.attribute(i).name(), attribute.name()));
+        }
+      }
     }
-    
-    // initialize untouched string and relational attribute locators:
-    m_TimeSeriesAttributes.setInvert(!m_TimeSeriesAttributes.getInvert());
-    m_StringAttributes =
-        new StringLocator(inputFormat, m_TimeSeriesAttributes.getSelection());
-    m_RelationalAttributes =
-        new RelationalLocator(inputFormat, m_TimeSeriesAttributes.getSelection());
-    m_TimeSeriesAttributes.setInvert(!m_TimeSeriesAttributes.getInvert());
-    
+
     return new Instances(inputFormat, 0);
     
   }
 
   /**
-   * processes the given instance (may change the provided instance) and
-   * returns the modified version</p>
+   * Processes the given instance (may change the provided instance) and
+   * returns the modified version.</p>
    * 
-   * Will delegate time series processing to the {@link #transform(Instances)}
+   * Will delegate time series processing to the {@link #transform(Instances, Instances)}
    * method
    */
   @Override
   protected Instance process(Instance inputInstance) throws Exception {
     
     assert inputInstance.dataset().equalHeaders(getInputFormat());
-    
-    StringLocator.copyStringValues(inputInstance, getOutputFormat(),
-        m_StringAttributes);
-    RelationalLocator.copyRelationalValues(inputInstance, getOutputFormat(),
-        m_RelationalAttributes);
-    
-    Instance outputInstance = null;
-    if (inputInstance instanceof DenseInstance) {
-      outputInstance = new DenseInstance(inputInstance.weight(),
-          Arrays.copyOf(inputInstance.toDoubleArray(), inputInstance.numAttributes()));
-    } else if (inputInstance instanceof SparseInstance) {
-      outputInstance = new SparseInstance(inputInstance.weight(),
-          Arrays.copyOf(inputInstance.toDoubleArray(), inputInstance.numAttributes()));
-    } else {
-      throw new Exception("Input instance is neither sparse nor dense!");
-    }
 
-    outputInstance.setDataset(getOutputFormat());
-    
+    double[] outputInstance = inputInstance.toDoubleArray();
     for (int index : m_TimeSeriesAttributes.getSelection()) {
-
-      if (inputInstance.isMissing(index))
+      if (inputInstance.isMissing(index)) {
         continue;
-      
-      Instances timeSeries =
-          inputInstance.relationalValue(inputInstance.attribute(index));
-      
-      Instances transformed = transform(timeSeries);
-      
-      int reference = getOutputFormat().attribute(index).addRelation(transformed);
-      
-      outputInstance.setValue(index, (double) reference);
-
+      }
+      Instances timeSeries = inputInstance.relationalValue(inputInstance.attribute(index));
+      Attribute outputAttribute = outputFormatPeek().attribute(index);
+      outputInstance[index] = (double) outputAttribute.addRelation(transform(timeSeries, outputAttribute.relation()));
     }
-    
-    return outputInstance;
+
+    // Create new instance and make sure string and relational values are copied from input to output
+    Instance outInstance = inputInstance.copy(outputInstance);; // Note that this will copy the reference to the input dataset!
+    outInstance.setDataset(null); // Make sure we do not class the copyValues() method in push()
+    copyValues(outInstance, false, inputInstance.dataset(), outputFormatPeek()); // Copy string and relational values
+
+    return outInstance;
   }
   
   /**
@@ -507,10 +481,12 @@ public class PAATransformer extends SimpleStreamFilter
    * case!</p>
    * 
    * @param input the time series to be transformed
+   * @param outputFormat the format of the output data (not used in this super class method)
+   *
    * @return the transformed time series
    * @throws Exception
    */
-  protected Instances transform(Instances input) throws Exception {
+  protected Instances transform(Instances input, Instances outputFormat) throws Exception {
     
     /* A word on this implementation:
      * 
@@ -584,8 +560,7 @@ public class PAATransformer extends SimpleStreamFilter
       
       instanceUpperBoundary = instanceLowerBoundary + input.get(i).weight();
       
-      if (instanceUpperBoundary >= segmentUpperBoundary
-          && segmentUpperBoundary - instanceLowerBoundary < segmentSize) {
+      if (instanceUpperBoundary >= segmentUpperBoundary && segmentUpperBoundary - instanceLowerBoundary < segmentSize) {
 
         // yield new segment
         final double weight = segmentUpperBoundary - instanceLowerBoundary;
@@ -604,8 +579,7 @@ public class PAATransformer extends SimpleStreamFilter
       while (instanceUpperBoundary >= segmentUpperBoundary) {
 
         // yield new segment
-        output.add(new DenseInstance(segmentSize,
-            Arrays.copyOf(input.get(i).toDoubleArray(), input.numAttributes())));
+        output.add(new DenseInstance(segmentSize, input.get(i).toDoubleArray()));
         segmentLowerBoundary = segmentUpperBoundary;
         segmentUpperBoundary = ++segmentIndex*segmentSize;
         sumValues = new double[input.numAttributes()];
@@ -615,16 +589,13 @@ public class PAATransformer extends SimpleStreamFilter
       assert instanceUpperBoundary < segmentUpperBoundary;
       
       // add remaining to current segment
-      final double weight = Math.min(
-          input.get(i).weight(),
-          instanceUpperBoundary - segmentLowerBoundary
-          );
+      final double weight = Math.min(input.get(i).weight(), instanceUpperBoundary - segmentLowerBoundary);
 
-      for (int att = 0; att < input.numAttributes(); att++)
-        sumValues[att] += input.get(i).value(att)*weight;
+      for (int att = 0; att < input.numAttributes(); att++) {
+        sumValues[att] += input.get(i).value(att) * weight;
+      }
 
       instanceLowerBoundary = instanceUpperBoundary;
-
     }
     
     return output;
