@@ -1,10 +1,8 @@
 language: java
-install: ant deps
+
+script: ./build.sh
 
 jdk:
   - oraclejdk8
   - oraclejdk9
   - openjdk8
-
-env:
-  - TRAVIS_BUILD_DIR:weka/
