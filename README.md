@@ -1,6 +1,6 @@
-# WEKA (stable version)
+# WEKA (stable version) [![Build Status](https://travis-ci.com/zer0x64/weka-3.8.svg?branch=master)](https://travis-ci.com/zer0x64/weka-3.8)
 
-Read-only git mirror of Weka's subversion repository.
+Git mirror of Weka's subversion repository used for a course assignment
 
 ## Source code
 
