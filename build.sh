@@ -1,4 +1,4 @@
 #!/bin/sh
 
 cd ./weka/
-ant test
+mvn test -B
