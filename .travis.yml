@@ -1,3 +1,5 @@
 language: java
 
-- mvn ./weka/pom.xml
+- cd weka
+- ant compile
+- mvn compile
