@@ -1,5 +1,6 @@
 language: java
 
-- cd weka
-- ant compile
-- mvn compile
+script:
+  - cd weka
+  - ant compile
+  - mvn compile
