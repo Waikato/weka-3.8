@@ -1,0 +1,15 @@
+language: java
+jdk: oraclejdk8
+sudo: false # faster builds
+
+
+script:
+ - cd weka
+ - mvn compile
+ - mvn test -Dtest=MakeIndicatorTest
+ - mvn test -Dtest=RemoveFrequentValuesTest
+ - mvn test -Dtest=OneRTest
+ - mvn test -Dtest=SimpleKMeansTest
+ - mvn test -Dtest=EMTest
+
+  
