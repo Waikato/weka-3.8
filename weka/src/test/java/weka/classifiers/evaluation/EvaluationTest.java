@@ -64,7 +64,7 @@ public class EvaluationTest extends TestCase {
 
     weka.test.Regression reg = new weka.test.Regression(getClass());
 
-    reg.println(standard);
+    reg.println(standard + "abc");
     reg.println(info);
 
     try {
@@ -73,7 +73,7 @@ public class EvaluationTest extends TestCase {
       if (diff == null) {
         System.err.println("Warning: No reference available, creating.");
       } else if (!diff.equals("")) {
-        fail("Regression tst failed. Difference:\n" + diff);
+        fail("Regression tst failed. Difference:\n" + diff + "," + getClass().getName().replace('.', File.separatorChar));
       }
     } catch (IOException ex) {
       fail("Problem during regression testing.\n" + ex);
