@@ -149,6 +149,8 @@ public class Regression {
       // actual differences. We could also try calling unix diff utility
       // if it exists.
       StringBuffer diff = new StringBuffer();
+	  System.out.println("reference: " + reference);
+	  System.out.println("current: " + current);
       diff.append("+++ Reference: ").append(m_RefFile).append(" +++\n")
         .append(reference).append("+++ Current +++\n").append(current)
         .append("+++\n");
