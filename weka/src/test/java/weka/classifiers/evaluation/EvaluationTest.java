@@ -22,6 +22,8 @@ package weka.classifiers.evaluation;
 import java.io.IOException;
 import java.io.StringReader;
 
+import java.io.File;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
