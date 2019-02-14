@@ -717,4 +717,3 @@ public class KStar
   }
 
 } // class end
-

@@ -60,3 +60,4 @@ public interface KStarConstants {
   int M_AVERAGE = 4; 
   
 }
+

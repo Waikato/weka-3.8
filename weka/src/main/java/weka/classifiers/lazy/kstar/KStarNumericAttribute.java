@@ -619,3 +619,4 @@ public class KStarNumericAttribute implements KStarConstants, RevisionHandler {
     return RevisionUtils.extract("$Revision$");
   }
 } // class
+

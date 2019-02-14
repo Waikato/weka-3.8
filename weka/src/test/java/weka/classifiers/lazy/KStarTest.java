@@ -50,3 +50,4 @@ public class KStarTest extends AbstractClassifierTest {
   }
 
 }
+

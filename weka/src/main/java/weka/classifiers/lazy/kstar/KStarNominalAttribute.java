@@ -584,3 +584,4 @@ public class KStarNominalAttribute implements KStarConstants, RevisionHandler {
     return RevisionUtils.extract("$Revision$");
   }
 } // class
+

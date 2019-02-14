@@ -2,7 +2,6 @@ language: java
 jdk: oraclejdk8
 sudo: false # faster builds
 
-# Test
 
 script:
  - cd weka
@@ -12,6 +11,8 @@ script:
  - mvn test -Dtest=OneRTest
  - mvn test -Dtest=SimpleKMeansTest
  - mvn test -Dtest=EMTest
+ - mvn test -Dtest=KStarTest
+ 
 
 
  
