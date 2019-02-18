@@ -4,5 +4,4 @@ script: ./build.sh
 
 jdk:
   - oraclejdk8
-  - oraclejdk9
   - openjdk8
