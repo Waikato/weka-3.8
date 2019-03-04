@@ -333,6 +333,9 @@
 
   <target name="installer_init">
     <unzip src="${dist}/weka-${release}.zip" dest="${temp}"/>
+    <!-- add unziped jre to the release dir -->
+    <mkdir dir="${temp}/weka-${release}/jre"/>
+    <unzip src="${jre_64}" dest="${temp}/weka-${release}/jre"/>
     <mkdir dir="${temp}/nsis"/>
 
     <copy todir="${temp}/nsis">
@@ -382,7 +385,7 @@
     <!-- non-jre installer - 32 bit -->
     <echo message="Creating nsis script for 32 bit installer"/>
     <java dir="${temp}/nsis" classname="GenerateSetup" fork="true">
-      <arg line="-version ${version} -input-dir ../weka-${release} -output-dir ./output -dir Weka-3-8 -link-prefix 'Weka 3.8'"/>
+      <arg line="-version ${version} -input-dir ../weka-${release} -output-dir ./output -dir Weka-${release} -link-prefix 'Weka ${version}'"/>
       <classpath>
         <pathelement location="${temp}/nsis"/>
         <pathelement path="${java.class.path}"/>
@@ -392,25 +395,7 @@
     <!-- non-jre installer - 64 bit -->
     <echo message="Creating nsis script for 64 bit installer"/>
     <java dir="${temp}/nsis" classname="GenerateSetup" fork="true">
-      <arg line="-version ${version} -input-dir ../weka-${release} -output-dir ./output -dir Weka-3-8 -link-prefix 'Weka 3.8' -x64 true"/>
-      <classpath>
-        <pathelement location="${temp}/nsis"/>
-        <pathelement path="${java.class.path}"/>
-      </classpath>
-    </java>
-    <!-- jre installer - 32 bit -->
-    <echo message="Creating nsis script for 32 bit installer with JRE included"/>
-    <java dir="${temp}/nsis" classname="GenerateSetup" fork="true">
-      <arg line="-version ${version} -input-dir ../weka-${release} -output-dir ./output -dir Weka-3-8 -link-prefix 'Weka 3.8' -jre ${jre}"/>
-      <classpath>
-        <pathelement location="${temp}/nsis"/>
-        <pathelement path="${java.class.path}"/>
-      </classpath>
-    </java>
-    <!-- jre installer - 64 bit -->
-    <echo message="Creating nsis script for 64 bit installer with JRE included"/>
-    <java dir="${temp}/nsis" classname="GenerateSetup" fork="true">
-      <arg line="-version ${version} -input-dir ../weka-${release} -output-dir ./output -dir Weka-3-8 -link-prefix 'Weka 3.8' -x64 true -jre ${jre_64}"/>
+      <arg line="-version ${version} -input-dir ../weka-${release} -output-dir ./output -dir Weka-${release} -link-prefix 'Weka ${version}' -x64 true"/>
       <classpath>
         <pathelement location="${temp}/nsis"/>
         <pathelement path="${java.class.path}"/>
@@ -422,19 +407,9 @@
       <arg value="temp/nsis/output/weka-${release}.nsi"/>
     </exec>
 
-    <echo message="Compiling nsis script for 32 bit installer with jre to executable"/>
-    <exec executable="${makensis}">
-      <arg value="temp/nsis/output/weka-${release}jre.nsi"/>
-    </exec>
-
     <echo message="Compiling nsis script for 64 bit installer to executable"/>
     <exec executable="${makensis}">
       <arg value="temp/nsis/output/weka-${release}-x64.nsi"/>
-    </exec>
-
-    <echo message="Compiling nsis script for 64 bit installer with jre to executable"/>
-    <exec executable="${makensis}">
-      <arg value="temp/nsis/output/weka-${release}jre-x64.nsi"/>
     </exec>
 
     <!-- copy all exe installers to dist -->
@@ -443,6 +418,7 @@
         <include name="**/*.exe"/>
         </fileset>
     </copy>
+    
     <delete dir="${temp}/nsis"/>
   </target>
 
