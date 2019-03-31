@@ -690,7 +690,8 @@ public class DefaultPackage extends Package implements Serializable {
     String systemVersion = m_packageManager.getBaseSystemVersion().toString();
     // System.err.println("Base system version " + systemVersion);
 
-    String dependencies = getPackageMetaDataElement("Depends").toString();
+    String dependencies = getPackageMetaDataElement("Depends") == null
+      ? null : getPackageMetaDataElement("Depends").toString();
     if (dependencies == null) {
       return true;
     }
