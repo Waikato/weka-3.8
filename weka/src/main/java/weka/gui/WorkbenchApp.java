@@ -39,8 +39,8 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * One app to rule them all, one app to find them, one app to
- * bring them all and with perspectives bind them.
+ * One app to rule them all, one app to find them, one app to bring them all and
+ * with perspectives bind them.
  *
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
  * @version $Revision: $
@@ -107,8 +107,8 @@ public class WorkbenchApp extends AbstractGUIApplication {
   }
 
   /**
-   * Get the main perspective of this application. In this case the
-   * Preprocess panel is the main perspective.
+   * Get the main perspective of this application. In this case the Preprocess
+   * panel is the main perspective.
    *
    * @return the main perspective of this application
    */
@@ -164,9 +164,9 @@ public class WorkbenchApp extends AbstractGUIApplication {
    */
   public static void main(String[] args) {
 
+    WekaPackageManager.loadPackages(false, false, true);
     weka.core.logging.Logger.log(weka.core.logging.Logger.Level.INFO,
       "Logging started");
-    WekaPackageManager.loadPackages(false, true, true);
 
     try {
       LookAndFeel.setLookAndFeel(WorkbenchDefaults.APP_ID,
@@ -174,7 +174,6 @@ public class WorkbenchApp extends AbstractGUIApplication {
     } catch (IOException ex) {
       ex.printStackTrace();
     }
-    weka.gui.GenericObjectEditor.determineClasses();
 
     try {
       if (System.getProperty("os.name").contains("Mac")) {
