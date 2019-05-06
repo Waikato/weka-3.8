@@ -24,6 +24,8 @@ package weka.knowledgeflow;
 import weka.core.Environment;
 import weka.core.Instances;
 import weka.core.OptionHandler;
+import weka.core.SerializationHelper;
+import weka.core.SerializedObject;
 import weka.core.Settings;
 import weka.core.Utils;
 import weka.core.WekaException;
@@ -926,10 +928,17 @@ public class StepManagerImpl implements StepManager {
 
       List<StepManager> toNotify =
         m_connectedByTypeOutgoing.get(outgoingConnectionName);
+      boolean copyPrimaryPayload =
+        payloadNotThreadSafe(data) && toNotify.size() > 1;
+      boolean first = true;
       if (toNotify != null) {
         for (StepManager s : toNotify) {
           if (!isStopRequested()) {
+            if (!first && copyPrimaryPayload) {
+              copyPrimaryPayload(data);
+            }
             m_executionEnvironment.sendDataToStep((StepManagerImpl) s, data);
+            first = false;
           }
         }
       }
@@ -968,13 +977,20 @@ public class StepManagerImpl implements StepManager {
         List<StepManager> candidates =
           m_connectedByTypeOutgoing.get(d.getConnectionName());
         if (candidates != null) {
+          boolean copyPrimaryPayload =
+            payloadNotThreadSafe(d) && candidates.size() > 1;
+          boolean first = true;
           for (StepManager s : candidates) {
             List<Data> toReceive = stepsToSendTo.get(s);
             if (toReceive == null) {
               toReceive = new ArrayList<Data>();
               stepsToSendTo.put((StepManagerImpl) s, toReceive);
             }
+            if (!first && copyPrimaryPayload) {
+              copyPrimaryPayload(d);
+            }
             toReceive.add(d);
+            first = false;
           }
         }
 
@@ -1448,6 +1464,36 @@ public class StepManagerImpl implements StepManager {
     }
 
     return prefix;
+  }
+
+  /**
+   * Returns true if the primary payload of the supplied data object is not
+   * thread safe.
+   *
+   * @param data the data object to check
+   * @return true if the primary payload is not thread safe
+   */
+  protected static boolean payloadNotThreadSafe(Data data) {
+    // not specified or default is payload is thread safe
+    return data.getPayloadElement(
+      StepManager.CON_AUX_DATA_PRIMARY_PAYLOAD_NOT_THREAD_SAFE, false);
+  }
+
+  /**
+   * Replaces the primary payload of the supplied data object with a serialized
+   * copy of itself
+   * 
+   * @param data the data object for which to make a copy of the primary payload
+   * @throws WekaException if a problem occurs
+   */
+  protected static void copyPrimaryPayload(Data data) throws WekaException {
+    Object payload = data.getPrimaryPayload();
+    try {
+      SerializedObject o = new SerializedObject(payload);
+      data.setPayloadElement(data.getConnectionName(), o.getObject());
+    } catch (Exception ex) {
+      throw new WekaException(ex);
+    }
   }
 
   /**

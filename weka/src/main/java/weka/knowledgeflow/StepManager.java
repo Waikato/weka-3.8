@@ -85,6 +85,8 @@ public interface StepManager {
   public static final String CON_AUX_DATA_INCREMENTAL_STREAM_END =
     "incremental_stream_end";
   public static final String CON_AUX_DATA_IS_INCREMENTAL = "incremental_stream";
+  public static final String CON_AUX_DATA_PRIMARY_PAYLOAD_NOT_THREAD_SAFE =
+    "aux_not_thread_safe";
 
   /**
    * Get the name of the step managed by this StepManager

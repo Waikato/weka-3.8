@@ -462,6 +462,8 @@ public class Classifier extends WekaAlgorithmWrapper implements
             StepManager.CON_AUX_DATA_MAX_SET_NUM, maxSetNum);
           batchClassifier.setPayloadElement(StepManager.CON_AUX_DATA_LABEL,
             getName());
+          batchClassifier.setPayloadElement(
+            StepManager.CON_AUX_DATA_PRIMARY_PAYLOAD_NOT_THREAD_SAFE, true);
           getStepManager().outputData(batchClassifier);
         }
       }
@@ -494,9 +496,8 @@ public class Classifier extends WekaAlgorithmWrapper implements
     if (m_trainedClassifierHeader != null
       && !testSplit.equalHeaders(m_trainedClassifierHeader)) {
       if (!(m_trainedClassifier instanceof InputMappedClassifier)) {
-        throw new WekaException(
-          "Structure of incoming data does not match "
-            + "that of the trained classifier");
+        throw new WekaException("Structure of incoming data does not match "
+          + "that of the trained classifier");
       }
     }
 
@@ -519,6 +520,8 @@ public class Classifier extends WekaAlgorithmWrapper implements
       maxSetNum);
     batchClassifier
       .setPayloadElement(StepManager.CON_AUX_DATA_LABEL, getName());
+    batchClassifier.setPayloadElement(
+      StepManager.CON_AUX_DATA_PRIMARY_PAYLOAD_NOT_THREAD_SAFE, true);
     getStepManager().outputData(batchClassifier);
   }
 
@@ -545,6 +548,10 @@ public class Classifier extends WekaAlgorithmWrapper implements
         data.getPayloadElement(StepManager.CON_AUX_DATA_MAX_SET_NUM, 1));
       batchClassifier.setPayloadElement(StepManager.CON_AUX_DATA_LABEL,
         getName());
+      // make sure there are no concurrency issues if we are connected to
+      // multiple downstream steps
+      batchClassifier.setPayloadElement(
+        StepManager.CON_AUX_DATA_PRIMARY_PAYLOAD_NOT_THREAD_SAFE, true);
       getStepManager().outputData(batchClassifier);
       if (isStopRequested()) {
         getStepManager().interrupted();
