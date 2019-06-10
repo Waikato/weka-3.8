@@ -204,12 +204,10 @@ public class AddCluster extends Filter implements UnsupervisedFilter,
     Instances toFilter = getInputFormat();
 
     if (!isFirstBatchDone()) {
-      // filter out attributes if necessary
-      Instances toFilterIgnoringAttributes = removeIgnored(toFilter);
-
       // serialized model or build clusterer from scratch?
       File file = getSerializedClustererFile();
       if (!file.isDirectory()) {
+        int[] attsToIgnore = null;
         ObjectInputStream ois = //new ObjectInputStream(new FileInputStream(file));
           SerializationHelper.getObjectInputStream(new FileInputStream(file));
         m_ActualClusterer = (Clusterer) ois.readObject();
@@ -217,18 +215,31 @@ public class AddCluster extends Filter implements UnsupervisedFilter,
         // let's see whether there's an Instances header stored as well
         try {
           header = (Instances) ois.readObject();
+          // ignored atts
+          attsToIgnore = (int[]) ois.readObject();
         } catch (Exception e) {
           // ignored
         }
         ois.close();
+
+        if (attsToIgnore != null && attsToIgnore.length > 0) {
+          m_removeAttributes = new Remove();
+          ((Remove) m_removeAttributes).setAttributeIndicesArray(attsToIgnore);
+          ((Remove) m_removeAttributes).setInvertSelection(false);
+          m_removeAttributes.setInputFormat(toFilter);
+        }
+
         // same dataset format?
         if ((header != null)
-          && (!header.equalHeaders(toFilterIgnoringAttributes))) {
+          && (!header.equalHeaders(toFilter))) {
           throw new WekaException(
             "Training header of clusterer and filter dataset don't match:\n"
-              + header.equalHeadersMsg(toFilterIgnoringAttributes));
+              + header.equalHeadersMsg(toFilter));
         }
       } else {
+        // filter out attributes if necessary
+        Instances toFilterIgnoringAttributes = removeIgnored(toFilter);
+
         m_ActualClusterer = AbstractClusterer.makeCopy(m_Clusterer);
         m_ActualClusterer.buildClusterer(toFilterIgnoringAttributes);
       }
