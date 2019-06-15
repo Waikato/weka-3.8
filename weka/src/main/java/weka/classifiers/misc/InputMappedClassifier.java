@@ -120,7 +120,7 @@ public class InputMappedClassifier extends SingleClassifierEnhancer implements
   /** The path to the serialized model to use (if any) */
   protected String m_modelPath = "";
 
-  /** The header of the last known set of incoming test instances */
+  /** The header of the last known set of incoming test instances, without any string or relational values */
   protected transient Instances m_inputHeader;
 
   /** The instances structure used to train the classifier with */
@@ -585,7 +585,7 @@ public class InputMappedClassifier extends SingleClassifierEnhancer implements
   @Override
   public void buildClassifier(Instances data) throws Exception {
     if (!m_initialTestStructureKnown) {
-      m_inputHeader = new Instances(data, 0);
+      m_inputHeader = data.stringFreeStructure();
     }
 
     m_attributeMap = null;
@@ -599,7 +599,7 @@ public class InputMappedClassifier extends SingleClassifierEnhancer implements
 
     m_Classifier.buildClassifier(data);
     // m_loadedClassifier = m_Classifier;
-    m_modelHeader = new Instances(data, 0);
+    m_modelHeader = data.stringFreeStructure();
   }
 
   private boolean stringMatch(String one, String two) {
@@ -672,8 +672,17 @@ public class InputMappedClassifier extends SingleClassifierEnhancer implements
 
     for (int i = 0; i < m_modelHeader.numAttributes(); i++) {
       Attribute temp = m_modelHeader.attribute(i);
-      String attName = "(" + ((temp.isNumeric()) ? "numeric)" : "nominal)")
-        + " " + temp.name();
+      String attName = "(";
+      if (temp.isNumeric()) {
+        attName += "numeric";
+      } else if (temp.isNominal()) {
+        attName += "nominal";
+      } else if (temp.isRelationValued()) {
+        attName += "relational";
+      } else if (temp.isString()) {
+        attName += "string";
+      }
+      attName += ") " + temp.name();
       attName = getFixedLengthString(attName, ' ', maxLength);
       attName += "\t--> ";
       result.append(attName);
@@ -686,9 +695,17 @@ public class InputMappedClassifier extends SingleClassifierEnhancer implements
         result.append(inAttNum + "missing (type mis-match)\n");
       } else {
         Attribute inAtt = m_inputHeader.attribute(m_attributeMap[i]);
-        String inName = "" + (m_attributeMap[i] + 1) + " ("
-          + ((inAtt.isNumeric()) ? "numeric)" : "nominal)") + " "
-          + inAtt.name();
+        String inName = "" + (m_attributeMap[i] + 1) + " (";
+        if (inAtt.isNumeric()) {
+          inName += "numeric";
+        } else if (inAtt.isNominal()) {
+          inName += "nominal";
+        } else if (inAtt.isRelationValued()) {
+          inName += "relational";
+        } else if (inAtt.isString()) {
+          inName += "string";
+        }
+        inName += ") " + inAtt.name();
         result.append(inName + "\n");
       }
     }
@@ -777,7 +794,7 @@ public class InputMappedClassifier extends SingleClassifierEnhancer implements
     // since this has to match what we will build with
     Instances toReturn = (m_modelHeader == null) ? defaultH : m_modelHeader;
 
-    return new Instances(toReturn, 0);
+    return toReturn.stringFreeStructure();
   }
 
   // get the mapped class index (i.e. the index in the incoming data of
@@ -799,7 +816,7 @@ public class InputMappedClassifier extends SingleClassifierEnhancer implements
     boolean regenerateMapping = false;
 
     if (m_inputHeader == null) {
-      m_inputHeader = incoming.dataset();
+      m_inputHeader = incoming.dataset().stringFreeStructure();
       regenerateMapping = true;
       m_initialTestStructureKnown = false;
     } else if (!m_inputHeader.equalHeaders(incoming.dataset())) {
@@ -811,7 +828,7 @@ public class InputMappedClassifier extends SingleClassifierEnhancer implements
        * Instances(m_inputHeader, 0)); System.out.println("Model header\n" + new
        * Instances(m_modelHeader, 0));
        */
-      m_inputHeader = incoming.dataset();
+      m_inputHeader = incoming.dataset().stringFreeStructure();
 
       regenerateMapping = true;
       m_initialTestStructureKnown = false;
@@ -832,10 +849,12 @@ public class InputMappedClassifier extends SingleClassifierEnhancer implements
 
     m_vals = new double[m_modelHeader.numAttributes()];
 
+    // Create a fresh dataset object in case we have string or relational attributes
+    Instances freshData = m_modelHeader.stringFreeStructure();
+
     for (int i = 0; i < m_modelHeader.numAttributes(); i++) {
       if (m_attributeStatus[i] == OK) {
         Attribute modelAtt = m_modelHeader.attribute(i);
-        m_inputHeader.attribute(m_attributeMap[i]);
 
         if (Utils.isMissingValue(incoming.value(m_attributeMap[i]))) {
           m_vals[i] = Utils.missingValue();
@@ -853,6 +872,11 @@ public class InputMappedClassifier extends SingleClassifierEnhancer implements
           } else {
             m_vals[i] = mapVal;
           }
+        } else if (modelAtt.isString()) {
+          m_vals[i] = freshData.attribute(i).addStringValue(incoming.attribute(m_attributeMap[i]),
+                  (int)incoming.value(m_attributeMap[i]));
+        } else if (modelAtt.isRelationValued()) {
+          m_vals[i] = freshData.attribute(i).addRelation(incoming.relationalValue(m_attributeMap[i]));
         }
       } else {
         m_vals[i] = Utils.missingValue();
@@ -860,7 +884,7 @@ public class InputMappedClassifier extends SingleClassifierEnhancer implements
     }
 
     Instance newInst = new DenseInstance(incoming.weight(), m_vals);
-    newInst.setDataset(m_modelHeader);
+    newInst.setDataset(freshData);
 
     return newInst;
   }
