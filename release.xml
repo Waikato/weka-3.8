@@ -220,7 +220,7 @@
   <!-- build the Mac application suitable for running under Oracle Java >= 1.7 -->
   <target name="osx_app_oracle" if="${osx_jre_oracle}">
     <bundleapp outputdirectory="${temp}"
-        name="weka-${release}-oracle-jvm"
+        name="weka-${release}-corretto-jvm"
         displayname="Weka-${release}"
 	icon="weka/src/main/java/weka/gui/weka_icon_new.icns"
         identifier="nz.ac.waikato.cms.Weka"
@@ -324,7 +324,7 @@
     <delete dir="${temp}/nsis"/>
 
     <antcall target="osx_app_oracle">
-      <param name="jvm_target" value="oracle-jvm"/>
+      <param name="jvm_target" value="corretto-jvm"/>
     </antcall>
     <antcall target="osx_app_apple">
       <param name="jvm_target" value="apple-jvm"/>
