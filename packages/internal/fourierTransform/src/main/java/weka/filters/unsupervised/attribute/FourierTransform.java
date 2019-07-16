@@ -330,21 +330,34 @@ public class FourierTransform extends Filter implements UnsupervisedFilter,
     int counter = 0;
     for (int k = 0; k < input.numInstances(); k++) {
       int numCounter = 0;
-      for (int i = 0; i < input.numAttributes(); i++) {
-        if (input.attribute(i).isNumeric()) {
-          if (counter < m_sequenceLength) {
-            holder[numCounter].m_re[counter] =
-              input.instance(k).isMissing(i) ? 0 : input.instance(k).value(i);
-            if (!input.instance(k).isMissing(i)) {
-              holder[numCounter].m_stats.add(input.instance(k).value(i));
+      if (counter < m_sequenceLength) {
+        for (int i = 0; i < input.numAttributes(); i++) {
+          if (input.attribute(i).isNumeric()) {
+            if (counter < m_sequenceLength) {
+              holder[numCounter].m_re[counter] =
+                input.instance(k).isMissing(i) ? 0 : input.instance(k).value(i);
+              if (!input.instance(k).isMissing(i)) {
+                holder[numCounter].m_stats.add(input.instance(k).value(i));
+              }
+            } else {
+              holder[numCounter].m_re[counter] = 0;
             }
-          } else {
-            holder[numCounter].m_re[counter] = 0;
+            holder[numCounter++].m_im[counter] = 0;
           }
-          holder[numCounter++].m_im[counter] = 0;
         }
+        counter++;
+      } else {
+        // pad out with zeros
+        while (counter < nearestPower2) {
+          for (int i = 0; i < holder.length; i++) {
+            holder[i].m_re[counter] = 0;
+            holder[i].m_im[counter] = 0;
+          }
+          counter++;
+        }
+        k--;
       }
-      counter++;
+
       if (counter == nearestPower2) {
         // - e.g. mean, std. dev, skewness, kurtoses. Padding will affect this.
         for (int i = 0; i < holder.length; i++) {
