@@ -6,7 +6,7 @@
 PackageName=fourierTransform
 
 # Version (required)
-Version=1.0.0
+Version=1.0.1
 
 #Date
 Date=2019-07-05
@@ -28,10 +28,10 @@ License=GPL 3.0
 # Description (required)
 Description=Two filters for transforming numeric input data using the fast fourier transform. An attribute filter accepts time-series data stored sequentially within an attribute(s) (i.e over instances). An instance filter accepts sequences stored across attributes (i.e. each instance is a sequence). In the former case, the user can specify a sequence length (N), and the values of an attribute over N consecutive instances is FFT transformed and becomes an output instance. In the later case, the sequence length is determined by the number of numeric attributes in the original data. Both filters output an FFT magnitude spectrum for sequences. The user can opt to reduce dimensionality by binning the spectrum. Based on original code by Anilkumar Patro at Worcestor Polytechnic Institute.
 
-# Changes=
+Changes=Fixed a bug that affected processing of sequences that affected the case where the user-specified sequence length was not a power of 2.
 
 # Package URL for obtaining the package archive (required)
-PackageURL=http://prdownloads.sourceforge.net/weka/fourierTransform1.0.0.zip?download
+PackageURL=http://prdownloads.sourceforge.net/weka/fourierTransform1.0.1.zip?download
 
 # URL for further information
 URL=http://weka.sourceforge.net/doc.packages/fourierTransform
