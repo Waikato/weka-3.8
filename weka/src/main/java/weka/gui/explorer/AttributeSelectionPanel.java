@@ -985,7 +985,7 @@ public class AttributeSelectionPanel extends AbstractPerspective implements
    * @param ti the Instances to display
    */
   protected void saveTransformedData(Instances ti) {
-    WekaFileChooser fc;
+    JFileChooser fc;
     int retVal;
     BufferedWriter writer;
     ExtensionFileFilter filter;

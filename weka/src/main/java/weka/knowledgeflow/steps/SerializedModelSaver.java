@@ -269,7 +269,7 @@ public class SerializedModelSaver extends BaseStep {
       }
 
       if (modelHeader != null) {
-        modelHeader = new Instances(modelHeader, 0);
+        modelHeader = modelHeader.stringFreeStructure();
       }
 
       getStepManager().processing();

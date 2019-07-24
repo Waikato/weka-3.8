@@ -1525,7 +1525,7 @@ public class ClustererPanel extends AbstractPerspective implements
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(os);
         objectOutputStream.writeObject(clusterer);
         if (trainHeader != null) {
-          Instances tmpSave = new Instances(trainHeader, 0);
+          Instances tmpSave = trainHeader.stringFreeStructure();
           tmpSave.setClassIndex(-1);
           objectOutputStream.writeObject(tmpSave);
         }

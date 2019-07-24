@@ -736,7 +736,7 @@ public class Clusterer extends JPanel implements BeanCommon, Visible,
           new BufferedOutputStream(new FileOutputStream(saveTo)));
         os.writeObject(m_Clusterer);
         if (m_trainingSet != null) {
-          Instances header = new Instances(m_trainingSet, 0);
+          Instances header = m_trainingSet.stringFreeStructure();
           os.writeObject(header);
         }
         os.close();

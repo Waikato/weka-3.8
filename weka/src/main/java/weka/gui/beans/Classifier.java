@@ -2211,7 +2211,7 @@ public class Classifier extends JPanel implements BeanCommon, Visible,
           && saveTo.getAbsolutePath().toLowerCase()
             .endsWith(KOML.FILE_EXTENSION + FILE_EXTENSION)) {
           SerializedModelSaver.saveKOML(saveTo, m_Classifier,
-            (m_trainingSet != null) ? new Instances(m_trainingSet, 0) : null);
+            (m_trainingSet != null) ? m_trainingSet.stringFreeStructure() : null);
           /*
            * Vector v = new Vector(); v.add(m_Classifier); if (m_trainingSet !=
            * null) { v.add(new Instances(m_trainingSet, 0)); } v.trimToSize();
@@ -2222,7 +2222,7 @@ public class Classifier extends JPanel implements BeanCommon, Visible,
             .endsWith(XStream.FILE_EXTENSION + FILE_EXTENSION)) {
 
           SerializedModelSaver.saveXStream(saveTo, m_Classifier,
-            (m_trainingSet != null) ? new Instances(m_trainingSet, 0) : null);
+            (m_trainingSet != null) ? m_trainingSet.stringFreeStructure() : null);
           /*
            * Vector v = new Vector(); v.add(m_Classifier); if (m_trainingSet !=
            * null) { v.add(new Instances(m_trainingSet, 0)); } v.trimToSize();
@@ -2234,7 +2234,7 @@ public class Classifier extends JPanel implements BeanCommon, Visible,
               new FileOutputStream(saveTo)));
           os.writeObject(m_Classifier);
           if (m_trainingSet != null) {
-            Instances header = new Instances(m_trainingSet, 0);
+            Instances header = m_trainingSet.stringFreeStructure();
             os.writeObject(header);
           }
           os.close();
@@ -2328,7 +2328,7 @@ public class Classifier extends JPanel implements BeanCommon, Visible,
   }
 
   /**
-   * @param name of the event to check
+   * @param eventName of the event to check
    * @return true if eventName is one of the possible events that this component
    *         can generate
    */

@@ -15,7 +15,7 @@
 
 /*
  * SqlViewer.java
- * Copyright (C) 2005-2012 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2005-2018 University of Waikato, Hamilton, New Zealand
  *
  */
 

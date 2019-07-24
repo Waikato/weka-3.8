@@ -112,8 +112,8 @@ public class ConverterFileChooser extends WekaFileChooser {
    * whether to display only core converters (hardcoded in ConverterUtils).
    * Necessary for RMI/Remote Experiments for instance.
    * 
-   * @see ConverterResources#CORE_FILE_LOADERS
-   * @see ConverterResources#CORE_FILE_SAVERS
+   * @see weka.core.converters.ConverterResources#CORE_FILE_LOADERS
+   * @see weka.core.converters.ConverterResources#CORE_FILE_SAVERS
    */
   protected boolean m_CoreConvertersOnly = false;
 
