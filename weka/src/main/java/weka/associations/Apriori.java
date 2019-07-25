@@ -881,6 +881,8 @@ public class Apriori extends AbstractAssociator implements OptionHandler,
     if (toStringDelimitersString.length() == 2) {
       m_toStringDelimiters = toStringDelimitersString;
     }
+
+    Utils.checkForRemainingOptions(options);
   }
 
   /**

@@ -274,6 +274,29 @@ public class J48 extends AbstractClassifier implements OptionHandler, Drawable,
   @Override
   public void buildClassifier(Instances instances) throws Exception {
 
+    if ((m_unpruned) && (!m_subtreeRaising)) {
+      throw new Exception("Subtree raising does not need to be unset for unpruned trees!");
+    }
+    if ((m_unpruned) && (m_reducedErrorPruning)) {
+      throw new Exception("Unpruned tree and reduced error pruning cannot be selected simultaneously!");
+    }
+    if ((m_unpruned) && (m_CF != 0.25f)) {
+      throw new Exception("It does not make sense to change the confidence for an unpruned tree!");
+    }
+    if ((m_reducedErrorPruning) && (m_CF != 0.25f)) {
+      throw new Exception("Changing the confidence does not make sense for reduced error pruning.");
+    }
+    if ((!m_reducedErrorPruning) && (m_numFolds != 3)) {
+      throw new Exception("Changing the number of folds does not make sense if"
+              + " reduced error pruning is not selected.");
+    }
+    if ((!m_reducedErrorPruning) && (m_Seed != 1)) {
+      throw new Exception("Changing the seed does not make sense if"
+              + " reduced error pruning is not selected.");
+    }
+    if ((m_CF <= 0) || (m_CF >= 1)) {
+      throw new Exception("Confidence has to be greater than zero and smaller than one!");
+    }
     getCapabilities().testWithFail(instances);
 
     ModelSelection modSelection;
@@ -564,45 +587,17 @@ public class J48 extends AbstractClassifier implements OptionHandler, Drawable,
     m_collapseTree = !Utils.getFlag('O', options);
     m_subtreeRaising = !Utils.getFlag('S', options);
     m_noCleanup = Utils.getFlag('L', options);
-    m_doNotMakeSplitPointActualValue = Utils.getFlag(
-      "doNotMakeSplitPointActualValue", options);
-    if ((m_unpruned) && (!m_subtreeRaising)) {
-      throw new Exception(
-        "Subtree raising doesn't need to be unset for unpruned tree!");
-    }
+    m_doNotMakeSplitPointActualValue = Utils.getFlag("doNotMakeSplitPointActualValue", options);
     m_reducedErrorPruning = Utils.getFlag('R', options);
-    if ((m_unpruned) && (m_reducedErrorPruning)) {
-      throw new Exception(
-        "Unpruned tree and reduced error pruning can't be selected "
-          + "simultaneously!");
-    }
     String confidenceString = Utils.getOption('C', options);
     if (confidenceString.length() != 0) {
-      if (m_reducedErrorPruning) {
-        throw new Exception("Setting the confidence doesn't make sense "
-          + "for reduced error pruning.");
-      } else if (m_unpruned) {
-        throw new Exception(
-          "Doesn't make sense to change confidence for unpruned " + "tree!");
-      } else {
-        m_CF = (new Float(confidenceString)).floatValue();
-        if ((m_CF <= 0) || (m_CF >= 1)) {
-          throw new Exception(
-            "Confidence has to be greater than zero and smaller " + "than one!");
-        }
-      }
+      setConfidenceFactor((new Float(confidenceString)).floatValue());
     } else {
       m_CF = 0.25f;
     }
     String numFoldsString = Utils.getOption('N', options);
     if (numFoldsString.length() != 0) {
-      if (!m_reducedErrorPruning) {
-        throw new Exception("Setting the number of folds"
-          + " doesn't make sense if"
-          + " reduced error pruning is not selected.");
-      } else {
-        m_numFolds = Integer.parseInt(numFoldsString);
-      }
+      m_numFolds = Integer.parseInt(numFoldsString);
     } else {
       m_numFolds = 3;
     }
@@ -628,43 +623,68 @@ public class J48 extends AbstractClassifier implements OptionHandler, Drawable,
 
     Vector<String> options = new Vector<String>();
 
-    if (m_noCleanup) {
-        options.add("-L");
-    }
-    if (!m_collapseTree) {
-        options.add("-O");
-    }
+    // Issue some warnings for the current configuration if necessary
     if (m_unpruned) {
-        options.add("-U");
-    } else {
       if (!m_subtreeRaising) {
-          options.add("-S");
+        System.err.println("WARNING: Subtree raising does not need to be unset for an unpruned tree!");
       }
       if (m_reducedErrorPruning) {
-          options.add("-R");
-          options.add("-N");
-          options.add("" + m_numFolds);
-          options.add("-Q");
-          options.add("" + m_Seed);
-      } else {
-          options.add("-C");
-          options.add("" + m_CF);
+        System.err.println("WARNING: Unpruned tree and reduced error pruning cannot be selected simultaneously!");
       }
     }
+    if (m_unpruned || m_reducedErrorPruning) {
+      if (m_CF != 0.25f) {
+        System.err.println("WARNING: Changing the confidence will only affect error-based pruning!");
+      }
+    }
+    if (m_unpruned || !m_reducedErrorPruning) {
+      if (m_Seed != 1) {
+        System.err.println("WARNING: Changing the seed only makes sense when using reduced error pruning");
+      }
+      if (m_numFolds != 3) {
+        System.err.println("WARNING: Changing the number of folds does not make sense if " +
+                "reduced error pruning is not selected.");
+      }
+    }
+
+    if (m_noCleanup) {
+      options.add("-L");
+    }
+    if (!m_collapseTree) {
+      options.add("-O");
+    }
+    if (m_unpruned) {
+      options.add("-U");
+    }
+    if (!m_subtreeRaising) {
+      options.add("-S");
+    }
+    if (m_reducedErrorPruning) {
+      options.add("-R");
+    }
     if (m_binarySplits) {
-        options.add("-B");
+      options.add("-B");
+    }
+    if (m_useLaplace) {
+      options.add("-A");
+    }
+    if (!m_useMDLcorrection) {
+      options.add("-J");
+    }
+    if (m_doNotMakeSplitPointActualValue) {
+      options.add("-doNotMakeSplitPointActualValue");
+    }
+    if (m_reducedErrorPruning) {
+      options.add("-N");
+      options.add("" + m_numFolds);
+      options.add("-Q");
+      options.add("" + m_Seed);
+    } else if (!m_unpruned) {
+      options.add("-C");
+      options.add("" + m_CF);
     }
     options.add("-M");
     options.add("" + m_minNumObj);
-    if (m_useLaplace) {
-        options.add("-A");
-    }
-    if (!m_useMDLcorrection) {
-        options.add("-J");
-    }
-    if (m_doNotMakeSplitPointActualValue) {
-        options.add("-doNotMakeSplitPointActualValue");
-    }
 
     Collections.addAll(options, super.getOptions());
 
@@ -881,9 +901,6 @@ public class J48 extends AbstractClassifier implements OptionHandler, Drawable,
    */
   public void setUnpruned(boolean v) {
 
-    if (v) {
-      m_reducedErrorPruning = false;
-    }
     m_unpruned = v;
   }
 
@@ -1005,9 +1022,6 @@ public class J48 extends AbstractClassifier implements OptionHandler, Drawable,
    */
   public void setReducedErrorPruning(boolean v) {
 
-    if (v) {
-      m_unpruned = false;
-    }
     m_reducedErrorPruning = v;
   }
 

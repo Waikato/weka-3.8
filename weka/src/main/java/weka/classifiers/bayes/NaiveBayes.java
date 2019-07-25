@@ -216,6 +216,9 @@ public class NaiveBayes extends AbstractClassifier implements OptionHandler,
   @Override
   public void buildClassifier(Instances instances) throws Exception {
 
+    if (getUseKernelEstimator() && getUseSupervisedDiscretization()) {
+      throw new IllegalArgumentException("Cannot use both kernel density estimation and discretization!");
+    }
     // can classifier handle the data?
     getCapabilities().testWithFail(instances);
 
@@ -442,10 +445,6 @@ public class NaiveBayes extends AbstractClassifier implements OptionHandler,
     super.setOptions(options);
     boolean k = Utils.getFlag('K', options);
     boolean d = Utils.getFlag('D', options);
-    if (k && d) {
-      throw new IllegalArgumentException("Can't use both kernel density "
-        + "estimation and discretization!");
-    }
     setUseSupervisedDiscretization(d);
     setUseKernelEstimator(k);
     setDisplayModelInOldFormat(Utils.getFlag('O', options));
@@ -470,6 +469,10 @@ public class NaiveBayes extends AbstractClassifier implements OptionHandler,
 
     if (m_UseDiscretization) {
       options.add("-D");
+    }
+
+    if (m_UseDiscretization && m_UseKernelEstimator) {
+      System.err.println("WARNING: Turning on both discretization and kernel density estimation is not supported.");
     }
 
     if (m_displayModelInOldFormat) {
@@ -872,9 +875,6 @@ public class NaiveBayes extends AbstractClassifier implements OptionHandler,
   public void setUseKernelEstimator(boolean v) {
 
     m_UseKernelEstimator = v;
-    if (v) {
-      setUseSupervisedDiscretization(false);
-    }
   }
 
   /**
@@ -901,14 +901,11 @@ public class NaiveBayes extends AbstractClassifier implements OptionHandler,
   /**
    * Set whether supervised discretization is to be used.
    * 
-   * @param newblah true if supervised discretization is to be used.
+   * @param s true if supervised discretization is to be used.
    */
-  public void setUseSupervisedDiscretization(boolean newblah) {
+  public void setUseSupervisedDiscretization(boolean s) {
 
-    m_UseDiscretization = newblah;
-    if (newblah) {
-      setUseKernelEstimator(false);
-    }
+    m_UseDiscretization = s;
   }
 
   /**

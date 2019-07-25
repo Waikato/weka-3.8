@@ -248,6 +248,22 @@ public class PART extends AbstractClassifier implements OptionHandler,
   @Override
   public void buildClassifier(Instances instances) throws Exception {
 
+    if ((m_unpruned) && (m_reducedErrorPruning)) {
+      throw new Exception("Unpruned rule set and reduced error pruning cannot be selected simultaneously!");
+    }
+    if ((m_unpruned) && (m_CF != 0.25f)) {
+      throw new Exception("It does not make sense to change the confidence for an unpruned tree!");
+    }
+    if ((m_reducedErrorPruning) && (m_CF != 0.25f)) {
+      throw new Exception("Changing the confidence does not make sense for reduced error pruning.");
+    }
+    if ((!m_reducedErrorPruning) && (m_numFolds != 3)) {
+      throw new Exception("Changing the number of folds does not make sense if"
+              + " reduced error pruning is not selected.");
+    }
+    if ((m_CF <= 0) || (m_CF >= 1)) {
+      throw new Exception("Confidence has to be greater than zero and smaller than one!");
+    }
     // can classifier handle the data?
     getCapabilities().testWithFail(instances);
 
@@ -443,31 +459,16 @@ public class PART extends AbstractClassifier implements OptionHandler,
     m_reducedErrorPruning = Utils.getFlag('R', options);
     m_binarySplits = Utils.getFlag('B', options);
     m_useMDLcorrection = !Utils.getFlag('J', options);
-    m_doNotMakeSplitPointActualValue = Utils.getFlag(
-      "doNotMakeSplitPointActualValue", options);
+    m_doNotMakeSplitPointActualValue = Utils.getFlag("doNotMakeSplitPointActualValue", options);
     String confidenceString = Utils.getOption('C', options);
     if (confidenceString.length() != 0) {
-      if (m_reducedErrorPruning) {
-        throw new Exception("Setting CF doesn't make sense "
-          + "for reduced error pruning.");
-      } else {
-        m_CF = (new Float(confidenceString)).floatValue();
-        if ((m_CF <= 0) || (m_CF >= 1)) {
-          throw new Exception(
-            "CF has to be greater than zero and smaller than one!");
-        }
-      }
+      setConfidenceFactor((new Float(confidenceString)).floatValue());
     } else {
       m_CF = 0.25f;
     }
     String numFoldsString = Utils.getOption('N', options);
     if (numFoldsString.length() != 0) {
-      if (!m_reducedErrorPruning) {
-        throw new Exception("Setting the number of folds"
-          + " does only make sense for" + " reduced error pruning.");
-      } else {
-        m_numFolds = Integer.parseInt(numFoldsString);
-      }
+      m_numFolds = Integer.parseInt(numFoldsString);
     } else {
       m_numFolds = 3;
     }
@@ -499,34 +500,53 @@ public class PART extends AbstractClassifier implements OptionHandler,
 
     Vector<String> options = new Vector<String>(13);
 
+    // Issue some warnings for the current configuration if necessary
     if (m_unpruned) {
-        options.add("-U");
+      if (m_reducedErrorPruning) {
+        System.err.println("WARNING: Unpruned tree and reduced error pruning cannot be selected simultaneously!");
+      }
+    }
+    if (m_unpruned || m_reducedErrorPruning) {
+      if (m_CF != 0.25f) {
+        System.err.println("WARNING: Changing the confidence will only affect error-based pruning!");
+      }
+    }
+    if (m_unpruned || !m_reducedErrorPruning) {
+      if (m_Seed != 1) {
+        System.err.println("WARNING: Changing the seed only makes sense when using reduced error pruning");
+      }
+      if (m_numFolds != 3) {
+        System.err.println("WARNING: Changing the number of folds does not make sense if " +
+                "reduced error pruning is not selected.");
+      }
+    }
+
+    if (m_unpruned) {
+      options.add("-U");
     }
     if (m_reducedErrorPruning) {
-        options.add("-R");
+      options.add("-R");
     }
     if (m_binarySplits) {
         options.add("-B");
     }
-    options.add("-M");
-    options.add("" + m_minNumObj);
-    if (!m_reducedErrorPruning) {
-        options.add("-C");
-        options.add("" + m_CF);
-    }
-    if (m_reducedErrorPruning) {
-        options.add("-N");
-        options.add("" + m_numFolds);
-    }
-    options.add("-Q");
-    options.add("" + m_Seed);
     if (!m_useMDLcorrection) {
-        options.add("-J");
+      options.add("-J");
     }
     if (m_doNotMakeSplitPointActualValue) {
-        options.add("-doNotMakeSplitPointActualValue");
+      options.add("-doNotMakeSplitPointActualValue");
     }
-
+    if (m_reducedErrorPruning) {
+      options.add("-N");
+      options.add("" + m_numFolds);
+      options.add("-Q");
+      options.add("" + m_Seed);
+    } else if (!m_unpruned) {
+      options.add("-C");
+      options.add("" + m_CF);
+    }
+    options.add("-M");
+    options.add("" + m_minNumObj);
     Collections.addAll(options, super.getOptions());
 
     return options.toArray(new String[0]);
