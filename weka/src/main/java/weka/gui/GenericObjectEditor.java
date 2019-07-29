@@ -1390,8 +1390,11 @@ public class GenericObjectEditor implements PropertyEditor, CustomPanelSupplier 
   /**
    * Sets the current Object. If the Object is in the Object chooser, this
    * becomes the selected item (and added to the chooser if necessary).
+   *
+   * Makes a completely independent copy of the incoming object for further use. If the incoming object
+   * is not an option handler, this is done by creating a deep copy using serialization.
    * 
-   * @param o an object that must be a Object.
+   * @param o the object to be edited
    */
   @Override
   public void setValue(Object o) {
@@ -1413,7 +1416,13 @@ public class GenericObjectEditor implements PropertyEditor, CustomPanelSupplier 
       return;
     }
 
-    setObject(o);
+    Object result = null;
+    try {
+      result = makeCopy(o);
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
+    setObject(result);
 
     if (m_EditorComponent != null) {
       m_EditorComponent.repaint();
@@ -1451,9 +1460,11 @@ public class GenericObjectEditor implements PropertyEditor, CustomPanelSupplier 
   }
 
   /**
-   * Gets the current Object.
-   * 
-   * @return the current Object
+   * Gets the current, configured object.
+   *
+   * Returns a completely independent copy of the configured object for further use.
+   *
+   * @return the current, configured object
    */
   @Override
   public Object getValue() {
@@ -1926,25 +1937,20 @@ public class GenericObjectEditor implements PropertyEditor, CustomPanelSupplier 
   }
 
   /**
-   * Makes a copy of an object using serialization.
+   * Makes a copy of an object using serialization if the given object is not an option handler. Otherwise,
+   * it will use the makeCopy() method in OptionHandler.
    * 
    * @param source the object to copy
    * @return a copy of the source object
    * @exception Exception if the copy fails
    */
   public static Object makeCopy(Object source) throws Exception {
-    Object result = null;
+
     if (source instanceof OptionHandler) {
-      // just copy the configuration via options. Saves deep copying
-      // stuff like trained classifiers.
-      String className = source.getClass().getCanonicalName();
-      String[] options = ((OptionHandler) source).getOptions();
-      result = Utils.forName(Object.class, className, options);
+      return OptionHandler.makeCopy((OptionHandler)source);
     } else {
-      SerializedObject so = new SerializedObject(source);
-      result = so.getObject();
+      return (new SerializedObject(source)).getObject();
     }
-    return result;
   }
 
   /**
