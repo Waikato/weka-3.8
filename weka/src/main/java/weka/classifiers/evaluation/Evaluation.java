@@ -1808,6 +1808,13 @@ public class Evaluation implements Summarizable, RevisionHandler, Serializable {
         // Evaluate on test data
         if (train == null) {
           testingEvaluation.useNoPriors();
+        } else if (!trainStatistics || printMargins) { // We may still need to set the priors based on the training data!
+          testingEvaluation.setPriors(train);
+          DataSource trainSource = new DataSource(trainFileName);
+          trainSource.getStructure(); // We already know the structure but need to advance to the data section
+          while (trainSource.hasMoreElements(train)) {
+            testingEvaluation.updatePriors(trainSource.nextElement(train));
+          }
         }
         if (classifier instanceof BatchPredictor && ((BatchPredictor) classifier).implementsMoreEfficientBatchPrediction()) {
           testTimeStart = System.currentTimeMillis();
