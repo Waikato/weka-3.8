@@ -1298,6 +1298,9 @@ public class ClassifierPanel extends AbstractPerspective implements
           int classIndex = m_ClassCombo.getSelectedIndex();
           inst.setClassIndex(classIndex);
           Classifier classifier = (Classifier) m_ClassifierEditor.getValue();
+          if (classifier instanceof weka.core.LogHandler) {
+            ((weka.core.LogHandler) classifier).setLog(m_Log);
+          }
           Classifier template = null;
           try {
             template = AbstractClassifier.makeCopy(classifier);
@@ -3134,6 +3137,9 @@ public class ClassifierPanel extends AbstractPerspective implements
                 userTestStructure.setClassIndex(userTestStructure
                   .numAttributes() - 1);
               }
+            }
+            if (classifierToUse instanceof weka.core.LogHandler) {
+              ((weka.core.LogHandler) classifierToUse).setLog(m_Log);
             }
             if (m_Log instanceof TaskLogger) {
               ((TaskLogger) m_Log).taskStarted();
