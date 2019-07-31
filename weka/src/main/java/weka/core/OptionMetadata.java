@@ -52,6 +52,14 @@ public @interface OptionMetadata {
   String description();
 
   /**
+   * Optional category for the parameter. GUI dialog can use this to group
+   * certain options for display in child dialogs
+   *
+   * @return the category for this option
+   */
+  String category() default "";
+
+  /**
    * The order (low to high), relative to other parameters, that this property
    * should be displayed in the GUI and, if applicable, on the command line help
    *
