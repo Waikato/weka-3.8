@@ -52,7 +52,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -66,6 +68,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import weka.core.*;
 import weka.gui.beans.GOECustomizer;
 
@@ -184,6 +187,9 @@ public class PropertySheetPanel extends JPanel implements
   /** Whether to show the about panel */
   private boolean m_showAboutPanel = true;
 
+  /** Non-empty if this panel is being used to group/display properties for a particular category */
+  private String m_propertyGroupingCategory = "";
+
   /** Holds the customizer (if one exists) for the object being edited */
   private GOECustomizer m_Customizer;
 
@@ -281,6 +287,14 @@ public class PropertySheetPanel extends JPanel implements
    */
   public boolean getUseEnvironmentPropertyEditors() {
     return m_useEnvironmentPropertyEditors;
+  }
+
+  public void setPropertyGroupingCategory(String category) {
+    m_propertyGroupingCategory = category;
+  }
+
+  public String getPropertyGroupingCategory() {
+    return m_propertyGroupingCategory;
   }
 
   /**
@@ -425,71 +439,71 @@ public class PropertySheetPanel extends JPanel implements
             }
             final String className = targ.getClass().getName();
             m_HelpText = new StringBuffer("NAME\n");
-            m_HelpText.append(className).append("\n\n");
-            m_HelpText.append("SYNOPSIS\n").append(globalInfo).append("\n\n");
-            m_HelpBut = new JButton("More");
-            m_HelpBut.setToolTipText("More information about " + className);
+            if (m_propertyGroupingCategory.length() > 0) {
+              summary += "\n\n" + m_propertyGroupingCategory + " options.";
+            } else {
+              m_HelpText.append(className).append("\n\n");
+              m_HelpText.append("SYNOPSIS\n").append(globalInfo).append("\n\n");
+              m_HelpBut = new JButton("More");
+              m_HelpBut.setToolTipText("More information about " + className);
 
-            m_HelpBut.addActionListener(new ActionListener() {
-              @Override
-              public void actionPerformed(ActionEvent a) {
-                openHelpFrame();
-                m_HelpBut.setEnabled(false);
-              }
-            });
-
-            if (m_Target instanceof CapabilitiesHandler) {
-              m_CapabilitiesBut = new JButton("Capabilities");
-              m_CapabilitiesBut.setToolTipText("The capabilities of "
-                + className);
-
-              m_CapabilitiesBut.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent a) {
-                  openCapabilitiesHelpDialog();
-                  m_CapabilitiesBut.setEnabled(false);
+              m_HelpBut.addActionListener(new ActionListener() {
+                @Override public void actionPerformed(ActionEvent a) {
+                  openHelpFrame();
+                  m_HelpBut.setEnabled(false);
                 }
               });
-            } else {
-              m_CapabilitiesBut = null;
-            }
 
-            jt.setColumns(30);
-            jt.setFont(new Font("SansSerif", Font.PLAIN, 12));
-            jt.setEditable(false);
-            jt.setLineWrap(true);
-            jt.setWrapStyleWord(true);
-            jt.setText(summary);
-            jt.setBackground(getBackground());
-            JPanel jp = new JPanel();
-            jp.setBorder(BorderFactory.createCompoundBorder(
-              BorderFactory.createTitledBorder("About"),
-              BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-            jp.setLayout(new BorderLayout());
-            jp.add(jt, BorderLayout.CENTER);
-            JPanel p2 = new JPanel();
-            p2.setLayout(new BorderLayout());
-            p2.add(m_HelpBut, BorderLayout.NORTH);
-            if (m_CapabilitiesBut != null) {
-              JPanel p3 = new JPanel();
-              p3.setLayout(new BorderLayout());
-              p3.add(m_CapabilitiesBut, BorderLayout.NORTH);
-              p2.add(p3, BorderLayout.CENTER);
-            }
-            jp.add(p2, BorderLayout.EAST);
-            GridBagConstraints gbConstraints = new GridBagConstraints();
-            // gbConstraints.anchor = GridBagConstraints.EAST;
-            gbConstraints.fill = GridBagConstraints.BOTH;
-            // gbConstraints.gridy = 0; gbConstraints.gridx = 0;
-            gbConstraints.gridwidth = 2;
-            gbConstraints.insets = new Insets(0, 5, 0, 5);
-            gbLayout.setConstraints(jp, gbConstraints);
-            m_aboutPanel = jp;
-            if (m_showAboutPanel) {
-              scrollablePanel.add(m_aboutPanel);
-            }
-            componentOffset = 1;
+              if (m_Target instanceof CapabilitiesHandler) {
+                m_CapabilitiesBut = new JButton("Capabilities");
+                m_CapabilitiesBut.setToolTipText("The capabilities of " + className);
 
+                m_CapabilitiesBut.addActionListener(new ActionListener() {
+                  @Override public void actionPerformed(ActionEvent a) {
+                    openCapabilitiesHelpDialog();
+                    m_CapabilitiesBut.setEnabled(false);
+                  }
+                });
+              } else {
+                m_CapabilitiesBut = null;
+              }
+            }
+              jt.setColumns(30);
+              jt.setFont(new Font("SansSerif", Font.PLAIN, 12));
+              jt.setEditable(false);
+              jt.setLineWrap(true);
+              jt.setWrapStyleWord(true);
+              jt.setText(summary);
+              jt.setBackground(getBackground());
+              JPanel jp = new JPanel();
+              jp.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("About"),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+              jp.setLayout(new BorderLayout());
+              jp.add(jt, BorderLayout.CENTER);
+              if (m_HelpBut != null) {
+                JPanel p2 = new JPanel();
+                p2.setLayout(new BorderLayout());
+                p2.add(m_HelpBut, BorderLayout.NORTH);
+                if (m_CapabilitiesBut != null) {
+                  JPanel p3 = new JPanel();
+                  p3.setLayout(new BorderLayout());
+                  p3.add(m_CapabilitiesBut, BorderLayout.NORTH);
+                  p2.add(p3, BorderLayout.CENTER);
+                }
+                jp.add(p2, BorderLayout.EAST);
+              }
+              GridBagConstraints gbConstraints = new GridBagConstraints();
+              // gbConstraints.anchor = GridBagConstraints.EAST;
+              gbConstraints.fill = GridBagConstraints.BOTH;
+              // gbConstraints.gridy = 0; gbConstraints.gridx = 0;
+              gbConstraints.gridwidth = 2;
+              gbConstraints.insets = new Insets(0, 5, 0, 5);
+              gbLayout.setConstraints(jp, gbConstraints);
+              m_aboutPanel = jp;
+              if (m_showAboutPanel) {
+                scrollablePanel.add(m_aboutPanel);
+              }
+              componentOffset = 1;
             // break;
           } catch (Exception ex) {
 
@@ -546,6 +560,8 @@ public class PropertySheetPanel extends JPanel implements
       }
     }
 
+    Set<String> propGroupings = new LinkedHashSet<>();
+
     int[] propOrdering = new int[m_Properties.length];
     for (int i = 0; i < propOrdering.length; i++) {
       propOrdering[i] = Integer.MAX_VALUE;
@@ -566,6 +582,11 @@ public class PropertySheetPanel extends JPanel implements
       for (Annotation a : annotations) {
         if (a instanceof OptionMetadata) {
           propOrdering[i] = ((OptionMetadata)a).displayOrder();
+          String opCategory = ((OptionMetadata)a).category();
+          if (opCategory != null && opCategory.length() > 0
+            && m_propertyGroupingCategory.length() == 0) {
+            propGroupings.add(opCategory);
+          }
           break;
         }
       }
@@ -606,6 +627,7 @@ public class PropertySheetPanel extends JPanel implements
 
       boolean skip = false;
       boolean password = false;
+      boolean containsOptionMeta = false;
       FilePropertyMetadata fileProp = null;
       for (Annotation a : annotations) {
         if (a instanceof ProgrammaticProperty) {
@@ -614,6 +636,28 @@ public class PropertySheetPanel extends JPanel implements
         }
 
         if (a instanceof OptionMetadata) {
+          containsOptionMeta = true;
+          String category = ((OptionMetadata)a).category();
+          if (category.length() > 0) {
+            // if this property sheet panel has a set grouping category then
+            // skip all that are not of that category
+            if (m_propertyGroupingCategory != null
+              && m_propertyGroupingCategory.length() > 0 &&
+              !category.equals(m_propertyGroupingCategory)) {
+              skip = true;
+              break;
+            } else if (propGroupings.contains(category)) {
+              skip = true;
+              break;
+            }
+          } else {
+            if (m_propertyGroupingCategory != null && m_propertyGroupingCategory.length() > 0) {
+              skip = true;
+              break;
+            }
+          }
+
+
           name = ((OptionMetadata) a).displayName();
           String tempTip = ((OptionMetadata)a).description();
           int ci = tempTip.indexOf( '.' );
@@ -632,6 +676,12 @@ public class PropertySheetPanel extends JPanel implements
           fileProp = (FilePropertyMetadata) a;
         }
       }
+
+      if (!containsOptionMeta && m_propertyGroupingCategory != null
+      && m_propertyGroupingCategory.length() > 0) {
+        skip = true;
+      }
+
       if (skip) {
         continue;
       }
@@ -774,7 +824,8 @@ public class PropertySheetPanel extends JPanel implements
       GridBagConstraints gbConstraints = new GridBagConstraints();
       gbConstraints.anchor = GridBagConstraints.EAST;
       gbConstraints.fill = GridBagConstraints.HORIZONTAL;
-      gbConstraints.gridy = i + componentOffset;
+      // gbConstraints.gridy = i + componentOffset;
+      gbConstraints.gridy = m_NumEditable + componentOffset;
       gbConstraints.gridx = 0;
       gbLayout.setConstraints(m_Labels[sortedPropOrderings[i]], gbConstraints);
       scrollablePanel.add(m_Labels[sortedPropOrderings[i]]);
@@ -789,11 +840,66 @@ public class PropertySheetPanel extends JPanel implements
       gbConstraints = new GridBagConstraints();
       gbConstraints.anchor = GridBagConstraints.WEST;
       gbConstraints.fill = GridBagConstraints.BOTH;
-      gbConstraints.gridy = i + componentOffset;
+      // gbConstraints.gridy = i + componentOffset;
+      gbConstraints.gridy = m_NumEditable + componentOffset;
       gbConstraints.gridx = 1;
       gbConstraints.weightx = 100;
       gbLayout.setConstraints(newPanel, gbConstraints);
       scrollablePanel.add(newPanel);
+      m_NumEditable++;
+    }
+
+    for (String propCat : propGroupings) {
+      JLabel catLab = new JLabel(propCat, SwingConstants.RIGHT);
+      catLab.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 5));
+      GenericObjectEditor catEditor = new GenericObjectEditor();
+      GenericObjectEditor.GOEPanel goePanel = (GenericObjectEditor.GOEPanel) catEditor.getCustomEditor();
+      goePanel.getPropertySheet().setPropertyGroupingCategory(propCat);
+      goePanel.getPropertySheet().addPropertyChangeListener(this);
+      goePanel.getPropertySheet().setEnvironment(m_env);
+      catEditor.setClassType(m_Target.getClass());
+      catEditor.setObject(m_Target);
+      catEditor.addPropertyChangeListener(this);
+      GridBagConstraints gbConstraints = new GridBagConstraints();
+      gbConstraints.anchor = GridBagConstraints.EAST;
+      gbConstraints.fill = GridBagConstraints.HORIZONTAL;
+      gbConstraints.gridy = m_NumEditable + componentOffset;
+      gbConstraints.gridx = 0;
+      gbLayout.setConstraints(catLab, gbConstraints);
+      scrollablePanel.add(catLab);
+
+      JPanel newPanel = new JPanel();
+      newPanel.setBorder(BorderFactory.createEmptyBorder(10, 5, 0, 10));
+      newPanel.setLayout(new BorderLayout());
+      JButton groupBut = new JButton("Edit...");
+      newPanel.add(groupBut, BorderLayout.CENTER);
+      gbConstraints = new GridBagConstraints();
+      gbConstraints.anchor = GridBagConstraints.WEST;
+      gbConstraints.fill = GridBagConstraints.BOTH;
+      gbConstraints.gridy = m_NumEditable + componentOffset;
+      gbConstraints.gridx = 1;
+      gbConstraints.weightx = 100;
+      gbLayout.setConstraints(newPanel, gbConstraints);
+      scrollablePanel.add(newPanel);
+
+      groupBut.addActionListener(new ActionListener() {
+        @Override public void actionPerformed(ActionEvent e) {
+          PropertyDialog jd = null;
+          if (PropertyDialog.getParentDialog(PropertySheetPanel.this) != null) {
+            jd = new PropertyDialog(PropertyDialog.getParentDialog(PropertySheetPanel.this), catEditor);
+          } else if (PropertyDialog.getParentFrame(PropertySheetPanel.this) != null) {
+            jd = new PropertyDialog(PropertyDialog.getParentFrame(PropertySheetPanel.this), catEditor);
+          } else {
+            jd = new PropertyDialog((Dialog) null, catEditor);
+          }
+          jd.setLocation(m_aboutPanel.getTopLevelAncestor().getLocationOnScreen().x
+            + m_aboutPanel.getTopLevelAncestor().getSize().width, m_aboutPanel
+            .getTopLevelAncestor().getLocationOnScreen().y);
+          jd.setModal(true);
+          jd.setVisible(true);
+        }
+      });
+
       m_NumEditable++;
     }
 
@@ -982,7 +1088,7 @@ public class PropertySheetPanel extends JPanel implements
       }
     }
 
-    // Now re-read all the properties and update the editors
+    // Now m_re-read all the properties and update the editors
     // for any other properties that have changed.
     for (int i = 0; i < m_Properties.length; i++) {
       Object o;
