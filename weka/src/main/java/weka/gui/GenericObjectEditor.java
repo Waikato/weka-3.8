@@ -1040,6 +1040,15 @@ public class GenericObjectEditor implements PropertyEditor, CustomPanelSupplier 
         ((Window) getTopLevelAncestor()).pack();
       }
     }
+
+    /**
+     * Get the child property sheet
+     *
+     * @return the child property sheet panel
+     */
+    protected PropertySheetPanel getPropertySheet() {
+      return m_ChildPropertySheet;
+    }
   }
 
   /**
