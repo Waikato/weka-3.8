@@ -34,7 +34,7 @@ Changes=Removed FastVector. Also, package binary needed to be recompiled to work
 PackageURL=http://prdownloads.sourceforge.net/weka/prefuseGraph1.0.4.zip?download
 
 # URL for further information
-URL=http://weka.wikispaces.com/Explorer+tree+visualization+plugins
+URL=https://waikato.github.io/weka-wiki/explorer_tree_visualization_plugins/
 
 # Related to other packages?
 Related=prefuseTree

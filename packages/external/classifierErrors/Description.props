@@ -32,7 +32,7 @@ Description=A visualization component for displaying the errors made by numeric 
 PackageURL=http://prdownloads.sourceforge.net/weka/classifierErrors1.0.1.zip?download
 
 # URL for further information
-URL=http://weka.wikispaces.com/Explorer+error+visualization+plugins
+URL=https://waikato.github.io/weka-wiki/explorer_error_visualization_plugins/
 
 # Related to other packages?
 #Related=

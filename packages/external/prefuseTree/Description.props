@@ -34,7 +34,7 @@ Changes=This release adds a method to retrieve the visualization as a JComponent
 PackageURL=http://prdownloads.sourceforge.net/weka/prefuseTree1.0.3.zip?download
 
 # URL for further information
-URL=http://weka.wikispaces.com/Explorer+tree+visualization+plugins
+URL=https://waikato.github.io/weka-wiki/explorer_tree_visualization_plugins/
 
 # Related to other packages?
 #Related=
