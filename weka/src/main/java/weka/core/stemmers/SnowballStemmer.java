@@ -45,10 +45,6 @@ import java.util.Vector;
  * You can use the 'weka.core.ClassDiscovery' for this:<br/>
  * java weka.core.ClassDiscovery org.tartarus.snowball.SnowballProgram
  * org.tartarus.snowball.ext<br/>
- * <br/>
- * For more information visit these web sites:<br/>
- * http://weka.wikispaces.com/Stemmers<br/>
- * http://snowball.tartarus.org/<br/>
  * <p/>
  * <!-- globalinfo-end -->
  * 
@@ -151,10 +147,10 @@ public class SnowballStemmer implements Stemmer, OptionHandler {
       + "'weka/gui/GenericObjectEditor.props' file has to be uncommented "
       + "as well. If necessary you have to discover and fill in the snowball "
       + "stemmers manually. You can use the 'weka.core.ClassDiscovery' for this:\n"
-      + "  java weka.core.ClassDiscovery org.tartarus.snowball.SnowballProgram org.tartarus.snowball.ext\n"
-      + "\n" + "For more information visit these web sites:\n"
+      + "  java weka.core.ClassDiscovery org.tartarus.snowball.SnowballProgram org.tartarus.snowball.ext\n";
+ /*     + "\n" + "For more information visit these web sites:\n"
       + "  http://weka.wikispaces.com/Stemmers\n"
-      + "  http://snowball.tartarus.org/\n";
+      + "  http://snowball.tartarus.org/\n";*/
   }
 
   /**

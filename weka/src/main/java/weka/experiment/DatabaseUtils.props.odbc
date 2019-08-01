@@ -1,9 +1,9 @@
 # Database settings for ODBC in conjunction with MS SQL Server 2000
 #
 # General information on database access can be found here:
-# http://weka.wikispaces.com/Databases
+# https://waikato.github.io/weka-wiki/databases/
 #
-# url:     http://weka.wikispaces.com/Windows+Databases
+# url:     https://waikato.github.io/weka-wiki/windows_databases/
 # author:  Fracpete (fracpete at waikato dot ac dot nz)
 # version: $Revision$
 

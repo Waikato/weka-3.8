@@ -1294,7 +1294,7 @@ public class Main extends JFrame implements OptionHandler {
         @Override
         public void actionPerformed(ActionEvent evt) {
           BrowserHelper
-            .openURL(m_Self, "http://www.cs.waikato.ac.nz/~ml/weka/");
+            .openURL(m_Self, "https://www.cs.waikato.ac.nz/~ml/weka/");
         }
       });
 
@@ -1318,7 +1318,7 @@ public class Main extends JFrame implements OptionHandler {
       jMenuItemHelpWekaWiki.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent evt) {
-          BrowserHelper.openURL(m_Self, "http://weka.wikispaces.com/");
+          BrowserHelper.openURL(m_Self, "https://waikato.github.io/weka-wiki/");
         }
       });
 
@@ -1331,7 +1331,7 @@ public class Main extends JFrame implements OptionHandler {
         @Override
         public void actionPerformed(ActionEvent evt) {
           BrowserHelper
-            .openURL(m_Self, "http://sourceforge.net/projects/weka/");
+            .openURL(m_Self, "https://sourceforge.net/projects/weka/");
         }
       });
 

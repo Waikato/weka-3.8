@@ -39,7 +39,7 @@ import weka.gui.ComponentHelper;
 import weka.gui.visualize.VisualizeUtils;
 
 /**
- * A scripting panel for <a href="http://groovy.codehaus.org/" target="_blank">Groovy</a>.
+ * A scripting panel for <a href="https://groovy.codehaus.org/" target="_blank">Groovy</a>.
  * 
  * @author  fracpete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
@@ -116,10 +116,10 @@ public class GroovyPanel
     result.add(panel, BorderLayout.SOUTH);
     
     panel.add(new JLabel("Groovy homepage"));
-    panel.add(BrowserHelper.createLink("http://groovy.codehaus.org/", null));
+    panel.add(BrowserHelper.createLink("https://groovy.codehaus.org/", null));
     panel.add(new JLabel(" "));
     panel.add(new JLabel("Weka and Groovy"));
-    panel.add(BrowserHelper.createLink("http://weka.wikispaces.com/Using+Weka+from+Groovy", null));
+    panel.add(BrowserHelper.createLink("https://waikato.github.io/weka-wiki/using_weka_from_groovy", null));
     
     return result;
   }

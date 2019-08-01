@@ -84,15 +84,10 @@ import weka.core.Utils;
  * 
  * <!-- options-end -->
  * 
- * Based on code from the TextDirectoryToArff tool:
- * <ul>
- * <li><a href=
- * "https://list.scms.waikato.ac.nz/mailman/htdig/wekalist/2002-October/000685.html"
- * target="_blank">Original tool</a></li>
- * <li><a href=
- * "https://list.scms.waikato.ac.nz/mailman/htdig/wekalist/2004-January/002160.html"
- * target="_blank">Current version</a></li>
- * <li><a href="http://weka.wikispaces.com/ARFF+files+from+Text+Collections"
+ * Based on code from the TextDirectoryToArff tool.
+ *
+ * See the
+ * <li><a href="https://waikato.github.io/weka-wiki/arff_from_text_collections/"
  * target="_blank">Wiki article</a></li>
  * </ul>
  * 

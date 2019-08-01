@@ -208,10 +208,7 @@ weka.core.PartitionGenerator=\
 # List of snowball stemmers.
 #
 # Note: the snowball jar needs to be in the CLASSPATH to make these stemmers
-#       available. See the following links for more information:
-#       http://weka.wikispaces.com/Stemmers
-#       http://snowball.tartarus.org/
-#
+#       available.
 #org.tartarus.snowball.SnowballProgram=\
 # org.tartarus.snowball.ext
 

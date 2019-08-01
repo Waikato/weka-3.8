@@ -1,7 +1,7 @@
 # Database settings for Microsoft SQL Server 2005 Express Edition
 #
 # General information on database access can be found here:
-# http://weka.wikispaces.com/Databases
+# https://waikato.github.io/weka-wiki/databases/
 #
 # url:     http://www.microsoft.com/
 # jdbc:    http://msdn2.microsoft.com/en-us/data/aa937724.aspx

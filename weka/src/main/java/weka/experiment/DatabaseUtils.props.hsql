@@ -1,7 +1,7 @@
 # Database settings for HSQLDB 1.8.x
 #
 # General information on database access can be found here:
-# http://weka.wikispaces.com/Databases
+# https://waikato.github.io/weka-wiki/databases/
 #
 # url:     http://hsqldb.sourceforge.net/
 # jdbc:    http://sourceforge.net/projects/hsqldb/

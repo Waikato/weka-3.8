@@ -116,10 +116,10 @@ public class JythonPanel
     result.add(panel, BorderLayout.SOUTH);
     
     panel.add(new JLabel("Jython homepage"));
-    panel.add(BrowserHelper.createLink("http://www.jython.org/", null));
+    panel.add(BrowserHelper.createLink("https://www.jython.org/", null));
     panel.add(new JLabel(" "));
     panel.add(new JLabel("Weka and Jython"));
-    panel.add(BrowserHelper.createLink("http://weka.wikispaces.com/Using+Weka+from+Jython", null));
+    panel.add(BrowserHelper.createLink("https://waikato.github.io/weka-wiki/using_weka_from_jython", null));
     
     return result;
   }
