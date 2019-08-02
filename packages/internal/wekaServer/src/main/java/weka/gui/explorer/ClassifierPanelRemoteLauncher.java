@@ -2082,15 +2082,16 @@ public class ClassifierPanelRemoteLauncher extends JPanel implements
               m_classifierPanel.getResultHistory().addObject(name, vv);
             } else if (saveVis && plotData != null
               && plotData.getPlotInstances().numInstances() > 0) {
-              m_classifierPanel
-                .setCurrentVisualization(new weka.gui.visualize.VisualizePanel());
-              m_classifierPanel.getCurrentVisualization().setName(
+              weka.gui.visualize.VisualizePanel newVis = new weka.gui.visualize.VisualizePanel();
+              /* m_classifierPanel
+                .setCurrentVisualization(new weka.gui.visualize.VisualizePanel()); */
+              newVis.setName(
                 name + " (" + inst.relationName() + ")");
-              m_classifierPanel.getCurrentVisualization().setLog(
+              newVis.setLog(
                 m_classifierPanel.getLog());
-              m_classifierPanel.getCurrentVisualization().addPlot(plotData);
+              newVis.addPlot(plotData);
               // m_CurrentVis.setColourIndex(plotInstances.getPlotInstances().classIndex()+1);
-              m_classifierPanel.getCurrentVisualization().setColourIndex(
+              newVis.setColourIndex(
                 plotData.getPlotInstances().classIndex());
               plotInstances.cleanUp();
 
@@ -2105,7 +2106,7 @@ public class ClassifierPanelRemoteLauncher extends JPanel implements
                   vv.add(grph);
                 }
               }
-              vv.add(m_classifierPanel.getCurrentVisualization());
+              vv.add(newVis);
 
               if ((evalA != null) && (evalA.predictions() != null)) {
                 vv.add(evalA.predictions());
