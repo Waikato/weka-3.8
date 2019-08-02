@@ -343,9 +343,6 @@ public class ClassifierPanel extends AbstractPerspective implements
   /** A thread that classification runs in. */
   protected Thread m_RunThread;
 
-  /** The current visualization object. */
-  protected VisualizePanel m_CurrentVis = null;
-
   /** Filter to ensure only model files are selected. */
   protected FileFilter m_ModelFilter = new ExtensionFileFilter(
     MODEL_FILE_EXTENSION, "Model object files");
@@ -1955,18 +1952,19 @@ public class ClassifierPanel extends AbstractPerspective implements
                 m_History.addObject(name, vv);
               } else if (saveVis && plotInstances != null
                 && plotInstances.canPlot(false)) {
-                m_CurrentVis = new VisualizePanel();
+                // m_CurrentVis = new VisualizePanel();
+                VisualizePanel newVis = new VisualizePanel();
                 if (getMainApplication() != null) {
                   Settings settings =
                     getMainApplication().getApplicationSettings();
-                  m_CurrentVis.applySettings(settings,
+                  newVis.applySettings(settings,
                     weka.gui.explorer.VisualizePanel.ScatterDefaults.ID);
                 }
-                m_CurrentVis.setName(name + " (" + inst.relationName() + ")");
-                m_CurrentVis.setLog(m_Log);
-                m_CurrentVis.addPlot(plotInstances.getPlotData(cname));
+                newVis.setName(name + " (" + inst.relationName() + ")");
+                newVis.setLog(m_Log);
+                newVis.addPlot(plotInstances.getPlotData(cname));
                 // m_CurrentVis.setColourIndex(plotInstances.getPlotInstances().classIndex()+1);
-                m_CurrentVis.setColourIndex(plotInstances.getPlotInstances()
+                newVis.setColourIndex(plotInstances.getPlotInstances()
                   .classIndex());
                 plotInstances.cleanUp();
 
@@ -1980,7 +1978,7 @@ public class ClassifierPanel extends AbstractPerspective implements
                     vv.add(grph);
                   }
                 }
-                vv.add(m_CurrentVis);
+                vv.add(newVis);
 
                 if ((eval != null) && (eval.predictions() != null)) {
                   vv.add(eval.predictions());
@@ -2274,7 +2272,7 @@ public class ClassifierPanel extends AbstractPerspective implements
             VisualizePanel vmc = new VisualizePanel();
             if (getMainApplication() != null) {
               Settings settings = getMainApplication().getApplicationSettings();
-              m_CurrentVis.applySettings(settings,
+              vmc.applySettings(settings,
                 weka.gui.explorer.VisualizePanel.ScatterDefaults.ID);
             }
             vmc.setName(result.relationName());
@@ -2415,7 +2413,7 @@ public class ClassifierPanel extends AbstractPerspective implements
               if (getMainApplication() != null) {
                 Settings settings =
                   getMainApplication().getApplicationSettings();
-                m_CurrentVis.applySettings(settings,
+                vmc.applySettings(settings,
                   weka.gui.explorer.VisualizePanel.ScatterDefaults.ID);
               }
               vmc.setLog(m_Log);
@@ -3340,19 +3338,20 @@ public class ClassifierPanel extends AbstractPerspective implements
               if (plotInstances != null
                 && plotInstances.getPlotInstances() != null
                 && plotInstances.getPlotInstances().numInstances() > 0) {
-                m_CurrentVis = new VisualizePanel();
+                // m_CurrentVis = new VisualizePanel();
+                VisualizePanel newVis = new VisualizePanel();
                 if (getMainApplication() != null) {
                   Settings settings =
                     getMainApplication().getApplicationSettings();
-                  m_CurrentVis.applySettings(settings,
+                  newVis.applySettings(settings,
                     weka.gui.explorer.VisualizePanel.ScatterDefaults.ID);
                 }
-                m_CurrentVis.setName(name + " ("
+                newVis.setName(name + " ("
                   + userTestStructure.relationName() + ")");
-                m_CurrentVis.setLog(m_Log);
-                m_CurrentVis.addPlot(plotInstances.getPlotData(name));
+                newVis.setLog(m_Log);
+                newVis.addPlot(plotInstances.getPlotData(name));
                 // m_CurrentVis.setColourIndex(plotInstances.getPlotInstances().classIndex()+1);
-                m_CurrentVis.setColourIndex(plotInstances.getPlotInstances()
+                newVis.setColourIndex(plotInstances.getPlotInstances()
                   .classIndex());
                 plotInstances.cleanUp();
 
@@ -3369,7 +3368,7 @@ public class ClassifierPanel extends AbstractPerspective implements
                   if (trainHeader != null) {
                     vv.add(trainHeader);
                   }
-                  vv.add(m_CurrentVis);
+                  vv.add(newVis);
                   if (grph != null) {
                     vv.add(grph);
                   }
@@ -3772,24 +3771,6 @@ public class ClassifierPanel extends AbstractPerspective implements
    */
   public String getSourceCodeClassName() {
     return m_SourceCodeClass.getText();
-  }
-
-  /**
-   * Get the current visualization
-   *
-   * @return the current visualization
-   */
-  public VisualizePanel getCurrentVisualization() {
-    return m_CurrentVis;
-  }
-
-  /**
-   * Set the current visualization
-   *
-   * @param current the visualization to use
-   */
-  public void setCurrentVisualization(VisualizePanel current) {
-    m_CurrentVis = current;
   }
 
   /**
