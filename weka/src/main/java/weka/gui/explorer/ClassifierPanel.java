@@ -214,10 +214,16 @@ public class ClassifierPanel extends AbstractPerspective implements
   protected JRadioButton m_TestSplitBut = new JRadioButton("Supplied test set");
 
   /**
-   * Check to save the predictions in the results list for visualizing later on.
+   * Check to save the test data and the predictions in the results list for visualizing later on.
    */
-  protected JCheckBox m_StorePredictionsBut = new JCheckBox(
-    "Store predictions for visualization");
+  protected JCheckBox m_StoreTestDataAndPredictionsBut = new JCheckBox(
+    "Store test data and predictions for visualization");
+
+  /**
+   * Check to collect the predictions for computing statistics such as AUROC.
+   */
+  protected JCheckBox m_CollectPredictionsForEvaluationBut = new JCheckBox(
+          "Collect predictions for evaluation based on AUROC, etc.");
 
   /**
    * Check to have the point size in error plots proportional to the prediction
@@ -425,9 +431,11 @@ public class ClassifierPanel extends AbstractPerspective implements
     m_TestSplitBut.setToolTipText("Test on a user-specified dataset");
     m_StartBut.setToolTipText("Starts the classification");
     m_StopBut.setToolTipText("Stops a running classification");
-    m_StorePredictionsBut
-      .setToolTipText("Store predictions in the result list for later "
+    m_StoreTestDataAndPredictionsBut
+      .setToolTipText("Store test data and predictions in the result list for later "
         + "visualization");
+    m_CollectPredictionsForEvaluationBut
+            .setToolTipText("Collect predictions for calculation of the area under the ROC, etc.");
     m_errorPlotPointSizeProportionalToMargin
       .setToolTipText("In classifier errors plots the point size will be "
         + "set proportional to the absolute value of the "
@@ -460,8 +468,10 @@ public class ClassifierPanel extends AbstractPerspective implements
     m_ClassificationOutputEditor.setClassType(AbstractOutput.class);
     m_ClassificationOutputEditor.setValue(new Null());
 
-    m_StorePredictionsBut.setSelected(ExplorerDefaults
-      .getClassifierStorePredictionsForVis());
+    m_StoreTestDataAndPredictionsBut.setSelected(ExplorerDefaults
+      .getClassifierStoreTestDataAndPredictionsForVis());
+    m_CollectPredictionsForEvaluationBut.setSelected(ExplorerDefaults
+            .getClassifierCollectPredictionsForEvaluation());
     m_OutputModelBut.setSelected(ExplorerDefaults.getClassifierOutputModel());
     m_OutputModelsForTrainingSplitsBut.setSelected(ExplorerDefaults
       .getClassifierOutputModelsForTrainingSplits());
@@ -639,7 +649,8 @@ public class ClassifierPanel extends AbstractPerspective implements
         moreOptionsPanel.add(m_OutputPerClassBut);
         moreOptionsPanel.add(m_OutputEntropyBut);
         moreOptionsPanel.add(m_OutputConfusionBut);
-        moreOptionsPanel.add(m_StorePredictionsBut);
+        moreOptionsPanel.add(m_StoreTestDataAndPredictionsBut);
+        moreOptionsPanel.add(m_CollectPredictionsForEvaluationBut);
         moreOptionsPanel.add(m_errorPlotPointSizeProportionalToMargin);
         JPanel classOutPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         classOutPanel.add(new JLabel("Output predictions"));
@@ -1124,9 +1135,10 @@ public class ClassifierPanel extends AbstractPerspective implements
     classificationOutput.printHeader();
   }
 
+
   /**
    * Configures an evaluation object with respect to a classifier, cost matrix,
-   * output and plotting.
+   * output and plotting. Predictions are kept for calculating AUROC, etc.
    *
    * @param eval the Evaluation object to configure
    * @param classifier the Classifier being used
@@ -1141,9 +1153,33 @@ public class ClassifierPanel extends AbstractPerspective implements
    * @throws Exception if a problem occurs
    */
   public static Evaluation setupEval(Evaluation eval, Classifier classifier,
+                                     Instances inst, CostMatrix costMatrix,
+                                     ClassifierErrorsPlotInstances plotInstances,
+                                     AbstractOutput classificationOutput, boolean onlySetPriors) throws Exception {
+    return setupEval(eval, classifier, inst, costMatrix, plotInstances, classificationOutput, onlySetPriors, true);
+  }
+
+  /**
+   * Configures an evaluation object with respect to a classifier, cost matrix,
+   * output and plotting.
+   *
+   * @param eval the Evaluation object to configure
+   * @param classifier the Classifier being used
+   * @param inst the Instances involved
+   * @param costMatrix a cost matrix (if any)
+   * @param plotInstances a ClassifierErrorsPlotInstances for visualization of
+   *          errors (can be null)
+   * @param classificationOutput an output object for printing predictions (can
+   *          be null)
+   * @param onlySetPriors true to only set priors
+   * @param collectPredictions whether to collect predictions for calculating ROC, etc.
+   * @return the configured Evaluation object
+   * @throws Exception if a problem occurs
+   */
+  public static Evaluation setupEval(Evaluation eval, Classifier classifier,
     Instances inst, CostMatrix costMatrix,
     ClassifierErrorsPlotInstances plotInstances,
-    AbstractOutput classificationOutput, boolean onlySetPriors)
+    AbstractOutput classificationOutput, boolean onlySetPriors, boolean collectPredictions)
     throws Exception {
 
     if (classifier instanceof weka.classifiers.misc.InputMappedClassifier) {
@@ -1162,6 +1198,7 @@ public class ClassifierPanel extends AbstractPerspective implements
         } else {
           eval = new Evaluation(new Instances(mappedClassifierHeader, 0));
         }
+        eval.setDiscardPredictions(!collectPredictions);
       }
 
       if (!eval.getHeader().equalHeaders(inst)) {
@@ -1261,7 +1298,7 @@ public class ClassifierPanel extends AbstractPerspective implements
                * m_TestLoader).setRetainStringVals(true); }
                */
               if (m_TestLoader instanceof ArffLoader
-                && m_StorePredictionsBut.isSelected()) {
+                && m_StoreTestDataAndPredictionsBut.isSelected()) {
                 ((ArffLoader) m_TestLoader).setRetainStringVals(true);
               }
               m_TestLoader.reset();
@@ -1283,7 +1320,8 @@ public class ClassifierPanel extends AbstractPerspective implements
           boolean outputPerClass = m_OutputPerClassBut.isSelected();
           boolean outputSummary = true;
           boolean outputEntropy = m_OutputEntropyBut.isSelected();
-          boolean saveVis = m_StorePredictionsBut.isSelected();
+          boolean saveVis = m_StoreTestDataAndPredictionsBut.isSelected();
+          boolean collectPredictionsForEvaluation = m_CollectPredictionsForEvaluationBut.isSelected();
           boolean outputPredictionsText =
             (m_ClassificationOutputEditor.getValue().getClass() != Null.class);
 
@@ -1521,7 +1559,7 @@ public class ClassifierPanel extends AbstractPerspective implements
               // make adjustments if the classifier is an InputMappedClassifier
               eval =
                 setupEval(eval, classifier, inst, costMatrix, plotInstances,
-                  classificationOutput, false);
+                  classificationOutput, false, collectPredictionsForEvaluation);
               eval.setMetricsToDisplay(m_selectedEvalMetrics);
 
               // plotInstances.setEvaluation(eval);
@@ -1597,7 +1635,7 @@ public class ClassifierPanel extends AbstractPerspective implements
               // make adjustments if the classifier is an InputMappedClassifier
               eval =
                 setupEval(eval, classifier, inst, costMatrix, plotInstances,
-                  classificationOutput, false);
+                  classificationOutput, false, collectPredictionsForEvaluation);
               eval.setMetricsToDisplay(m_selectedEvalMetrics);
 
               // plotInstances.setEvaluation(eval);
@@ -1618,7 +1656,7 @@ public class ClassifierPanel extends AbstractPerspective implements
                 // InputMappedClassifier
                 eval =
                   setupEval(eval, classifier, train, costMatrix, plotInstances,
-                    classificationOutput, true);
+                    classificationOutput, true, collectPredictionsForEvaluation);
                 eval.setMetricsToDisplay(m_selectedEvalMetrics);
 
                 // eval.setPriors(train);
@@ -1717,7 +1755,7 @@ public class ClassifierPanel extends AbstractPerspective implements
               // make adjustments if the classifier is an InputMappedClassifier
               eval =
                 setupEval(eval, classifier, train, costMatrix, plotInstances,
-                  classificationOutput, false);
+                  classificationOutput, false, collectPredictionsForEvaluation);
               eval.setMetricsToDisplay(m_selectedEvalMetrics);
 
               // plotInstances.setEvaluation(eval);
@@ -1776,7 +1814,7 @@ public class ClassifierPanel extends AbstractPerspective implements
               // make adjustments if the classifier is an InputMappedClassifier
               eval =
                 setupEval(eval, classifier, inst, costMatrix, plotInstances,
-                  classificationOutput, false);
+                  classificationOutput, false, collectPredictionsForEvaluation);
               plotInstances.setInstances(userTestStructure);
               eval.setMetricsToDisplay(m_selectedEvalMetrics);
 
@@ -1811,6 +1849,7 @@ public class ClassifierPanel extends AbstractPerspective implements
                     // just go with the default
                   }
                 }
+                m_Log.logMessage("Performing batch prediction with batch size " + batchSize);
               }
               testTimeStart = System.currentTimeMillis();
               while (source.hasMoreElements(userTestStructure)) {
@@ -3033,7 +3072,8 @@ public class ClassifierPanel extends AbstractPerspective implements
           boolean outputPerClass = m_OutputPerClassBut.isSelected();
           boolean outputSummary = true;
           boolean outputEntropy = m_OutputEntropyBut.isSelected();
-          boolean saveVis = m_StorePredictionsBut.isSelected();
+          boolean saveVis = m_StoreTestDataAndPredictionsBut.isSelected();
+          boolean collectPredictionsForEvaluation = m_CollectPredictionsForEvaluationBut.isSelected();
           boolean outputPredictionsText =
             (m_ClassificationOutputEditor.getValue().getClass() != Null.class);
           String grph = null;
@@ -3192,7 +3232,7 @@ public class ClassifierPanel extends AbstractPerspective implements
             eval =
               setupEval(eval, classifierToUse,
                 trainHeader != null ? trainHeader : userTestStructure,
-                costMatrix, plotInstances, classificationOutput, false);
+                costMatrix, plotInstances, classificationOutput, false, collectPredictionsForEvaluation);
             eval.useNoPriors();
             plotInstances.setUp();
 
@@ -3603,11 +3643,16 @@ public class ClassifierPanel extends AbstractPerspective implements
             ClassifierPanelDefaults.OUTPUT_CONFUSION_MATRIX_KEY,
             ClassifierPanelDefaults.OUTPUT_CONFUSION_MATRIX,
             Environment.getSystemWide()));
-        m_StorePredictionsBut.setSelected(getMainApplication()
+        m_StoreTestDataAndPredictionsBut.setSelected(getMainApplication()
           .getApplicationSettings().getSetting(getPerspectiveID(),
-            ClassifierPanelDefaults.STORE_PREDICTIONS_FOR_VIS_KEY,
-            ClassifierPanelDefaults.STORE_PREDICTIONS_FOR_VIS,
+            ClassifierPanelDefaults.STORE_TEST_DATA_AND_PREDICTIONS_FOR_VIS_KEY,
+            ClassifierPanelDefaults.STORE_TEST_DATA_AND_PREDICTIONS_FOR_VIS,
             Environment.getSystemWide()));
+        m_CollectPredictionsForEvaluationBut.setSelected(getMainApplication()
+                .getApplicationSettings().getSetting(getPerspectiveID(),
+                        ClassifierPanelDefaults.COLLECT_PREDICTIONS_FOR_EVALUATION_KEY,
+                        ClassifierPanelDefaults.COLLECT_PREDICTIONS_FOR_EVALUATION,
+                        Environment.getSystemWide()));
         m_errorPlotPointSizeProportionalToMargin
           .setSelected(getMainApplication().getApplicationSettings()
             .getSetting(getPerspectiveID(),
@@ -3737,12 +3782,21 @@ public class ClassifierPanel extends AbstractPerspective implements
   }
 
   /**
-   * Gets whether the user has opted to store the predictions in the history
+   * Gets whether the user has opted to store the test data and the predictions in the history
+   *
+   * @return true if test data and predictions are to be stored
+   */
+  public boolean isSelectedStoreTestDataAndPredictions() {
+    return m_StoreTestDataAndPredictionsBut.isSelected();
+  }
+
+  /**
+   * Gets whether the user has opted to collect the predictions for computing evaluation statistics
    *
    * @return true if predictions are to be stored
    */
-  public boolean isSelectedStorePredictions() {
-    return m_StorePredictionsBut.isSelected();
+  public boolean isSelectedCollectPredictionsForEvaluation() {
+    return m_CollectPredictionsForEvaluationBut.isSelected();
   }
 
   /**
@@ -3926,11 +3980,15 @@ public class ClassifierPanel extends AbstractPerspective implements
         "Output confusion " + "matrix", "");
     protected static final boolean OUTPUT_CONFUSION_MATRIX = true;
 
-    protected static final Settings.SettingKey STORE_PREDICTIONS_FOR_VIS_KEY =
-      new Settings.SettingKey(ID + ".storePredsForVis", "Store predictions for"
+    protected static final Settings.SettingKey STORE_TEST_DATA_AND_PREDICTIONS_FOR_VIS_KEY =
+      new Settings.SettingKey(ID + ".storeTestDataAndPredsForVis", "Store test data and predictions for"
         + " visualization", "");
-    protected static final boolean STORE_PREDICTIONS_FOR_VIS = true;
+    protected static final boolean STORE_TEST_DATA_AND_PREDICTIONS_FOR_VIS = true;
 
+    protected static final Settings.SettingKey COLLECT_PREDICTIONS_FOR_EVALUATION_KEY =
+            new Settings.SettingKey(ID + ".storePredsForEvaluation", "Collect predictions for"
+                    + " evaluation based on AUROC, etc.", "");
+    protected static final boolean COLLECT_PREDICTIONS_FOR_EVALUATION = true;
     /*
      * protected static final Settings.SettingKey OUTPUT_PREDICTIONS_KEY = new
      * Settings.SettingKey(ID + ".outputPredictions", "Output predictions", "");
@@ -4009,7 +4067,8 @@ public class ClassifierPanel extends AbstractPerspective implements
       m_defaults.put(OUTPUT_ENTROPY_EVAL_METRICS_KEY,
         OUTPUT_ENTROPY_EVAL_METRICS);
       m_defaults.put(OUTPUT_CONFUSION_MATRIX_KEY, OUTPUT_CONFUSION_MATRIX);
-      m_defaults.put(STORE_PREDICTIONS_FOR_VIS_KEY, STORE_PREDICTIONS_FOR_VIS);
+      m_defaults.put(STORE_TEST_DATA_AND_PREDICTIONS_FOR_VIS_KEY, STORE_TEST_DATA_AND_PREDICTIONS_FOR_VIS);
+      m_defaults.put(COLLECT_PREDICTIONS_FOR_EVALUATION_KEY, COLLECT_PREDICTIONS_FOR_EVALUATION);
       // m_defaults.put(OUTPUT_PREDICTIONS_KEY, OUTPUT_PREDICTIONS);
       m_defaults.put(PREDICTION_FORMATTER_KEY, PREDICTION_FORMATTER);
       m_defaults.put(ERROR_PLOT_POINT_SIZE_PROP_TO_MARGIN_KEY,

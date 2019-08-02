@@ -303,14 +303,25 @@ public class ExplorerDefaults implements Serializable {
   }
 
   /**
-   * returns whether the predictions of the classifier are stored for
+   * returns whether the test data and the predictions of the classifier are stored for
    * visualization.
    * 
-   * @return true if predictions are stored
+   * @return true if test data and predictions are stored
    */
-  public static boolean getClassifierStorePredictionsForVis() {
+  public static boolean getClassifierStoreTestDataAndPredictionsForVis() {
     return Boolean
-      .parseBoolean(get("ClassifierStorePredictionsForVis", "true"));
+      .parseBoolean(get("ClassifierStoreTestDataAndPredictionsForVis", "true"));
+  }
+
+  /**
+   * returns whether the predictions of the classifier are collected for calculating performance statistics
+   * such as AUROC.
+   *
+   * @return true if predictions are collected
+   */
+  public static boolean getClassifierCollectPredictionsForEvaluation() {
+    return Boolean
+            .parseBoolean(get("ClassifierCollectPredictionsForEvaluation", "true"));
   }
 
   /**
