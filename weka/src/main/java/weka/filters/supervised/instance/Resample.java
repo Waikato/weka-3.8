@@ -461,6 +461,9 @@ public class Resample extends Filter
   @Override
   public boolean setInputFormat(Instances instanceInfo) throws Exception {
 
+    if (getNoReplacement() && getSampleSizePercent() > 100) {
+      throw new WekaException("Sample size cannot exceed 100% for sampling *without* replacement!");
+    }
     super.setInputFormat(instanceInfo);
     setOutputFormat(instanceInfo);
     return true;
