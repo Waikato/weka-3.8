@@ -706,30 +706,22 @@ public class Evaluation implements Summarizable, RevisionHandler, Serializable {
   }
 
   /**
-   * Calculates the weighted (by class size) AUC.
+   * Calculates the weighted (by class size) AUROC.
+   *
+   * Unclassified instances are not included in the calculation.
    *
    * @return the weighted AUC.
    */
   public double weightedAreaUnderROC() {
-    double[] classCounts = new double[m_NumClasses];
-    double classCountSum = 0;
 
-    for (int i = 0; i < m_NumClasses; i++) {
-      for (int j = 0; j < m_NumClasses; j++) {
-        classCounts[i] += m_ConfusionMatrix[i][j];
-      }
-      classCountSum += classCounts[i];
-    }
-
+    double[] trueClassCounts = trueClassCounts();
     double aucTotal = 0;
     for (int i = 0; i < m_NumClasses; i++) {
-      double temp = areaUnderROC(i);
-      if (classCounts[i] > 0) { // If temp is NaN, we want the sum to also be NaN if count > 0
-        aucTotal += (temp * classCounts[i]);
+      if (trueClassCounts[i] > 0) { // If AUROC is NaN, we want the sum to also be NaN if count > 0
+        aucTotal += areaUnderROC(i) * trueClassCounts[i];
       }
     }
-
-    return aucTotal / classCountSum;
+    return aucTotal / numClassified();
   }
 
   /**
@@ -754,28 +746,20 @@ public class Evaluation implements Summarizable, RevisionHandler, Serializable {
   /**
    * Calculates the weighted (by class size) AUPRC.
    *
+   * Unclassified instances are not included in the calculation.
+   *
    * @return the weighted AUPRC.
    */
   public double weightedAreaUnderPRC() {
-    double[] classCounts = new double[m_NumClasses];
-    double classCountSum = 0;
 
+    double[] trueClassCounts = trueClassCounts();
+    double aucTotal = 0;
     for (int i = 0; i < m_NumClasses; i++) {
-      for (int j = 0; j < m_NumClasses; j++) {
-        classCounts[i] += m_ConfusionMatrix[i][j];
-      }
-      classCountSum += classCounts[i];
-    }
-
-    double auprcTotal = 0;
-    for (int i = 0; i < m_NumClasses; i++) {
-      double temp = areaUnderPRC(i);
-      if (classCounts[i] > 0) { // If temp is NaN, we want the sum to also be NaN if count > 0
-        auprcTotal += (temp * classCounts[i]);
+      if (trueClassCounts[i] > 0) { // If AUPRC is NaN, we want the sum to also be NaN if count > 0
+        aucTotal += areaUnderPRC(i) * trueClassCounts[i];
       }
     }
-
-    return auprcTotal / classCountSum;
+    return aucTotal / numClassified();
   }
 
   /**
@@ -3614,7 +3598,108 @@ public class Evaluation implements Summarizable, RevisionHandler, Serializable {
   }
 
   /**
-   * Calculate the number of true positives with respect to a particular class.
+   * Returns the number (really, weight) of instances that have been classified. This is equal to the sum
+   * of all entries in the confusion matrix.
+   *
+   * @return the number (really, weight) of instances that have been classified
+   */
+  public double numClassified() {
+
+    return m_WithClass - m_Unclassified;
+  }
+
+  /**
+   * Calculate the number (really, weight) of instances of the given class. This
+   * only includes instances for which a prediction is made. Unclassified instances
+   * are not included even if they have a class value.
+   *
+   * @param classIndex the index of the class to consider as "positive"
+   * @return the number of positive instances
+   */
+  public double numPositives(int classIndex) {
+
+    double total = 0;
+    for (int j = 0; j < m_NumClasses; j++) {
+      total += m_ConfusionMatrix[classIndex][j];
+    }
+    return total;
+  }
+
+  /**
+   * Calculate the number (really, weight) of instances predicted to be of the given class.
+   *
+   * Unclassified instances are not included in the calculation.
+   *
+   * @param classIndex the index of the class to consider as "positive"
+   * @return the number of instances that are predicted to be positive
+   */
+  public double numPredictedPositives(int classIndex) {
+
+    double total = 0;
+    for (int j = 0; j < m_NumClasses; j++) {
+      total += m_ConfusionMatrix[j][classIndex];
+    }
+    return total;
+  }
+
+  /**
+   * Calculate the number (really, weight) of instances not in the given class. This
+   * only includes instances for which a prediction is made. Unclassified instances
+   * are not included even if they have a class value.
+   *
+   * @param classIndex the index of the class to consider as "positive"
+   * @return the number of negative instances
+   */
+  public double numNegatives(int classIndex) {
+
+    return numClassified() - numPositives(classIndex);
+  }
+
+  /**
+   * Calculate the number (really, weight) of instances predicted not to be of the given class.
+   *
+   * Unclassified instances are not included in the calculation.
+   *
+   * @param classIndex the index of the class to consider as "positive"
+   * @return the number of instances that are predicted to be negative
+   */
+  public double numPredictedNegatives(int classIndex) {
+
+    return numClassified() - numPredictedPositives(classIndex);
+  }
+
+  /**
+   * Returns the number (really, weight) of instances in each class. Unclassified instances are not included.
+   *
+   * @return an array with the number (really, weight) of instances in each class
+   */
+  public double[] trueClassCounts() {
+
+    double[] classCounts = new double[m_NumClasses];
+    for (int i = 0; i < m_NumClasses; i++) {
+      classCounts[i] += numPositives(i);
+    }
+    return classCounts;
+  }
+
+  /**
+   * Returns the predicted number (really, weight) of instances in each class.
+   *
+   * Unclassified instances are not included in the calculation.
+   *
+   * @return an array with the predicted number (really, weight) of instances in each class
+   */
+  public double[] predictedClassCounts() {
+
+    double[] classCounts = new double[m_NumClasses];
+    for (int i = 0; i < m_NumClasses; i++) {
+      classCounts[i] += numPredictedPositives(i);
+    }
+    return classCounts;
+  }
+
+  /**
+   * Calculate the number (really, weight) of true positives with respect to a particular class.
    * This is defined as
    * <p/>
    *
@@ -3622,18 +3707,71 @@ public class Evaluation implements Summarizable, RevisionHandler, Serializable {
    * correctly classified positives
    * </pre>
    *
+   * Unclassified instances are not included in the calculation.
+   *
    * @param classIndex the index of the class to consider as "positive"
    * @return the true positive rate
    */
   public double numTruePositives(int classIndex) {
 
-    double correct = 0;
-    for (int j = 0; j < m_NumClasses; j++) {
-      if (j == classIndex) {
-        correct += m_ConfusionMatrix[classIndex][j];
-      }
-    }
-    return correct;
+    return m_ConfusionMatrix[classIndex][classIndex];
+  }
+
+  /**
+   * Calculate number (really, weight) of false negatives with respect to a particular class.
+   * This is defined as
+   * <p/>
+   *
+   * <pre>
+   * incorrectly classified positives
+   * </pre>
+   *
+   * Unclassified instances are not included in the calculation.
+   *
+   * @param classIndex the index of the class to consider as "positive"
+   * @return the false positive rate
+   */
+  public double numFalseNegatives(int classIndex) {
+
+    return numPositives(classIndex) - numTruePositives(classIndex);
+  }
+
+  /**
+   * Calculate the number (really, weight) of true negatives with respect to a particular class.
+   * This is defined as
+   * <p/>
+   *
+   * <pre>
+   * correctly classified negatives
+   * </pre>
+   *
+   * Unclassified instances are not included in the calculation
+   *
+   * @param classIndex the index of the class to consider as "positive"
+   * @return the true positive rate
+   */
+  public double numTrueNegatives(int classIndex) {
+
+    return numNegatives(classIndex) - numFalsePositives(classIndex);
+  }
+
+  /**
+   * Calculate the number (really, weight) of false positives with respect to a particular class.
+   * This is defined as
+   * <p/>
+   *
+   * <pre>
+   * incorrectly classified negatives
+   * </pre>
+   *
+   * Unclassified instances are not included in the calculation
+   *
+   * @param classIndex the index of the class to consider as "positive"
+   * @return the false positive rate
+   */
+  public double numFalsePositives(int classIndex) {
+
+    return numPredictedPositives(classIndex) - numTruePositives(classIndex);
   }
 
   /**
@@ -3647,73 +3785,57 @@ public class Evaluation implements Summarizable, RevisionHandler, Serializable {
    *       total positives
    * </pre>
    *
+   * This does not include any instances that are left unclassified by the classifier.
+   *
    * @param classIndex the index of the class to consider as "positive"
    * @return the true positive rate
    */
   public double truePositiveRate(int classIndex) {
 
-    double correct = 0, total = 0;
-    for (int j = 0; j < m_NumClasses; j++) {
-      if (j == classIndex) {
-        correct += m_ConfusionMatrix[classIndex][j];
-      }
-      total += m_ConfusionMatrix[classIndex][j];
-    }
-    return correct / total;
+    return truePositiveRate(classIndex, numPositives(classIndex));
   }
 
   /**
-   * Calculates the weighted (by class size) true positive rate.
+   * Calculate the true positive rate with respect to a particular class. This
+   * is defined as
+   * <p/>
+   *
+   * <pre>
+   * correctly classified positives
+   * ------------------------------
+   *       total positives
+   * </pre>
+   *
+   * Unclassified instances are not included in the calculation.
+   *
+   * @param classIndex the index of the class to consider as "positive"
+   * @param numPositives the total number (really, weight) of positives for that class
+   * @return the true positive rate
+   */
+  public double truePositiveRate(int classIndex, double numPositives) {
+
+    return numTruePositives(classIndex) / numPositives;
+  }
+
+  /**
+   * Calculates the weighted (by class size) true positive rate. Unclassified instances are not
+   * included in the calculation.
+   *
+   * Unclassified instances are not included in the calculation.
    *
    * @return the weighted true positive rate.
    */
   public double weightedTruePositiveRate() {
-    double[] classCounts = new double[m_NumClasses];
-    double classCountSum = 0;
 
-    for (int i = 0; i < m_NumClasses; i++) {
-      for (int j = 0; j < m_NumClasses; j++) {
-        classCounts[i] += m_ConfusionMatrix[i][j];
-      }
-      classCountSum += classCounts[i];
-    }
-
+    double[] classCounts = trueClassCounts();
     double truePosTotal = 0;
     for (int i = 0; i < m_NumClasses; i++) {
-      double temp = truePositiveRate(i);
-      if (classCounts[i] > 0) { // If temp is NaN, we want the sum to also be NaN if count > 0
-        truePosTotal += (temp * classCounts[i]);
+      if (classCounts[i] > 0) { // If TPR is NaN, we want the sum to also be NaN if count > 0
+        truePosTotal += truePositiveRate(i, classCounts[i]) * classCounts[i];
       }
     }
 
-    return truePosTotal / classCountSum;
-  }
-
-  /**
-   * Calculate the number of true negatives with respect to a particular class.
-   * This is defined as
-   * <p/>
-   *
-   * <pre>
-   * correctly classified negatives
-   * </pre>
-   *
-   * @param classIndex the index of the class to consider as "positive"
-   * @return the true positive rate
-   */
-  public double numTrueNegatives(int classIndex) {
-
-    double correct = 0;
-    for (int i = 0; i < m_NumClasses; i++) {
-      if (i != classIndex) {
-        for (int j = 0; j < m_NumClasses; j++) {
-          if (j != classIndex) {
-            correct += m_ConfusionMatrix[i][j];
-          }
-        }
-      }
-    }
-    return correct;
+    return truePosTotal / numClassified();
   }
 
   /**
@@ -3727,77 +3849,73 @@ public class Evaluation implements Summarizable, RevisionHandler, Serializable {
    *       total negatives
    * </pre>
    *
+   * Unclassified instances are not included in the calculation
+   *
    * @param classIndex the index of the class to consider as "positive"
    * @return the true positive rate
    */
   public double trueNegativeRate(int classIndex) {
 
-    double correct = 0, total = 0;
-    for (int i = 0; i < m_NumClasses; i++) {
-      if (i != classIndex) {
-        for (int j = 0; j < m_NumClasses; j++) {
-          if (j != classIndex) {
-            correct += m_ConfusionMatrix[i][j];
-          }
-          total += m_ConfusionMatrix[i][j];
-        }
-      }
-    }
-    return correct / total;
+    return trueNegativeRate(classIndex, numNegatives(classIndex));
+  }
+  /**
+   * Calculate the true negative rate with respect to a particular class. This
+   * is defined as
+   * <p/>
+   *
+   * <pre>
+   * correctly classified negatives
+   * ------------------------------
+   *       total negatives
+   * </pre>
+   *
+   * Unclassified instances are not included in the calculation
+   *
+   * @param classIndex the index of the class to consider as "positive"
+   * @param numNegatives the number (really, weight) of the negative instances
+   * @return the true positive rate
+   */
+  public double trueNegativeRate(int classIndex, double numNegatives) {
+
+    return numTrueNegatives(classIndex) / numNegatives;
   }
 
   /**
-   * Calculates the weighted (by class size) true negative rate.
+   * Calculate the true negative rate with respect to a particular class. This
+   * is defined as
+   * <p/>
+   *
+   * <pre>
+   * correctly classified negatives
+   * ------------------------------
+   *       total negatives
+   * </pre>
+   *
+   * Unclassified instances are not included in the calculation
+   *
+   * @param classIndex the index of the class to consider as "positive"
+   * @return the true positive rate
+   */
+
+  /**
+   * Calculates the weighted (by class size) true negative rate. Unclassified instances are not
+   * included in the calculation.
+   *
+   * Unclassified instances are not included in the calculation.
    *
    * @return the weighted true negative rate.
    */
   public double weightedTrueNegativeRate() {
-    double[] classCounts = new double[m_NumClasses];
-    double classCountSum = 0;
 
-    for (int i = 0; i < m_NumClasses; i++) {
-      for (int j = 0; j < m_NumClasses; j++) {
-        classCounts[i] += m_ConfusionMatrix[i][j];
-      }
-      classCountSum += classCounts[i];
-    }
-
+    double[] classCounts = trueClassCounts();
     double trueNegTotal = 0;
     for (int i = 0; i < m_NumClasses; i++) {
-      double temp = trueNegativeRate(i);
-      if (classCounts[i] > 0) { // If temp is NaN, we want the sum to also be NaN if count > 0
-        trueNegTotal += (temp * classCounts[i]);
+      if (classCounts[i] > 0) { // If TNR is NaN, we want the sum to also be NaN if count > 0
+        trueNegTotal += trueNegativeRate(i, numClassified() - classCounts[i]) * classCounts[i];
       }
     }
 
-    return trueNegTotal / classCountSum;
-  }
-
-  /**
-   * Calculate number of false positives with respect to a particular class.
-   * This is defined as
-   * <p/>
-   *
-   * <pre>
-   * incorrectly classified negatives
-   * </pre>
-   *
-   * @param classIndex the index of the class to consider as "positive"
-   * @return the false positive rate
-   */
-  public double numFalsePositives(int classIndex) {
-
-    double incorrect = 0;
-    for (int i = 0; i < m_NumClasses; i++) {
-      if (i != classIndex) {
-        for (int j = 0; j < m_NumClasses; j++) {
-          if (j == classIndex) {
-            incorrect += m_ConfusionMatrix[i][j];
-          }
-        }
-      }
-    }
-    return incorrect;
+    return trueNegTotal / numClassified();
   }
 
   /**
@@ -3811,77 +3929,57 @@ public class Evaluation implements Summarizable, RevisionHandler, Serializable {
    *        total negatives
    * </pre>
    *
+   * Unclassified instances are not included in the calculation
+   *
    * @param classIndex the index of the class to consider as "positive"
    * @return the false positive rate
    */
   public double falsePositiveRate(int classIndex) {
 
-    double incorrect = 0, total = 0;
-    for (int i = 0; i < m_NumClasses; i++) {
-      if (i != classIndex) {
-        for (int j = 0; j < m_NumClasses; j++) {
-          if (j == classIndex) {
-            incorrect += m_ConfusionMatrix[i][j];
-          }
-          total += m_ConfusionMatrix[i][j];
-        }
-      }
-    }
-    return incorrect / total;
+    return falsePositiveRate(classIndex, numNegatives(classIndex));
   }
 
   /**
-   * Calculates the weighted (by class size) false positive rate.
+   * Calculate the false positive rate with respect to a particular class. This
+   * is defined as
+   * <p/>
+   *
+   * <pre>
+   * incorrectly classified negatives
+   * --------------------------------
+   *        total negatives
+   * </pre>
+   *
+   * Unclassified instances are not included in the calculation
+   *
+   * @param classIndex the index of the class to consider as "positive"
+   * @param numNegatives the number (really, weight) of the negative instances
+   * @return the false positive rate
+   */
+  public double falsePositiveRate(int classIndex, double numNegatives) {
+
+    return numFalsePositives(classIndex) / numNegatives;
+  }
+
+  /**
+   * Calculates the weighted (by class size) false positive rate. Unclassified instances are not
+   * included in the calculation.
+   *
+   * Unclassified instances are not included in the calculation.
    *
    * @return the weighted false positive rate.
    */
   public double weightedFalsePositiveRate() {
-    double[] classCounts = new double[m_NumClasses];
-    double classCountSum = 0;
 
-    for (int i = 0; i < m_NumClasses; i++) {
-      for (int j = 0; j < m_NumClasses; j++) {
-        classCounts[i] += m_ConfusionMatrix[i][j];
-      }
-      classCountSum += classCounts[i];
-    }
-
+    double[] classCounts = trueClassCounts();
     double falsePosTotal = 0;
     for (int i = 0; i < m_NumClasses; i++) {
-      double temp = falsePositiveRate(i);
-      if (classCounts[i] > 0) { // If temp is NaN, we want the sum to also be NaN if count > 0
-        falsePosTotal += (temp * classCounts[i]);
+      if (classCounts[i] > 0) { // If FPR is NaN, we want the sum to also be NaN if count > 0
+        falsePosTotal += falsePositiveRate(i, numClassified() - classCounts[i]) * classCounts[i];
       }
     }
 
-    return falsePosTotal / classCountSum;
-  }
-
-  /**
-   * Calculate number of false negatives with respect to a particular class.
-   * This is defined as
-   * <p/>
-   *
-   * <pre>
-   * incorrectly classified positives
-   * </pre>
-   *
-   * @param classIndex the index of the class to consider as "positive"
-   * @return the false positive rate
-   */
-  public double numFalseNegatives(int classIndex) {
-
-    double incorrect = 0;
-    for (int i = 0; i < m_NumClasses; i++) {
-      if (i == classIndex) {
-        for (int j = 0; j < m_NumClasses; j++) {
-          if (j != classIndex) {
-            incorrect += m_ConfusionMatrix[i][j];
-          }
-        }
-      }
-    }
-    return incorrect;
+    return falsePosTotal / numClassified();
   }
 
   /**
@@ -3895,99 +3993,128 @@ public class Evaluation implements Summarizable, RevisionHandler, Serializable {
    *        total positives
    * </pre>
    *
+   * Unclassified instances are not included in the calculation.
+   *
    * @param classIndex the index of the class to consider as "positive"
    * @return the false positive rate
    */
   public double falseNegativeRate(int classIndex) {
 
-    double incorrect = 0, total = 0;
-    for (int i = 0; i < m_NumClasses; i++) {
-      if (i == classIndex) {
-        for (int j = 0; j < m_NumClasses; j++) {
-          if (j != classIndex) {
-            incorrect += m_ConfusionMatrix[i][j];
-          }
-          total += m_ConfusionMatrix[i][j];
-        }
-      }
-    }
-    return incorrect / total;
+    double numPositives = numPositives(classIndex);
+    return (numPositives - numTruePositives(classIndex)) / numPositives;
+  }
+
+  /**
+   * Calculate the false negative rate with respect to a particular class. This
+   * is defined as
+   * <p/>
+   *
+   * <pre>
+   * incorrectly classified positives
+   * --------------------------------
+   *        total positives
+   * </pre>
+   *
+   * Unclassified instances are not included in the calculation.
+   *
+   * @param classIndex the index of the class to consider as "positive"
+   * @param numPositives the number (really, weight) of the instances in the positive class
+   * @return the false positive rate
+   */
+  public double falseNegativeRate(int classIndex, double numPositives) {
+
+   return (numPositives - numTruePositives(classIndex)) / numPositives;
   }
 
   /**
    * Calculates the weighted (by class size) false negative rate.
    *
+   * Unclassified instances are not included in the calculation.
+   *
    * @return the weighted false negative rate.
    */
   public double weightedFalseNegativeRate() {
-    double[] classCounts = new double[m_NumClasses];
-    double classCountSum = 0;
 
-    for (int i = 0; i < m_NumClasses; i++) {
-      for (int j = 0; j < m_NumClasses; j++) {
-        classCounts[i] += m_ConfusionMatrix[i][j];
-      }
-      classCountSum += classCounts[i];
-    }
-
+    double[] classCounts = trueClassCounts();
     double falseNegTotal = 0;
     for (int i = 0; i < m_NumClasses; i++) {
-      double temp = falseNegativeRate(i);
-      if (classCounts[i] > 0) { // If temp is NaN, we want the sum to also be NaN if count > 0
-        falseNegTotal += (temp * classCounts[i]);
+      if (classCounts[i] > 0) { // If FNR is NaN, we want the sum to also be NaN if count > 0
+        falseNegTotal += falseNegativeRate(i, classCounts[i]) * classCounts[i];
       }
     }
 
-    return falseNegTotal / classCountSum;
+    return falseNegTotal / numClassified();
   }
 
   /**
    * Calculates the matthews correlation coefficient (sometimes called phi
-   * coefficient) for the supplied class
+   * coefficient) for the supplied class. Unclassified instances are
+   * not included in the calculation.
    *
    * @param classIndex the index of the class to compute the matthews
    *          correlation coefficient for
    *
+   * Unclassified instances are not included in the calculation.
+   *
    * @return the mathews correlation coefficient
    */
   public double matthewsCorrelationCoefficient(int classIndex) {
-    double numTP = numTruePositives(classIndex);
-    double numTN = numTrueNegatives(classIndex);
-    double numFP = numFalsePositives(classIndex);
-    double numFN = numFalseNegatives(classIndex);
-    double n = (numTP * numTN) - (numFP * numFN);
-    double d =
-      (numTP + numFP) * (numTP + numFN) * (numTN + numFP) * (numTN + numFN);
-    d = Math.sqrt(d);
 
-    return n / d;
+    return matthewsCorrelationCoefficient(classIndex, numTruePositives(classIndex),
+					  numTrueNegatives(classIndex),
+					  numFalsePositives(classIndex),
+					  numFalseNegatives(classIndex));
+  }
+
+  /**
+   * Calculates the matthews correlation coefficient (sometimes called phi
+   * coefficient) for the supplied class. Unclassified instances are
+   * not included in the calculation.
+   *
+   * @param classIndex the index of the class to compute the matthews
+   *          correlation coefficient for
+   * @param numTP the number (really, weight) of the true positive instances
+   * @param numTN the number (really, weight) of the true negative instances
+   * @param numFP the number (really, weight) of the false positive instances
+   * @param numFN the number (really, weight) of the false negative instances
+   *
+   * @return the mathews correlation coefficient
+   */
+  public double matthewsCorrelationCoefficient(int classIndex, double numTP, double numTN,
+					       double numFP, double numFN) {
+
+    double n = (numTP * numTN) - (numFP * numFN);
+    double d = (numTP + numFP) * (numTP + numFN) * (numTN + numFP) * (numTN + numFN);
+
+    return n / Math.sqrt(d);
   }
 
   /**
    * Calculates the weighted (by class size) matthews correlation coefficient.
    *
+   * Unclassified instances are not included in the calculation.
+   *
    * @return the weighted matthews correlation coefficient.
    */
   public double weightedMatthewsCorrelation() {
-    double[] classCounts = new double[m_NumClasses];
-    double classCountSum = 0;
 
-    for (int i = 0; i < m_NumClasses; i++) {
-      for (int j = 0; j < m_NumClasses; j++) {
-        classCounts[i] += m_ConfusionMatrix[i][j];
-      }
-      classCountSum += classCounts[i];
-    }
-
+    double[] trueClassCounts = trueClassCounts();
+    double[] predictedClassCounts = predictedClassCounts();
     double mccTotal = 0;
     for (int i = 0; i < m_NumClasses; i++) {
-      double temp = matthewsCorrelationCoefficient(i);
-      if (classCounts[i] > 0) { // If temp is NaN, we want the sum to also be NaN if count > 0
-        mccTotal += (temp * classCounts[i]);
+      if (trueClassCounts[i] > 0) { // If MCC is NaN, we want the sum to also be NaN if count > 0
+        double numFP = predictedClassCounts[i] - numTruePositives(i);
+        mccTotal +=
+                matthewsCorrelationCoefficient(i,
+                        numTruePositives(i),
+                        (numClassified() - trueClassCounts[i]) - numFP,
+                        numFP,
+                        trueClassCounts[i] - numTruePositives(i))
+                        * trueClassCounts[i];
       }
     }
 
-    return mccTotal / classCountSum;
+    return mccTotal / numClassified();
   }
 
   /**
@@ -4000,7 +4127,10 @@ public class Evaluation implements Summarizable, RevisionHandler, Serializable {
    *       total positives
    * </pre>
    * <p/>
-   * (Which is also the same as the truePositiveRate.)
+   * 
+   * This is the same as the true positive rate.
+   *
+   * Unclassified instances are not included in the calculation.
    *
    * @param classIndex the index of the class to consider as "positive"
    * @return the recall
@@ -4012,6 +4142,8 @@ public class Evaluation implements Summarizable, RevisionHandler, Serializable {
 
   /**
    * Calculates the weighted (by class size) recall.
+   *
+   * Unclassified instances are not included in the calculation.
    *
    * @return the weighted recall.
    */
@@ -4030,46 +4162,36 @@ public class Evaluation implements Summarizable, RevisionHandler, Serializable {
    *  total predicted as positive
    * </pre>
    *
+   * Unclassified instances are not included in the calculation.
+   *
    * @param classIndex the index of the class to consider as "positive"
    * @return the precision
    */
   public double precision(int classIndex) {
 
-    double correct = 0, total = 0;
-    for (int i = 0; i < m_NumClasses; i++) {
-      if (i == classIndex) {
-        correct += m_ConfusionMatrix[i][classIndex];
-      }
-      total += m_ConfusionMatrix[i][classIndex];
-    }
-    return correct / total;
+    return numTruePositives(classIndex) / numPredictedPositives(classIndex);
   }
 
   /**
    * Calculates the weighted (by class size) precision.
    *
+   * Unclassified instances are not included in the calculation.
+   *
    * @return the weighted precision.
    */
   public double weightedPrecision() {
-    double[] classCounts = new double[m_NumClasses];
-    double classCountSum = 0;
 
-    for (int i = 0; i < m_NumClasses; i++) {
-      for (int j = 0; j < m_NumClasses; j++) {
-        classCounts[i] += m_ConfusionMatrix[i][j];
-      }
-      classCountSum += classCounts[i];
-    }
-
+    double[] trueClassCounts = trueClassCounts();
+    double[] predictedClassCounts = predictedClassCounts();
     double precisionTotal = 0;
     for (int i = 0; i < m_NumClasses; i++) {
-      double temp = precision(i);
-      if (classCounts[i] > 0) { // If temp is NaN, we want the sum to also be NaN if count > 0
-        precisionTotal += (temp * classCounts[i]);
+      if (trueClassCounts[i] > 0) { // If precision is NaN, we want the sum to also be NaN if count > 0
+        precisionTotal += (numTruePositives(i) / predictedClassCounts[i]) *
+                trueClassCounts[i];
       }
     }
 
-    return precisionTotal / classCountSum;
+    return precisionTotal / numClassified();
   }
 
   /**
@@ -4083,15 +4205,39 @@ public class Evaluation implements Summarizable, RevisionHandler, Serializable {
    *   recall + precision
    * </pre>
    *
-   * Returns zero when both precision and recall are zero
+   * Returns zero when both precision and recall are zero.
+   *
+   * Unclassified instances are not included in the calculation.
    *
    * @param classIndex the index of the class to consider as "positive"
    * @return the F-Measure
    */
   public double fMeasure(int classIndex) {
 
-    double precision = precision(classIndex);
-    double recall = recall(classIndex);
+    return fMeasure(precision(classIndex), recall(classIndex));
+  }
+
+  /**
+   * Calculate the F-Measure with respect to a particular class. This is defined
+   * as
+   * <p/>
+   *
+   * <pre>
+   * 2 * recall * precision
+   * ----------------------
+   *   recall + precision
+   * </pre>
+   *
+   * Returns zero when both precision and recall are zero.
+   *
+   * Unclassified instances are not included in the calculation.
+   *
+   * @param precision the precision
+   * @param recall the recall
+   * @return the F-Measure
+   */
+  public double fMeasure(double precision, double recall) {
+
     if ((precision == 0) && (recall == 0)) {
       return 0;
     }
@@ -4101,42 +4247,44 @@ public class Evaluation implements Summarizable, RevisionHandler, Serializable {
   /**
    * Calculates the macro weighted (by class size) average F-Measure.
    *
+   * Unclassified instances are not included in the calculation.
+   *
    * @return the weighted F-Measure.
    */
   public double weightedFMeasure() {
-    double[] classCounts = new double[m_NumClasses];
-    double classCountSum = 0;
 
-    for (int i = 0; i < m_NumClasses; i++) {
-      for (int j = 0; j < m_NumClasses; j++) {
-        classCounts[i] += m_ConfusionMatrix[i][j];
-      }
-      classCountSum += classCounts[i];
-    }
-
+    double[] trueClassCounts = trueClassCounts();
+    double[] predictedClassCounts = predictedClassCounts();
     double fMeasureTotal = 0;
     for (int i = 0; i < m_NumClasses; i++) {
-      double temp = fMeasure(i);
-      if (classCounts[i] > 0) { // If temp is NaN, we want the sum to also be NaN if count > 0
-        fMeasureTotal += (temp * classCounts[i]);
+      if (trueClassCounts[i] > 0) { // If F-measure is NaN, we want the sum to also be NaN if count > 0
+	  fMeasureTotal += fMeasure(numTruePositives(i) / predictedClassCounts[i],
+				    numTruePositives(i) / trueClassCounts[i]) * 
+	      trueClassCounts[i];
       }
     }
 
-    return fMeasureTotal / classCountSum;
+    return fMeasureTotal / numClassified();
   }
 
   /**
    * Unweighted macro-averaged F-measure. If some classes not present in the
    * test set, they're just skipped (since recall is undefined there anyway) .
    *
+   * Unclassified instances are not included in the calculation.
+   *
    * @return unweighted macro-averaged F-measure.
    * */
   public double unweightedMacroFmeasure() {
+
+    double[] trueClassCounts = trueClassCounts();
+    double[] predictedClassCounts = predictedClassCounts();
     weka.experiment.Stats rr = new weka.experiment.Stats();
     for (int c = 0; c < m_NumClasses; c++) {
       // skip if no testing positive cases of this class
-      if (numTruePositives(c) + numFalseNegatives(c) > 0) {
-        rr.add(fMeasure(c));
+      if (trueClassCounts[c] > 0) {
+        rr.add(fMeasure(numTruePositives(c) / predictedClassCounts[c],
+			numTruePositives(c) / trueClassCounts[c]));
       }
     }
     rr.calculateDerived();
@@ -4149,16 +4297,21 @@ public class Evaluation implements Summarizable, RevisionHandler, Serializable {
    *
    * Note: if the test set is *single-label*, then this is the same as accuracy.
    *
+   * Unclassified instances are not included in the calculation.
+   *
    * @return unweighted micro-averaged F-measure.
    */
   public double unweightedMicroFmeasure() {
+
+    double[] trueClassCounts = trueClassCounts();
+    double[] predictedClassCounts = predictedClassCounts();
     double tp = 0;
     double fn = 0;
     double fp = 0;
     for (int c = 0; c < m_NumClasses; c++) {
       tp += numTruePositives(c);
-      fn += numFalseNegatives(c);
-      fp += numFalsePositives(c);
+      fn += trueClassCounts[c] - numTruePositives(c);
+      fp += predictedClassCounts[c] - numTruePositives(c);
     }
     return 2 * tp / (2 * tp + fn + fp);
   }
