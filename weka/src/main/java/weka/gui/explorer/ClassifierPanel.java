@@ -1666,6 +1666,9 @@ public class ClassifierPanel extends AbstractPerspective implements
                 Classifier current = null;
                 try {
                   current = AbstractClassifier.makeCopy(template);
+                  if (current instanceof weka.core.LogHandler) {
+                    ((weka.core.LogHandler) current).setLog(m_Log);
+                  }
                 } catch (Exception ex) {
                   m_Log.logMessage("Problem copying classifier: "
                     + ex.getMessage());
@@ -1741,6 +1744,9 @@ public class ClassifierPanel extends AbstractPerspective implements
               Classifier current = null;
               try {
                 current = AbstractClassifier.makeCopy(template);
+                if (current instanceof weka.core.LogHandler) {
+                  ((weka.core.LogHandler) current).setLog(m_Log);
+                }
               } catch (Exception ex) {
                 m_Log.logMessage("Problem copying classifier: "
                   + ex.getMessage());
