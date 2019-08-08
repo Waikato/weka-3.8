@@ -1198,7 +1198,6 @@ public class ClassifierPanel extends AbstractPerspective implements
         } else {
           eval = new Evaluation(new Instances(mappedClassifierHeader, 0));
         }
-        eval.setDiscardPredictions(!collectPredictions);
       }
 
       if (!eval.getHeader().equalHeaders(inst)) {
@@ -1253,6 +1252,8 @@ public class ClassifierPanel extends AbstractPerspective implements
         }
       }
     }
+
+    eval.setDiscardPredictions(!collectPredictions);
 
     return eval;
   }
