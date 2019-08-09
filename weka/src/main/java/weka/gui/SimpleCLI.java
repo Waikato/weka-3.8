@@ -21,7 +21,9 @@
 
 package weka.gui;
 
-import java.awt.BorderLayout;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
@@ -52,10 +54,17 @@ public class SimpleCLI
     SimpleCLIPanel	panel;
 
     panel = new SimpleCLIPanel();
-    
+
+    addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(WindowEvent w) {
+        panel.terminate();
+        dispose();
+      }
+    });
+
     setLayout(new BorderLayout());
     setTitle(panel.getTitle());
-    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     setIconImage(panel.getIcon().getImage());
     add(panel);
     pack();
