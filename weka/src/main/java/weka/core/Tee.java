@@ -173,10 +173,9 @@ public class Tee
    * @return returns the removed PrintStream if it could be removed, null otherwise
    */
   public PrintStream remove(PrintStream p) {
-    int         index;
 
-    if (contains(p)) {
-      index = m_Streams.indexOf(p);
+    int index;
+    if ((index = m_Streams.indexOf(p)) != -1) {
       m_Timestamps.remove(index);
       m_Prefixes.remove(index);
       return (PrintStream) m_Streams.remove(index);
