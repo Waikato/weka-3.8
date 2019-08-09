@@ -21,6 +21,7 @@
 package weka.gui;
 
 import java.awt.Color;
+import java.io.InterruptedIOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
 
@@ -129,7 +130,9 @@ public class ReaderToTextPane
             }
             sleep(100);
           } catch (Exception e) {
-            // ignored
+            if (e instanceof InterruptedException || e instanceof InterruptedIOException) {
+              break;
+            }
           }
         }
       }
@@ -141,10 +144,17 @@ public class ReaderToTextPane
         String s = m_Input.readLine();
         m_Buffer.append(s).append('\n');
       } catch (Exception ex) {
+        if (ex instanceof InterruptedException || ex instanceof InterruptedIOException) {
+          t.interrupt();
+          break;
+        }
         try {
           sleep(100);
         } catch (Exception e) {
-          // ignored
+          if (e instanceof InterruptedException) {
+            t.interrupt();
+            break;
+          }
         }
       }
     }
