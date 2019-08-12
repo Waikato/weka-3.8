@@ -66,13 +66,25 @@ public class ClassifierPerformanceEvaluator extends BaseStep {
   private transient AggregateableEvaluation m_eval;
 
   /** Plotting instances */
-  private transient Instances m_aggregatedPlotInstances = null;
+  private transient Instances m_aggregatedPlotInstances;
 
   /** Sizes of points in plotting data */
-  private transient ArrayList<Object> m_aggregatedPlotSizes = null;
+  private transient ArrayList<Object> m_aggregatedPlotSizes;
 
   /** Plotting shapes */
-  private transient ArrayList<Integer> m_aggregatedPlotShapes = null;
+  private transient ArrayList<Integer> m_aggregatedPlotShapes;
+
+  /** True to output of per class stats */
+  protected boolean m_outputPerClassStats = true;
+
+  /** True to output confusion matrix */
+  protected boolean m_outputConfusionMatrix = true;
+
+  /** True to output entropy-based metrics */
+  protected boolean m_outputEntropyMetrics;
+
+  /** Whether to store test data and predictions for visualization */
+  protected boolean m_collectDataForVisAndAUC = true;
 
   /**
    * True if plot point sizes are to be rendered proportional to the size of the
@@ -114,6 +126,53 @@ public class ClassifierPerformanceEvaluator extends BaseStep {
         m_metricsList.add(s.trim());
       }
     }
+  }
+
+  public void setOutputPerClassStats(boolean perClassStats) {
+    m_outputPerClassStats = perClassStats;
+  }
+
+  @OptionMetadata(
+    displayName = "Output per-class stats",
+    description = "Output precision/recall and true/false positives for each class",
+    displayOrder = 1)
+  public
+    boolean getOutputPerClassStats() {
+    return m_outputPerClassStats;
+  }
+
+  @OptionMetadata(displayName = "Output confusion matrix",
+    description = "Output the matrix containing class confusions",
+    displayOrder = 2)
+  public void setOutputConfusionMatrix(boolean outputConfusionMatrix) {
+    m_outputConfusionMatrix = outputConfusionMatrix;
+  }
+
+  public boolean getOutputConfusionMatrix() {
+    return m_outputConfusionMatrix;
+  }
+
+  @OptionMetadata(displayName = "Output entropy evaluation measures",
+    description = "Output entropy-based evaluation measures", displayOrder = 3)
+  public void setOutputEntropyMetrics(boolean outputEntropyMetrics) {
+    m_outputEntropyMetrics = outputEntropyMetrics;
+  }
+
+  public boolean getOutputEntropyMetrics() {
+    return m_outputEntropyMetrics;
+  }
+
+  @OptionMetadata(displayName = "Collect test data and predictions for "
+    + "visualization",
+    description = "Collect data and predictions in order to output "
+      + "visualizableError and thresholdData data", displayOrder = 4)
+  public void setCollectPredictionsForVisAndAUC(
+    boolean collectPredictionsForVisAndAUC) {
+    m_collectDataForVisAndAUC = collectPredictionsForVisAndAUC;
+  }
+
+  public boolean getCollectPredictionsForVisAndAUC() {
+    return m_collectDataForVisAndAUC;
   }
 
   /**
@@ -233,8 +292,10 @@ public class ClassifierPerformanceEvaluator extends BaseStep {
     List<String> result = new ArrayList<String>();
     if (getStepManager().numIncomingConnections() > 0) {
       result.add(StepManager.CON_TEXT);
-      result.add(StepManager.CON_THRESHOLD_DATA);
-      result.add(StepManager.CON_VISUALIZABLE_ERROR);
+      if (m_collectDataForVisAndAUC) {
+        result.add(StepManager.CON_THRESHOLD_DATA);
+        result.add(StepManager.CON_VISUALIZABLE_ERROR);
+      }
     }
 
     return result;
@@ -368,7 +429,7 @@ public class ClassifierPerformanceEvaluator extends BaseStep {
           new EvaluationTask(this, classifier, trainingData, testData, setNum,
             m_metricsList, getErrorPlotPointSizeProportionalToMargin(),
             evalLabel, new EvaluationCallback(), m_costSensitiveEval ? m_matrix
-              : null);
+              : null, getCollectPredictionsForVisAndAUC());
         getStepManager().getExecutionEnvironment().submitTask(evalTask);
         m_taskCount.incrementAndGet();
       } else {
@@ -390,6 +451,7 @@ public class ClassifierPerformanceEvaluator extends BaseStep {
    * @param evalLabel evaluation type
    * @throws Exception if a problem occurs
    */
+  @SuppressWarnings("unchecked")
   protected synchronized void aggregateEvalTask(Evaluation eval,
     weka.classifiers.Classifier classifier, Instances testData,
     ClassifierErrorsPlotInstances plotInstances, int setNum, String evalLabel)
@@ -397,28 +459,29 @@ public class ClassifierPerformanceEvaluator extends BaseStep {
 
     m_eval.aggregate(eval);
 
-    if (m_aggregatedPlotInstances == null) {
-      // get these first so that the post-processing does not scale the sizes!!
-      m_aggregatedPlotShapes =
-        (ArrayList<Integer>) plotInstances.getPlotShapes().clone();
-      m_aggregatedPlotSizes =
-        (ArrayList<Object>) plotInstances.getPlotSizes().clone();
+    if (getCollectPredictionsForVisAndAUC()) {
+      if (m_aggregatedPlotInstances == null) {
+        // get these first so that the post-processing does not scale the sizes!!
+        m_aggregatedPlotShapes =
+          (ArrayList<Integer>) plotInstances.getPlotShapes().clone();
+        m_aggregatedPlotSizes =
+          (ArrayList<Object>) plotInstances.getPlotSizes().clone();
 
-      // this calls the post-processing, so do this last
-      m_aggregatedPlotInstances =
-        new Instances(plotInstances.getPlotInstances());
-    } else {
-      // get these first so that post-processing does not scale sizes
-      ArrayList<Object> tmpSizes =
-        (ArrayList<Object>) plotInstances.getPlotSizes().clone();
-      ArrayList<Integer> tmpShapes =
-        (ArrayList<Integer>) plotInstances.getPlotShapes().clone();
+        // this calls the post-processing, so do this last
+        m_aggregatedPlotInstances = new Instances(plotInstances.getPlotInstances());
+      } else {
+        // get these first so that post-processing does not scale sizes
+        ArrayList<Object> tmpSizes =
+          (ArrayList<Object>) plotInstances.getPlotSizes().clone();
+        ArrayList<Integer> tmpShapes =
+          (ArrayList<Integer>) plotInstances.getPlotShapes().clone();
 
-      Instances temp = plotInstances.getPlotInstances();
-      for (int i = 0; i < temp.numInstances(); i++) {
-        m_aggregatedPlotInstances.add(temp.get(i));
-        m_aggregatedPlotShapes.add(tmpShapes.get(i));
-        m_aggregatedPlotSizes.add(tmpSizes.get(i));
+        Instances temp = plotInstances.getPlotInstances();
+        for (int i = 0; i < temp.numInstances(); i++) {
+          m_aggregatedPlotInstances.add(temp.get(i));
+          m_aggregatedPlotShapes.add(tmpShapes.get(i));
+          m_aggregatedPlotSizes.add(tmpSizes.get(i));
+        }
       }
     }
 
@@ -426,17 +489,18 @@ public class ClassifierPerformanceEvaluator extends BaseStep {
       "Completed folds/sets " + m_setsToGo.incrementAndGet());
 
     if (m_setsToGo.get() == m_maxSetNum) {
-      AggregateableClassifierErrorsPlotInstances aggPlot =
-        new AggregateableClassifierErrorsPlotInstances();
-      aggPlot.setInstances(testData);
-      aggPlot.setPlotInstances(m_aggregatedPlotInstances);
-      aggPlot.setPlotShapes(m_aggregatedPlotShapes);
-      aggPlot.setPlotSizes(m_aggregatedPlotSizes);
-      aggPlot
-        .setPointSizeProportionalToMargin(m_errorPlotPointSizeProportionalToMargin);
+      if (getCollectPredictionsForVisAndAUC()) {
+        AggregateableClassifierErrorsPlotInstances aggPlot = new AggregateableClassifierErrorsPlotInstances();
+        aggPlot.setInstances(testData);
+        aggPlot.setPlotInstances(m_aggregatedPlotInstances);
+        aggPlot.setPlotShapes(m_aggregatedPlotShapes);
+        aggPlot.setPlotSizes(m_aggregatedPlotSizes);
+        aggPlot.setPointSizeProportionalToMargin(
+          m_errorPlotPointSizeProportionalToMargin);
 
-      // triggers scaling of shape sizes
-      aggPlot.getPlotInstances();
+        // triggers scaling of shape sizes
+        aggPlot.getPlotInstances();
+      }
 
       String textTitle = "";
       textTitle += classifier.getClass().getName();
@@ -464,11 +528,16 @@ public class ClassifierPerformanceEvaluator extends BaseStep {
           + ((textOptions.length() > 0) ? "Options: " + textOptions + "\n" : "")
           + "Relation: " + testData.relationName() + "\n\n"
           + (cm != null ? "Cost matrix:\n" + cm.toString() + "\n" : "")
-          + m_eval.toSummaryString();
+          + m_eval.toSummaryString(getOutputEntropyMetrics());
 
       if (testData.classAttribute().isNominal()) {
-        resultT +=
-          "\n" + m_eval.toClassDetailsString() + "\n" + m_eval.toMatrixString();
+        if (getOutputPerClassStats()) {
+          resultT += "\n" + m_eval.toClassDetailsString();
+        }
+
+        if (getOutputConfusionMatrix()) {
+          resultT += "\n" + m_eval.toMatrixString();
+        }
       }
 
       Data text = new Data(StepManager.CON_TEXT);
@@ -477,8 +546,9 @@ public class ClassifierPerformanceEvaluator extends BaseStep {
       getStepManager().outputData(text);
 
       // set up visualizable errors
-      if (getStepManager().numOutgoingConnectionsOfType(
-        StepManager.CON_VISUALIZABLE_ERROR) > 0) {
+      if (getCollectPredictionsForVisAndAUC()
+        && getStepManager().numOutgoingConnectionsOfType(
+          StepManager.CON_VISUALIZABLE_ERROR) > 0) {
         PlotData2D errorD = new PlotData2D(m_aggregatedPlotInstances);
         errorD.setShapeSize(m_aggregatedPlotSizes);
         errorD.setShapeType(m_aggregatedPlotShapes);
@@ -491,6 +561,7 @@ public class ClassifierPerformanceEvaluator extends BaseStep {
 
       // threshold data
       if (testData.classAttribute().isNominal()
+        && getCollectPredictionsForVisAndAUC()
         && getStepManager().numOutgoingConnectionsOfType(
           StepManager.CON_THRESHOLD_DATA) > 0) {
         ThresholdCurve tc = new ThresholdCurve();
@@ -594,10 +665,12 @@ public class ClassifierPerformanceEvaluator extends BaseStep {
         }
 
         eval.setPriors(mappedClassifierDataset);
-        plotInstances.setInstances(mappedClassifierDataset);
-        plotInstances.setClassifier(classifier);
-        plotInstances.setClassIndex(mappedClassifierDataset.classIndex());
-        plotInstances.setEvaluation(eval);
+        if (plotInstances != null) {
+          plotInstances.setInstances(mappedClassifierDataset);
+          plotInstances.setClassifier(classifier);
+          plotInstances.setClassIndex(mappedClassifierDataset.classIndex());
+          plotInstances.setEvaluation(eval);
+        }
       }
     }
 
@@ -673,11 +746,13 @@ public class ClassifierPerformanceEvaluator extends BaseStep {
     protected boolean m_errPlotPtSizePropToMarg;
     protected String m_evalLabel;
     protected String m_classifierDesc = "";
+    protected boolean m_collectPreds;
 
     public EvaluationTask(Step source, weka.classifiers.Classifier classifier,
       Instances trainData, Instances testData, int setNum,
       List<String> metricsList, boolean errPlotPtSizePropToMarg,
-      String evalLabel, EvaluationCallback callback, CostMatrix matrix) {
+      String evalLabel, EvaluationCallback callback, CostMatrix matrix,
+      boolean collectPreds) {
 
       super(source, callback);
       m_classifier = classifier;
@@ -688,6 +763,7 @@ public class ClassifierPerformanceEvaluator extends BaseStep {
       m_metricsList = metricsList;
       m_errPlotPtSizePropToMarg = errPlotPtSizePropToMarg;
       m_evalLabel = evalLabel;
+      m_collectPreds = collectPreds;
 
       m_classifierDesc = m_classifier.getClass().getCanonicalName();
       m_classifierDesc =
@@ -711,55 +787,75 @@ public class ClassifierPerformanceEvaluator extends BaseStep {
         "Evaluating " + m_classifierDesc + " on " + m_testData.relationName()
           + " fold/set " + m_setNum);
       ClassifierErrorsPlotInstances plotInstances =
-        ExplorerDefaults.getClassifierErrorsPlotInstances();
+        m_collectPreds ? ExplorerDefaults.getClassifierErrorsPlotInstances()
+          : null;
       Evaluation eval = null;
 
       if (m_trainData == null) {
         eval = new Evaluation(m_testData, m_cMatrix);
-        plotInstances.setInstances(m_testData);
-        plotInstances.setClassifier(m_classifier);
-        plotInstances.setClassIndex(m_testData.classIndex());
-        plotInstances.setEvaluation(eval);
-        plotInstances
-          .setPointSizeProportionalToMargin(m_errPlotPtSizePropToMarg);
+        if (m_collectPreds) {
+          plotInstances.setInstances(m_testData);
+          plotInstances.setClassifier(m_classifier);
+          plotInstances.setClassIndex(m_testData.classIndex());
+          plotInstances.setEvaluation(eval);
+          plotInstances
+            .setPointSizeProportionalToMargin(m_errPlotPtSizePropToMarg);
+        }
         eval =
           adjustForInputMappedClassifier(eval, m_classifier, m_testData,
             plotInstances, m_cMatrix);
 
         eval.useNoPriors();
         eval.setMetricsToDisplay(m_metricsList);
+        eval.setDiscardPredictions(!m_collectPreds);
       } else {
         eval = new Evaluation(m_trainData, m_cMatrix);
-        plotInstances.setInstances(m_trainData);
-        plotInstances.setClassifier(m_classifier);
-        plotInstances.setClassIndex(m_trainData.classIndex());
-        plotInstances.setEvaluation(eval);
-        plotInstances
-          .setPointSizeProportionalToMargin(m_errPlotPtSizePropToMarg);
+        if (m_collectPreds) {
+          plotInstances.setInstances(m_trainData);
+          plotInstances.setClassifier(m_classifier);
+          plotInstances.setClassIndex(m_trainData.classIndex());
+          plotInstances.setEvaluation(eval);
+          plotInstances
+            .setPointSizeProportionalToMargin(m_errPlotPtSizePropToMarg);
+        }
         eval =
           adjustForInputMappedClassifier(eval, m_classifier, m_trainData,
             plotInstances, m_cMatrix);
         eval.setMetricsToDisplay(m_metricsList);
+        eval.setDiscardPredictions(!m_collectPreds);
       }
 
-      plotInstances.setUp();
+      if (m_collectPreds) {
+        plotInstances.setUp();
+      }
       if (m_classifier instanceof BatchPredictor
         && ((BatchPredictor) m_classifier)
           .implementsMoreEfficientBatchPrediction()) {
         double[][] predictions =
           ((BatchPredictor) m_classifier).distributionsForInstances(m_testData);
-        plotInstances.process(m_testData, predictions, eval);
+        if (m_collectPreds) {
+          plotInstances.process(m_testData, predictions, eval);
+        } else {
+          for (int i = 0; i < m_testData.numInstances(); i++) {
+            eval.evaluationForSingleInstance(predictions[i],
+              m_testData.instance(i), false);
+          }
+        }
       } else {
         for (int i = 0; i < m_testData.numInstances(); i++) {
           Instance temp = m_testData.instance(i);
-          plotInstances.process(temp, m_classifier, eval);
+          if (m_collectPreds) {
+            plotInstances.process(temp, m_classifier, eval);
+          } else {
+            eval.evaluateModelOnce(m_classifier, temp);
+          }
         }
       }
 
       r[0] = eval;
       r[1] = m_classifier;
       r[2] = m_testData;
-      r[3] = plotInstances;
+      r[3] = m_collectPreds ? plotInstances : null;
       r[5] = m_evalLabel;
     }
   }
