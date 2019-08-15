@@ -252,7 +252,7 @@ public class SetInstancesPanel extends JPanel {
    */
   public void closeFrame() {
     if (m_ParentFrame != null)
-      m_ParentFrame.setVisible(false);
+      m_ParentFrame.dispose();
   }
 
   /**
@@ -342,13 +342,11 @@ public class SetInstancesPanel extends JPanel {
       // load
       ((FileSourcedConverter) m_Loader).setFile(f);
       if (incremental) {
-        m_Summary.setShowZeroInstancesAsUnknown(m_showZeroInstancesAsUnknown);
-        setInstances(m_Loader.getStructure());
+        setInstances(m_Loader.getStructure(), m_showZeroInstancesAsUnknown);
       } else {
         // If we are batch loading then we will know for sure that
         // the data has no instances
-        m_Summary.setShowZeroInstancesAsUnknown(false);
-        setInstances(m_Loader.getDataSet());
+        setInstances(m_Loader.getDataSet(), false);
       }
     } catch (Exception ex) {
       JOptionPane.showMessageDialog(this,
@@ -377,11 +375,9 @@ public class SetInstancesPanel extends JPanel {
       // load
       ((URLSourcedLoader) m_Loader).setURL(u.toString());
       if (incremental) {
-        m_Summary.setShowZeroInstancesAsUnknown(m_showZeroInstancesAsUnknown);
-        setInstances(m_Loader.getStructure());
+        setInstances(m_Loader.getStructure(), m_showZeroInstancesAsUnknown);
       } else {
-        m_Summary.setShowZeroInstancesAsUnknown(false);
-        setInstances(m_Loader.getDataSet());
+        setInstances(m_Loader.getDataSet(), false);
       }
     } catch (Exception ex) {
       JOptionPane.showMessageDialog(this, "Couldn't read from URL:\n" + u,
@@ -391,11 +387,22 @@ public class SetInstancesPanel extends JPanel {
 
   /**
    * Updates the set of instances that is currently held by the panel.
-   * 
+   *
    * @param i a value of type 'Instances'
    */
   public void setInstances(Instances i) {
+    setInstances(i, true);
+  }
 
+  /**
+   * Updates the set of instances that is currently held by the panel.
+   * 
+   * @param i a value of type 'Instances'
+   * @param showZeroInstancesAsUnknown self-explanatory
+   */
+  public void setInstances(Instances i, boolean showZeroInstancesAsUnknown) {
+
+    m_Summary.setShowZeroInstancesAsUnknown(showZeroInstancesAsUnknown);
     m_Instances = i;
     m_Summary.setInstances(m_Instances);
 

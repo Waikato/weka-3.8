@@ -172,9 +172,32 @@ public class AlgorithmListPanel extends JPanel implements ActionListener {
   /** The list model used */
   protected DefaultListModel m_AlgorithmListModel = new DefaultListModel();
 
+  /** An property change listener that needs to be available globally to permit garbage collection. */
+  protected PropertyChangeListener m_PropertyChangeListener;
+
+  /** An action listener that needs to be available globally to permit garbage collection. */
+  protected ActionListener m_ActionListener;
+
   /* Register the property editors we need */
   static {
     GenericObjectEditor.registerEditors();
+  }
+
+  /**
+   * Terminates this panel, which means, in the case of this panel, that it disposes of the property dialog
+   * and removes the relevant listeners from the GenericObjectEditor and the GOEPanel.
+   */
+  public void terminate() {
+    if (m_PD != null) {
+      m_PD.dispose();
+      m_PD = null;
+    }
+    if (m_ClassifierEditor != null) {
+      m_ClassifierEditor.removePropertyChangeListener(m_PropertyChangeListener);
+      if (m_ActionListener != null) {
+        ((GenericObjectEditor.GOEPanel) m_ClassifierEditor.getCustomEditor()).removeOkListener(m_ActionListener);
+      }
+    }
   }
 
   /**
@@ -341,21 +364,21 @@ public class AlgorithmListPanel extends JPanel implements ActionListener {
 
     m_ClassifierEditor.setClassType(Classifier.class);
     m_ClassifierEditor.setValue(new weka.classifiers.rules.ZeroR());
-    m_ClassifierEditor.addPropertyChangeListener(new PropertyChangeListener() {
+    m_PropertyChangeListener = new PropertyChangeListener() {
       @Override
       public void propertyChange(PropertyChangeEvent e) {
         repaint();
       }
-    });
-    ((GenericObjectEditor.GOEPanel) m_ClassifierEditor.getCustomEditor())
-      .addOkListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          Classifier newCopy = (Classifier) copyObject(m_ClassifierEditor
-            .getValue());
-          addNewAlgorithm(newCopy);
-        }
-      });
+    };
+    m_ClassifierEditor.addPropertyChangeListener(m_PropertyChangeListener);
+    m_ActionListener = new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        Classifier newCopy = (Classifier) copyObject(m_ClassifierEditor.getValue());
+        addNewAlgorithm(newCopy);
+      }
+    };
+    ((GenericObjectEditor.GOEPanel) m_ClassifierEditor.getCustomEditor()).addOkListener(m_ActionListener);
 
     m_DeleteBut.setEnabled(false);
     m_DeleteBut.addActionListener(this);

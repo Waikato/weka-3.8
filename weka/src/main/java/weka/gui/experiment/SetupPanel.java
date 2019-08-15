@@ -34,30 +34,14 @@ import weka.gui.GenericObjectEditor;
 import weka.gui.PropertyPanel;
 import weka.gui.WekaFileChooser;
 
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -152,7 +136,7 @@ public class SetupPanel extends AbstractSetupPanel {
   protected JButton m_NotesButton = new JButton("Notes");
 
   /** Frame for the notes */
-  protected JFrame m_NotesFrame = new JFrame("Notes");
+  protected JFrame m_NotesFrame;
 
   /** Area for user notes Default of 10 rows */
   protected JTextArea m_NotesText = new JTextArea(null, 10, 0);
@@ -282,6 +266,8 @@ public class SetupPanel extends AbstractSetupPanel {
       }
     });
 
+    m_NotesFrame = Utils.getWekaJFrame("Notes", this);
+    m_NotesFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
     m_NotesFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent e) {
@@ -451,6 +437,28 @@ public class SetupPanel extends AbstractSetupPanel {
     setLayout(new BorderLayout());
     add(p3, BorderLayout.NORTH);
     add(p2, BorderLayout.CENTER);
+  }
+  /**
+   * Terminates this panel, which means, in the case of this panel, that it sets all references
+   * to associated JFrame objects to null.
+   */
+  public void terminate() {
+
+    if (m_NotesFrame != null) {
+      for (WindowListener w : m_NotesFrame.getWindowListeners()) {
+        m_NotesFrame.removeWindowListener(w);
+      }
+      m_NotesFrame.setContentPane(new JPanel());
+      m_NotesFrame.dispose();
+      m_NotesFrame = null;
+    }
+    if (m_Support != null) {
+      for (PropertyChangeListener l : m_Support.getPropertyChangeListeners()) {
+        m_Support.removePropertyChangeListener(l);
+      }
+      m_Support = null;
+    }
+    m_modePanel = null;
   }
 
   /**

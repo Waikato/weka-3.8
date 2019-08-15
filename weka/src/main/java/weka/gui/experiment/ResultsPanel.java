@@ -1420,25 +1420,37 @@ public class ResultsPanel extends JPanel {
     System.out.println("Tester set to: " + m_TTester.getClass().getName());
   }
 
+  /**
+   * A trivial wrapper for a JFrame so that we can facilitate garbage collection.
+   */
+  protected class JFrameWrapper {
+
+    // The reference to the actual JFrame
+    protected JFrame m_Frame;
+  }
+
   protected synchronized void openExplorer() {
     if (m_Instances != null) {
       if (m_mainPerspective == null || !m_mainPerspective.acceptsInstances()) {
         Explorer exp = new Explorer();
         exp.getPreprocessPanel().setInstances(m_Instances);
 
-        final JFrame jf = Utils.getWekaJFrame("Weka Explorer", this);
-        jf.getContentPane().setLayout(new BorderLayout());
-        jf.getContentPane().add(exp, BorderLayout.CENTER);
-        jf.addWindowListener(new WindowAdapter() {
+        final JFrameWrapper jf = new JFrameWrapper();
+        jf.m_Frame = Utils.getWekaJFrame("Weka Explorer", this);
+        jf.m_Frame.getContentPane().setLayout(new BorderLayout());
+        jf.m_Frame.getContentPane().add(exp, BorderLayout.CENTER);
+        jf.m_Frame.addWindowListener(new WindowAdapter() {
           @Override
           public void windowClosing(WindowEvent e) {
-            jf.dispose();
+            exp.terminate();
+            jf.m_Frame.dispose();
+            jf.m_Frame = null;
           }
         });
-        jf.pack();
-        jf.setSize(1024, 768);
-        jf.setLocationRelativeTo(SwingUtilities.getWindowAncestor(this));
-        jf.setVisible(true);
+        jf.m_Frame.pack();
+        jf.m_Frame.setSize(1024, 768);
+        jf.m_Frame.setLocationRelativeTo(SwingUtilities.getWindowAncestor(this));
+        jf.m_Frame.setVisible(true);
       } else {
         m_mainPerspective.setInstances(m_Instances);
         m_mainPerspective.getMainApplication().getPerspectiveManager()

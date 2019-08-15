@@ -45,6 +45,15 @@ public abstract class AbstractGUIApplication extends JPanel implements
   protected Settings m_applicationSettings;
 
   /**
+   * Method to be called when GUI application is no longer needed, to free up resources so that they
+   * can be garbage collected. Just calls the corresponding method of the the PerspectiveManager.
+   */
+  public void terminate() {
+
+    m_perspectiveManager.terminate();
+  }
+
+  /**
    * Default constructor
    */
   public AbstractGUIApplication() {

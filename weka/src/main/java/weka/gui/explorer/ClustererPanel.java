@@ -665,9 +665,6 @@ public class ClustererPanel extends AbstractPerspective implements
   protected void updateRadioLinks() {
 
     m_SetTestBut.setEnabled(m_TestSplitBut.isSelected());
-    if ((m_SetTestFrame != null) && (!m_TestSplitBut.isSelected())) {
-      m_SetTestFrame.setVisible(false);
-    }
     m_PercentText.setEnabled(m_PercentBut.isSelected());
     m_PercentLab.setEnabled(m_PercentBut.isSelected());
     m_ClassCombo.setEnabled(m_ClassesToClustersBut.isSelected());
@@ -733,14 +730,14 @@ public class ClustererPanel extends AbstractPerspective implements
       sp.setReadIncrementally(false);
       m_Summary = sp.getSummary();
       if (m_TestInstances != null) {
-        sp.setInstances(m_TestInstances);
+        sp.setInstances(m_TestInstances, false);
       }
       sp.addPropertyChangeListener(new PropertyChangeListener() {
         @Override
         public void propertyChange(PropertyChangeEvent e) {
           m_TestInstances = sp.getInstances();
           m_TestInstances.setClassIndex(-1); // make sure that no class
-                                             // attribute is set!
+          // attribute is set!
         }
       });
       // Add propertychangelistener to update m_TestInstances whenever
@@ -749,11 +746,23 @@ public class ClustererPanel extends AbstractPerspective implements
       sp.setParentFrame(m_SetTestFrame); // enable Close-Button
       m_SetTestFrame.getContentPane().setLayout(new BorderLayout());
       m_SetTestFrame.getContentPane().add(sp, BorderLayout.CENTER);
+      m_SetTestFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+        @Override
+        public void windowClosing(java.awt.event.WindowEvent e) {
+          m_SetTestFrame.dispose();
+        }
+      });
+      m_SetTestFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+        @Override
+        public void windowClosed(java.awt.event.WindowEvent e) {
+          m_SetTestFrame = null;
+        }
+      });
       m_SetTestFrame.pack();
-      m_SetTestFrame.setSize(400,200);
+      m_SetTestFrame.setSize(400, 200);
+      m_SetTestFrame.setLocationRelativeTo(SwingUtilities.getWindowAncestor(this));
+      m_SetTestFrame.setVisible(true);
     }
-    m_SetTestFrame.setLocationRelativeTo(SwingUtilities.getWindowAncestor(this));
-    m_SetTestFrame.setVisible(true);
   }
 
   /**

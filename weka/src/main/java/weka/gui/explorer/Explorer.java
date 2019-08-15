@@ -281,6 +281,14 @@ public class Explorer extends JPanel {
   }
 
   /**
+   * Terminates this panel, which means, in the case of this panel, that it terminates the associated LogPanel.
+   */
+  public void terminate() {
+
+    m_LogPanel.terminate();
+  }
+
+  /**
    * returns all the panels, apart from the PreprocessPanel
    * 
    * @return the currently displayed panels w/o PreprocessPanel

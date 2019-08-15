@@ -119,7 +119,18 @@ public class PropertyDialog
     
     initialize(pe, x, y);
   }
-  
+
+  /**
+   * We need to extend the dispose method so that the member variables are set to null and
+   * the corresponding objects can be garbage collected.
+   */
+  @Override
+  public void dispose() {
+    m_Editor = null;
+    m_EditorComponent = null;
+    super.dispose();
+  }
+
   /**
    * Initializes the dialog.
    *

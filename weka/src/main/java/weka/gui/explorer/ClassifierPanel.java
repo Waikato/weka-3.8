@@ -92,28 +92,7 @@ import weka.gui.visualize.plugins.GraphVisualizePlugin;
 import weka.gui.visualize.plugins.TreeVisualizePlugin;
 import weka.gui.visualize.plugins.VisualizePlugin;
 
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JViewport;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
@@ -127,11 +106,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -690,20 +665,27 @@ public class ClassifierPanel extends AbstractPerspective implements
             "Classifier evaluation options");
         jd.getContentPane().setLayout(new BorderLayout());
         jd.getContentPane().add(all, BorderLayout.CENTER);
-        jd.addWindowListener(new java.awt.event.WindowAdapter() {
+        ActionListener al = new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent a) {
+            jd.dispose();
+          }
+        };
+        WindowListener wl = new java.awt.event.WindowAdapter() {
           @Override
           public void windowClosing(java.awt.event.WindowEvent w) {
             jd.dispose();
-            m_MoreOptions.setEnabled(true);
           }
-        });
-        oK.addActionListener(new ActionListener() {
           @Override
-          public void actionPerformed(ActionEvent a) {
+          public void windowClosed(WindowEvent w) {
+            jd.removeWindowListener(this);
+            jd.setContentPane(new JPanel());
+            oK.removeActionListener(al);
             m_MoreOptions.setEnabled(true);
-            jd.dispose();
           }
-        });
+        };
+        jd.addWindowListener(wl);
+        oK.addActionListener(al);
         jd.pack();
 
         // panel height is only available now
@@ -729,10 +711,12 @@ public class ClassifierPanel extends AbstractPerspective implements
           public void actionPerformed(ActionEvent e) {
             EvaluationMetricSelectionDialog esd =
               new EvaluationMetricSelectionDialog(jd, m_selectedEvalMetrics);
+            esd.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             esd.setLocation(m_MoreOptions.getLocationOnScreen());
             esd.pack();
             esd.setVisible(true);
             m_selectedEvalMetrics = esd.getSelectedEvalMetrics();
+            esd.dispose();
           }
         });
 
@@ -1005,9 +989,6 @@ public class ClassifierPanel extends AbstractPerspective implements
   protected void updateRadioLinks() {
 
     m_SetTestBut.setEnabled(m_TestSplitBut.isSelected());
-    if ((m_SetTestFrame != null) && (!m_TestSplitBut.isSelected())) {
-      m_SetTestFrame.setVisible(false);
-    }
     m_CVText.setEnabled(m_CVBut.isSelected());
     m_CVLab.setEnabled(m_CVBut.isSelected());
     m_PercentText.setEnabled(m_PercentBut.isSelected());
@@ -1093,7 +1074,7 @@ public class ClassifierPanel extends AbstractPerspective implements
       if (m_TestLoader != null) {
         try {
           if (m_TestLoader.getStructure() != null) {
-            sp.setInstances(m_TestLoader.getStructure());
+            sp.setInstances(m_TestLoader.getStructure(), true);
           }
         } catch (Exception ex) {
           ex.printStackTrace();
@@ -1112,12 +1093,23 @@ public class ClassifierPanel extends AbstractPerspective implements
       sp.setParentFrame(m_SetTestFrame); // enable Close-Button
       m_SetTestFrame.getContentPane().setLayout(new BorderLayout());
       m_SetTestFrame.getContentPane().add(sp, BorderLayout.CENTER);
+      m_SetTestFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+        @Override
+        public void windowClosing(java.awt.event.WindowEvent e) {
+          m_SetTestFrame.dispose();
+        }
+      });
+      m_SetTestFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+        @Override
+        public void windowClosed(java.awt.event.WindowEvent e) {
+          m_SetTestFrame = null;
+        }
+      });
       m_SetTestFrame.pack();
       m_SetTestFrame.setSize(400, 200);
+      m_SetTestFrame.setLocationRelativeTo(SwingUtilities.getWindowAncestor(this));
+      m_SetTestFrame.setVisible(true);
     }
-    m_SetTestFrame
-      .setLocationRelativeTo(SwingUtilities.getWindowAncestor(this));
-    m_SetTestFrame.setVisible(true);
   }
 
   /**

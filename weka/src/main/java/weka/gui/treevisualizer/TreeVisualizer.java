@@ -867,6 +867,12 @@ public class TreeVisualizer extends PrintablePanel implements
           pan.setInstances(inst);
           JFrame nf = Utils.getWekaJFrame("", this);
           nf.getContentPane().add(pan);
+          nf.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+              nf.dispose();
+            }
+          });
           nf.pack();
           nf.setSize(800, 600);
           nf.setLocationRelativeTo(SwingUtilities.getWindowAncestor(this));

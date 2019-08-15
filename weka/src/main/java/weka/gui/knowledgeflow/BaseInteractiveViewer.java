@@ -163,7 +163,7 @@ public abstract class BaseInteractiveViewer extends JPanel implements
    * Set the step that owns this viewer. Implementations may want to access data
    * that has been computed by the step in question.
    *
-   * @param theStep the step that owns this viewer
+   * @param step the step that owns this viewer
    */
   @Override
   public void setStep(Step step) {
@@ -199,8 +199,7 @@ public abstract class BaseInteractiveViewer extends JPanel implements
     m_parent.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent e) {
-        super.windowClosing(e);
-        closePressed();
+        close();
       }
     });
   }
@@ -215,20 +214,24 @@ public abstract class BaseInteractiveViewer extends JPanel implements
   }
 
   private void close() {
-    closePressed();
-
     if (m_parent != null) {
       m_parent.dispose();
     }
+    closePressed();
   }
 
   /**
-   * Called when the close button is pressed. Subclasses should override if they
-   * need to do something before the window is closed
+   * Called when the close button is pressed. This default implementation sets all references stored in this viewer
+   * to null so that garbage collection is facilitated. Subclasses
+   * should override if they need to do something before the window is closed.
    */
   public void closePressed() {
-    // subclasses to override if they need to do something before
-    // the window is closed
+
+    m_step = null;
+    m_closeBut = null;
+    m_buttonHolder = null;
+    m_mainPerspective = null;
+    m_parent = null;
   }
 
   /**

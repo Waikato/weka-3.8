@@ -1082,8 +1082,11 @@ public final class Utils implements RevisionHandler {
 
   /**
    * Returns a JFrame with the given title. The JFrame will be placed relative
-   * to the ancestor window of the given component (or relative to the given component itself, if it is a window),
-   * and will receive the icon image from that window if the window is a frame.
+   * to the ancestor window of the given component (or relative to the given component itself,
+   * if it is a window), and will receive the icon image from that window if the window is a frame.
+   *
+   * The default close operation of the JFrame is set to DO_NOTHING_ON_CLOSE so code using
+   * the JFrame will need to make sure that it is disposed of properly.
    *
    * @param title the title of the window
    * @param component the component for which the ancestor window is found
@@ -1091,6 +1094,7 @@ public final class Utils implements RevisionHandler {
    */
   public static JFrame getWekaJFrame(String title, Component component) {
     JFrame jf = new JFrame(title);
+    jf.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     Window windowAncestor = null;
     if (component != null) {
       if (component instanceof Window) {

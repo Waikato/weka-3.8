@@ -94,14 +94,7 @@ import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -1151,7 +1144,7 @@ public class PreprocessPanel extends AbstractPerspective implements
             generateButton.setMnemonic('G');
             generateButton
               .setToolTipText("Generates the dataset according the settings.");
-            generateButton.addActionListener(new ActionListener() {
+            ActionListener al = new ActionListener() {
               public void actionPerformed(ActionEvent evt) {
                 boolean showOutput = showOutputCheckBox.isSelected();
 
@@ -1170,8 +1163,24 @@ public class PreprocessPanel extends AbstractPerspective implements
                 // display output?
                 if ((generated) && (showOutput))
                   showGeneratedInstances(generatorPanel.getOutput());
+
+                generatorPanel.setLog(null);
               }
-            });
+            };
+            generateButton.addActionListener(al);
+            WindowListener wl = new java.awt.event.WindowAdapter() {
+              @Override
+              public void windowClosing(java.awt.event.WindowEvent w) {
+                dialog.dispose();
+              }
+              @Override
+              public void windowClosed(WindowEvent w) {
+                dialog.removeWindowListener(this);
+                dialog.setContentPane(new JPanel());
+                generateButton.removeActionListener(al);
+              }
+            };
+            dialog.addWindowListener(wl);
             dialog.setTitle("DataGenerator");
             dialog.getContentPane().add(generatorPanel, BorderLayout.CENTER);
             dialog.getContentPane().add(generateButton, BorderLayout.EAST);
@@ -1281,23 +1290,36 @@ public class PreprocessPanel extends AbstractPerspective implements
     try {
       convEd.setClassType(weka.core.converters.Loader.class);
       convEd.setValue(new weka.core.converters.CSVLoader());
-      ((GenericObjectEditor.GOEPanel) convEd.getCustomEditor())
-        .addOkListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            tryConverter((Loader) convEd.getValue(), f);
-          }
-        });
-    } catch (Exception ex) {
-    }
+      ActionListener al = new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          tryConverter((Loader) convEd.getValue(), f);
+        }
+      };
+      ((GenericObjectEditor.GOEPanel) convEd.getCustomEditor()).addOkListener(al);
 
-    PropertyDialog pd;
-    if (PropertyDialog.getParentDialog(this) != null)
-      pd =
-        new PropertyDialog(PropertyDialog.getParentDialog(this), convEd, -1, -1);
-    else
-      pd =
-        new PropertyDialog(PropertyDialog.getParentFrame(this), convEd, -1, -1);
-    pd.setVisible(true);
+      PropertyDialog pd;
+      if (PropertyDialog.getParentDialog(this) != null)
+        pd =
+                new PropertyDialog(PropertyDialog.getParentDialog(this), convEd, -1, -1);
+      else
+        pd =
+                new PropertyDialog(PropertyDialog.getParentFrame(this), convEd, -1, -1);
+      pd.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosing(WindowEvent e) {
+          ((GenericObjectEditor.GOEPanel) convEd.getCustomEditor()).removeOkListener(al);
+          pd.dispose();
+        }
+        @Override
+        public void windowClosed(WindowEvent e) {
+          pd.setContentPane(new JPanel());
+          pd.removeWindowListener(this);
+        }
+      });
+      pd.setVisible(true);
+    } catch (Exception ex) {
+
+    }
   }
 
   /**

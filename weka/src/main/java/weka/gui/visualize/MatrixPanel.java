@@ -1053,6 +1053,12 @@ public class MatrixPanel extends JPanel {
         ex.printStackTrace();
       }
       jf.getContentPane().add(vp);
+      jf.addWindowListener(new java.awt.event.WindowAdapter() {
+        @Override
+        public void windowClosing(java.awt.event.WindowEvent e) {
+          jf.dispose();
+        }
+      });
       jf.pack();
       jf.setSize(800, 600);
       jf.setLocationRelativeTo(SwingUtilities.getWindowAncestor(this));

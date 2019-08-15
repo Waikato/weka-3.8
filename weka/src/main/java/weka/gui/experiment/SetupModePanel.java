@@ -175,6 +175,17 @@ public class SetupModePanel
   }
 
   /**
+   * Terminates this panel, which means, in the case of this panel, that it sets all references
+   * to associated JFrame objects to null.
+   */
+  public void terminate() {
+    if (m_Panels != null) {
+      for (AbstractSetupPanel panel : m_Panels)
+        panel.terminate();
+    }
+  }
+
+  /**
    * Gets the currently configured experiment.
    *
    * @return the currently configured experiment.

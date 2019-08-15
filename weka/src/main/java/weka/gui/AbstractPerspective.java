@@ -85,6 +85,20 @@ public abstract class AbstractPerspective extends JPanel implements Perspective 
   }
 
   /**
+   * Subclasses should override this to free any additional resources (e.g., JFrames and threads) when
+   * the perspective is no longer needed.
+   *
+   * This default method removes all menus that a perspective might have because references
+   * to various components may be included in the event handlers of these menus.
+   */
+  public void terminate() {
+
+     for (JMenu m : getMenus()) {
+       m.removeAll();
+     }
+  }
+
+  /**
    * No-opp implementation. Subclasses should override if they can only complete
    * initialization by accessing the main application and/or the
    * PerspectiveManager. References to these two things are guaranteed to be

@@ -123,6 +123,15 @@ public class Experimenter extends AbstractPerspective {
   }
 
   /**
+   * Terminates this panel, which means, in the case of this panel, that it sets all references
+   * to associated JFrame objects to null.
+   */
+  public void terminate() {
+
+    m_SetupPanel.terminate();
+  }
+
+  /**
    * variable for the Experimenter class which would be set to null by the
    * memory monitoring thread to free up some memory if we running out of memory
    */

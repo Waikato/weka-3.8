@@ -139,4 +139,9 @@ public abstract class AbstractSetupPanel
 
     return result.toArray(new AbstractSetupPanel[result.size()]);
   }
+
+  /**
+   * Terminates this panel. To be implemented by actual concrete classes.
+   */
+  public abstract void terminate();
 }

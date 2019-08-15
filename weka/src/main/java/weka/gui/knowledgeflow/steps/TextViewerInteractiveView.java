@@ -155,6 +155,7 @@ public class TextViewerInteractiveView extends BaseInteractiveViewer implements
   public void closePressed() {
     ((TextViewer) getStep())
       .removeTextNotificationListener(TextViewerInteractiveView.this);
+    super.closePressed();
   }
 
   /**
