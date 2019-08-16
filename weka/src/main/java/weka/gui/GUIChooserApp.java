@@ -213,6 +213,7 @@ public class GUIChooserApp extends JFrame {
 
     frame.removeWindowListener(adapter);
     frame.setContentPane(new JPanel());
+    frame.setJMenuBar(new JMenuBar());
     frame.dispose();
     m_Frames.remove(frame);
     System.gc();
