@@ -123,14 +123,10 @@ public class RemoveType extends Filter implements UnsupervisedFilter,
     int numToDelete = 0;
     for (int i = 0; i < instanceInfo.numAttributes(); i++) {
       if (i == instanceInfo.classIndex()) {
-        if (!m_invert) {
-          continue; // skip class
-        } else {
-          attsToDelete[numToDelete++] = i; // Need to keep the class even if
-                                           // selection is inverted
+        if (m_invert) {
+          attsToDelete[numToDelete++] = i; // Need to make sure to keep the class even if selection is inverted
         }
-      }
-      if (instanceInfo.attribute(i).type() == m_attTypeToDelete) {
+      } else if (instanceInfo.attribute(i).type() == m_attTypeToDelete) {
         attsToDelete[numToDelete++] = i;
       }
     }
