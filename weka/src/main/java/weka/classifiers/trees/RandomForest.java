@@ -103,7 +103,7 @@ import java.util.Vector;
  * 
  * <pre>
  * -I &lt;num&gt;
- *  Number of iterations.
+ *  Number of iterations (i.e., the number of trees in the random forest).
  *  (current value 100)
  * </pre>
  * 
@@ -284,6 +284,14 @@ public class RandomForest extends Bagging {
     result.setValue(Field.PAGES, "5-32");
 
     return result;
+  }
+
+  /**
+   * Returns the tip text for the number of iterations. Overridden here to be more informative.
+   * @return tip text for this property suitable for displaying in the explorer/experimenter gui
+   */
+  public String numIterationsTipText() {
+    return "The number of trees in the random forest.";
   }
 
   /**
@@ -599,7 +607,7 @@ public class RandomForest extends Bagging {
       "\tCompute and output attribute importance (mean impurity decrease "
         + "method)", "attribute-importance", 0, "-attribute-importance"));
 
-    newVector.addElement(new Option("\tNumber of iterations.\n"
+    newVector.addElement(new Option("\tNumber of iterations (i.e., the number of trees in the random forest).\n"
       + "\t(current value " + getNumIterations() + ")", "I", 1, "-I <num>"));
 
     newVector.addElement(new Option("\tNumber of execution slots.\n"
@@ -707,7 +715,7 @@ public class RandomForest extends Bagging {
    * 
    * <pre>
    * -I &lt;num&gt;
-   *  Number of iterations.
+   *  Number of iterations (i.e., the number of trees in the random forest).
    *  (current value 100)
    * </pre>
    * 
