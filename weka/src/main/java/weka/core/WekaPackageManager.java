@@ -74,7 +74,7 @@ import java.util.zip.ZipInputStream;
 /**
  * Class providing package management and manipulation routines. Also provides a
  * command line interface for package management.
- * 
+ *
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
  * @version $Revision$
  */
@@ -110,6 +110,12 @@ public class WekaPackageManager {
    * match in the list is considered as passing the test.
    */
   public static final String OS_ARCH_KEY = "OSArch";
+
+  /**
+   * Package metadata key for JVM version. Values can be prefixed by a less-than
+   * or greater-than sign. Otherwise, equality is assumed.
+   */
+  public static final String VM_VERSION_KEY = "JVMVersion";
 
   /**
    * Package metadata key for preventing load if an environment variable is not
@@ -883,6 +889,10 @@ public class WekaPackageManager {
       return false;
     }
 
+    if (!vmVersionCheck(toLoad, progress)) {
+      return false;
+    }
+
     // check for precludes
     Object precludes = toLoad.getPackageMetaDataElement(PRECLUDES_KEY);
     if (precludes != null) {
@@ -970,6 +980,88 @@ public class WekaPackageManager {
       return false;
     }
 
+    return true;
+  }
+
+  /**
+   * Checks the supplied package against the JVM version running Weka. Packages
+   * that don't specify a JVM version are assumed to be OK. The entry in the
+   * JVMVersion key are expected to be a floating point number, optionally
+   * prefixed by either a greater-than or less-than symbol. Absence of either
+   * of these symbols imply equality as the test.
+   *
+   * @param toLoad the package to check
+   * @param progress PrintStream for progress info
+   * @return true if the supplied package passes the JVM version test.
+   */
+  public static boolean vmVersionCheck(Package toLoad, PrintStream... progress) {
+    String thisVMVersion = System.getProperty("java.specification.version");
+    if (thisVMVersion != null && thisVMVersion.length() > 0) {
+      double actualVM = -1;
+      try {
+        actualVM = Double.parseDouble(thisVMVersion);
+      } catch (NumberFormatException e) {
+        e.printStackTrace();
+        return true;
+      }
+
+      try {
+        Object reqVMS = toLoad.getPackageMetaDataElement(VM_VERSION_KEY);
+        if (reqVMS != null) {
+          String vm = reqVMS.toString();
+
+          String op = "=";
+          if (vm.charAt(0) == '>') {
+            op = ">";
+            vm = vm.substring(1);
+          } else if (vm.charAt(0) == '<') {
+            op = "<";
+            vm = vm.substring(1);
+          }
+          double requestedVM = -1;
+          try {
+            requestedVM = Double.parseDouble(vm);
+          } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return true;
+          }
+
+          boolean result = true;
+          String failureMessage = "";
+          if (op.equals("=")) {
+            result = requestedVM == actualVM;
+            if (!result) {
+              failureMessage = "[WekaPackageManager] Unable to load '"
+                + toLoad.getName() + "' because "
+                + "JVM " + actualVM + " does not match requested JVM " + requestedVM;
+            }
+          } else if (op.equals("<")) {
+            result = actualVM < requestedVM;
+            if (!result) {
+              failureMessage = "[WekaPackageManager] Unable to load '"
+                + toLoad.getName() +"' because "
+                + "JVM " + actualVM + " is not < requested JVM " + requestedVM;
+            }
+          } else {
+            result = actualVM > requestedVM;
+            if (!result) {
+              failureMessage = "[WekaPackageManager] Unable to laod '"
+                + toLoad.getName() + "' because "
+                + "JVM " + actualVM + " is not > requested JVM " + requestedVM;
+            }
+          }
+          if (!result) {
+            for (PrintStream p : progress) {
+              p.println(failureMessage);
+            }
+          }
+
+          return result;
+        }
+      } catch (Exception ex) {
+        ex.printStackTrace();
+      }
+    }
     return true;
   }
 
@@ -2557,6 +2649,10 @@ public class WekaPackageManager {
 
       if (!osAndArchCheck(toInstall, System.out)) {
         return; // bail out here
+      }
+
+      if (!vmVersionCheck(toInstall, System.out)) {
+        return; // bail out
       }
 
       if (toInstall.isInstalled()) {
