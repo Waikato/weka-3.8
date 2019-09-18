@@ -91,6 +91,135 @@
         <skipTests>true</skipTests>
       </properties>
     </profile>
+
+    <profile>
+      <!-- for building debian package from ant
+           (expects weka.jar/weka-src.jar in dist dir, does not attach artifacts) -->
+      <id>ant-deb-pkg</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.fracpete</groupId>
+            <artifactId>debian-maven-plugin</artifactId>
+            <configuration>
+              <packageName>${project.name}</packageName>
+              <packageTitle>Weka (developer version)</packageTitle>
+              <packageVersion>${project.version}</packageVersion>
+              <projectUrl>${project.url}</projectUrl>
+              <packageDescription>Weka is a collection of machine learning algorithms for data mining tasks.
+                It contains tools for data preparation, classification, regression, clustering, association
+                rules mining, and visualization. </packageDescription>
+              <createSymLinks>false</createSymLinks>
+              <createIncludeFiles>false</createIncludeFiles>
+              <fileFiltering>
+                <enabled>true</enabled>
+              </fileFiltering>
+              <excludeAllArtifacts>true</excludeAllArtifacts>
+              <excludeAllDependencies>true</excludeAllDependencies>
+              <useDefaultCopyResources>false</useDefaultCopyResources>
+              <copyResources>
+                <copyResource>
+                  <source>${project.build.directory}/</source>
+                  <include>.*weka.jar</include>
+                  <target>${project.basedir}/target/deb/usr/lib/${project.name}</target>
+                </copyResource>
+                <copyResource>
+                  <source>${project.build.scriptSourceDirectory}/debian-gui</source>
+                  <target>${project.basedir}/target/deb/usr/bin/${project.name}-gui</target>
+                </copyResource>
+                <copyResource>
+                  <source>${project.build.scriptSourceDirectory}/debian-run</source>
+                  <target>${project.basedir}/target/deb/usr/bin/${project.name}-run</target>
+                </copyResource>
+                <copyResource>
+                  <source>${project.build.sourceDirectory}/weka/gui/weka_icon_new.png</source>
+                  <target>${project.basedir}/target/deb/usr/share/pixmaps/${project.name}.png</target>
+                </copyResource>
+                <copyResource>
+                  <source>${project.build.scriptSourceDirectory}/debian-gui.desktop</source>
+                  <target>${project.basedir}/target/deb/usr/share/applications/${project.name}.desktop</target>
+                </copyResource>
+                <copyResource>
+                  <source>${project.build.directory}/</source>
+                  <include>.*weka-src.jar</include>
+                  <target>${project.basedir}/target/deb/usr/lib/${project.name}/src</target>
+                </copyResource>
+              </copyResources>
+              <useDefaultFixPermissions>true</useDefaultFixPermissions>
+              <packageDependencies>
+                <packageDependency>openjdk-8-jre | openjdk-8-jre-headless</packageDependency>
+              </packageDependencies>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <!-- for building debian package from ant
+           (expects maven-generated weka-X.Y.Z.* jars in dist dir, attaches artifacts) -->
+      <id>mvn-deb-pkg</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.fracpete</groupId>
+            <artifactId>debian-maven-plugin</artifactId>
+            <configuration>
+              <packageName>${project.name}</packageName>
+              <packageTitle>Weka (developer version)</packageTitle>
+              <packageVersion>${project.version}</packageVersion>
+              <projectUrl>${project.url}</projectUrl>
+              <packageDescription>Weka is a collection of machine learning algorithms for data mining tasks.
+                It contains tools for data preparation, classification, regression, clustering, association
+                rules mining, and visualization. </packageDescription>
+              <createSymLinks>false</createSymLinks>
+              <createIncludeFiles>false</createIncludeFiles>
+              <fileFiltering>
+                <enabled>true</enabled>
+              </fileFiltering>
+              <excludeArtifactsRegExp>
+                <param>.*linux-armhf.*</param>
+                <param>.*win-i686.*</param>
+                <param>.*x86.*</param>
+              </excludeArtifactsRegExp>
+              <useDefaultCopyResources>false</useDefaultCopyResources>
+              <copyResources>
+                <copyResource>
+                  <source>${project.build.directory}/</source>
+                  <include>.*${project.name}-.*(-SNAPSHOT|[0-9])\.jar</include>
+                  <target>${project.basedir}/target/deb/usr/lib/${project.name}</target>
+                </copyResource>
+                <copyResource>
+                  <source>${project.build.scriptSourceDirectory}/debian-gui</source>
+                  <target>${project.basedir}/target/deb/usr/bin/${project.name}-gui</target>
+                </copyResource>
+                <copyResource>
+                  <source>${project.build.scriptSourceDirectory}/debian-run</source>
+                  <target>${project.basedir}/target/deb/usr/bin/${project.name}-run</target>
+                </copyResource>
+                <copyResource>
+                  <source>${project.build.sourceDirectory}/weka/gui/weka_icon_new.png</source>
+                  <target>${project.basedir}/target/deb/usr/share/pixmaps/${project.name}.png</target>
+                </copyResource>
+                <copyResource>
+                  <source>${project.build.scriptSourceDirectory}/debian-gui.desktop</source>
+                  <target>${project.basedir}/target/deb/usr/share/applications/${project.name}.desktop</target>
+                </copyResource>
+                <copyResource>
+                  <source>${project.build.directory}/</source>
+                  <include>.*${project.name}-.*-sources\.jar</include>
+                  <target>${project.basedir}/target/deb/usr/lib/${project.name}/src</target>
+                </copyResource>
+              </copyResources>
+              <useDefaultFixPermissions>true</useDefaultFixPermissions>
+              <packageDependencies>
+                <packageDependency>openjdk-8-jre | openjdk-8-jre-headless</packageDependency>
+              </packageDependencies>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
   <dependencies>
@@ -261,6 +390,12 @@
             <preparationGoals>clean verify -P no-tests</preparationGoals>
             <goals>deploy -P no-tests</goals> 
           </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>com.github.fracpete</groupId>
+          <artifactId>debian-maven-plugin</artifactId>
+          <version>1.0.17</version>
         </plugin>
       </plugins>
     </pluginManagement>
