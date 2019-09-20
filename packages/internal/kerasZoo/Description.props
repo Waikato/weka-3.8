@@ -1,0 +1,50 @@
+# Template Description file for a Weka package
+#
+# 
+
+# Package name (required)
+PackageName=kerasZoo
+
+# Version (required)
+Version=1.0.0
+
+#Date
+Date=2019-09-20
+
+# Title (required)
+Title=Provides a wrapper classifier for zoo models available in Keras
+
+Category=Python integration
+
+# Author (required)
+Author=Mark Hall
+
+# Maintainer (required)
+Maintainer=Weka team <wekalist@list.scms.waikato.ac.nz>
+
+# License (required)
+License=GPL 3.0
+
+# Description (required)
+Description=Provides a wrapper classifier for invoking zoo models available in Keras. Python version 2.7.x or higher is required. Also requires the following packages to be installed in python: keras, numpy, pandas, matplotlib and scikit-learn.
+
+Changes=
+
+# Package URL for obtaining the package archive (required)
+PackageURL=http://prdownloads.sourceforge.net/weka/kerasZoo1.0.0.zip?download
+
+# URL for further information
+URL=
+
+# Enhances various other packages ?
+# Enhances=packageName1,packageName2,...
+
+# Related to other packages?
+#Related=
+
+# Dependencies
+Depends=weka (>=3.8.0), wekaPython (>=1.0.9)
+
+MessageToDisplayOnInstallation=This package requires python (2.7.x or 3.x) to be installed on your\n\
+ computer before it can be used. The python command must be in the PATH. Within python it requires the:\n\
+ following packages: keras, numpy, pandas, matplotlib and scikit-learn, scipy.
