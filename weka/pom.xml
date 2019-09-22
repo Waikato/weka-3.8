@@ -108,7 +108,7 @@
               <projectUrl>${project.url}</projectUrl>
               <packageDescription>Weka is a collection of machine learning algorithms for data mining tasks.
                 It contains tools for data preparation, classification, regression, clustering, association
-                rules mining, and visualization. </packageDescription>
+                rules mining, and visualization. Weka is released under the GPLv3 (https://www.gnu.org/licenses/gpl-3.0.txt)</packageDescription>
               <createSymLinks>false</createSymLinks>
               <createIncludeFiles>false</createIncludeFiles>
               <fileFiltering>
@@ -171,7 +171,7 @@
               <projectUrl>${project.url}</projectUrl>
               <packageDescription>Weka is a collection of machine learning algorithms for data mining tasks.
                 It contains tools for data preparation, classification, regression, clustering, association
-                rules mining, and visualization. </packageDescription>
+                rules mining, and visualization. Weka is released under the GPLv3 (https://www.gnu.org/licenses/gpl-3.0.txt)</packageDescription>
               <createSymLinks>false</createSymLinks>
               <createIncludeFiles>false</createIncludeFiles>
               <fileFiltering>
