@@ -103,7 +103,7 @@
             <artifactId>debian-maven-plugin</artifactId>
             <configuration>
               <packageName>${project.name}</packageName>
-              <packageTitle>Weka (developer version)</packageTitle>
+              <packageTitle>Weka (stable version)</packageTitle>
               <packageVersion>${project.version}</packageVersion>
               <projectUrl>${project.url}</projectUrl>
               <packageDescription>Weka is a collection of machine learning algorithms for data mining tasks.
@@ -166,7 +166,7 @@
             <artifactId>debian-maven-plugin</artifactId>
             <configuration>
               <packageName>${project.name}</packageName>
-              <packageTitle>Weka (developer version)</packageTitle>
+              <packageTitle>Weka (stable version)</packageTitle>
               <packageVersion>${project.version}</packageVersion>
               <projectUrl>${project.url}</projectUrl>
               <packageDescription>Weka is a collection of machine learning algorithms for data mining tasks.
