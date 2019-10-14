@@ -673,7 +673,7 @@
         <include name="org/**/*"/>
       </patternset>
     </unzip>
-    <unzip src="${lib}/commons-compress-1.18.jar" dest="${build}/classes">
+    <unzip src="${lib}/commons-compress-1.19.jar" dest="${build}/classes">
       <patternset>
         <include name="org/**/*"/>
       </patternset>

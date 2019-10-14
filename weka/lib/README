@@ -1,6 +1,8 @@
 README
 ======
 
+NOTE: Any filename changes must be reflected in build.xml as well!
+
 An overview of the libraries used in Weka:
 
 - junit.jar
