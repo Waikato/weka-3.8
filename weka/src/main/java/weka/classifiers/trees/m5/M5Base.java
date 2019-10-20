@@ -145,6 +145,7 @@ public abstract class M5Base extends AbstractClassifier implements
     m_unsmoothedPredictions = false;
     m_useUnpruned = false;
     m_minNumInstances = 4;
+    m_numDecimalPlaces = 4;
   }
 
   /**
@@ -478,6 +479,7 @@ public abstract class M5Base extends AbstractClassifier implements
         tempRule.setUnpruned(m_useUnpruned);
         tempRule.setSaveInstances(false);
         tempRule.setMinNumInstances(m_minNumInstances);
+        tempRule.setNumDecimalPlaces(getNumDecimalPlaces());
         tempRule.buildClassifier(tempInst);
         m_ruleSet.add(tempRule);
         // System.err.println("Built rule : "+tempRule.toString());
@@ -495,6 +497,7 @@ public abstract class M5Base extends AbstractClassifier implements
       tempRule.setRegressionTree(m_regressionTree);
       tempRule.setUnpruned(m_useUnpruned);
       tempRule.setMinNumInstances(m_minNumInstances);
+      tempRule.setNumDecimalPlaces(getNumDecimalPlaces());
 
       Instances temp_train;
 

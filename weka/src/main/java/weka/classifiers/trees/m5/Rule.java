@@ -144,6 +144,11 @@ public class Rule implements Serializable, RevisionHandler {
   private double m_minNumInstances;
 
   /**
+   * The number of decimal places used for printing this rule.
+   */
+  private int m_numDecimalPlaces = 4;
+
+  /**
    * Constructor declaration
    * 
    */
@@ -182,6 +187,7 @@ public class Rule implements Serializable, RevisionHandler {
     m_topOfTree.setSaveInstances(m_saveInstances);
     m_topOfTree.setRegressionTree(m_regressionTree);
     m_topOfTree.setMinNumInstances(m_minNumInstances);
+    m_topOfTree.setNumDecimalPlaces(getNumDecimalPlaces());
     m_topOfTree.buildClassifier(m_instances);
 
     if (!m_useUnpruned) {
@@ -400,7 +406,7 @@ public class Rule implements Serializable, RevisionHandler {
           text.append("> ");
         }
 
-        text.append(Utils.doubleToString(m_splitVals[i], 1, 3) + "\n");
+        text.append(Utils.doubleToString(m_splitVals[i], 1, getNumDecimalPlaces() - 1) + "\n");
       }
 
       text.append("THEN\n");
@@ -416,7 +422,7 @@ public class Rule implements Serializable, RevisionHandler {
             .append("/"
               + Utils.doubleToString(
                 (100 * m_ruleModel.rootMeanSquaredError() / m_globalStdDev), 1,
-                3) + "%]\n\n");
+                getNumDecimalPlaces() - 1) + "%]\n\n");
         } else {
           text.append("]\n\n");
         }
@@ -610,6 +616,20 @@ public class Rule implements Serializable, RevisionHandler {
    */
   public double getMinNumInstances() {
     return m_minNumInstances;
+  }
+
+  /**
+   * Get the number of decimal places.
+   */
+  public int getNumDecimalPlaces() {
+    return m_numDecimalPlaces;
+  }
+
+  /**
+   * Set the number of decimal places.
+   */
+  public void setNumDecimalPlaces(int num) {
+    m_numDecimalPlaces = num;
   }
 
   public RuleNode getM5RootNode() {

@@ -149,20 +149,20 @@ public class PreConstructedLinearModel
       if (m_coefficients[i] != 0.0) {
 	double c = m_coefficients[i];
 	if (first) {
-	  b.append("\n\t" + Utils.doubleToString(c, 12, 4).trim() + " * " 
+	  b.append("\n\t" + Utils.doubleToString(c, 12, getNumDecimalPlaces()).trim() + " * "
 		   + m_instancesHeader.attribute(i).name() + " ");
 	  first = false;
 	} else {
 	  b.append("\n\t" + ((m_coefficients[i] < 0) ? 
-			   "- " + Utils.doubleToString(Math.abs(c), 12, 4).trim() : "+ "
-		   + Utils.doubleToString(Math.abs(c), 12, 4).trim()) + " * "
+			   "- " + Utils.doubleToString(Math.abs(c), 12, getNumDecimalPlaces()).trim() : "+ "
+		   + Utils.doubleToString(Math.abs(c), 12, getNumDecimalPlaces()).trim()) + " * "
 		   + m_instancesHeader.attribute(i).name() + " ");
 	}
       }
     }
     
     b.append("\n\t" + ((m_intercept < 0) ? "- " : "+ ")
-	     + Utils.doubleToString(Math.abs(m_intercept), 12, 4).trim());
+	     + Utils.doubleToString(Math.abs(m_intercept), 12, getNumDecimalPlaces()).trim());
     return b.toString();
   }
   
