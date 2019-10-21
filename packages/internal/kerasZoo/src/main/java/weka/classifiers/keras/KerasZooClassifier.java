@@ -305,6 +305,9 @@ public class KerasZooClassifier extends AbstractClassifier implements
   /** True if multi-gpu parallel wrapper is being used */
   protected boolean m_parallelWrapper;
 
+  /** Holds the number of GPUs actually available to use. -1 indicates we haven't checked yet */
+  protected int m_availableGPUs = -1;
+
   /**
    * Set the seed
    *
@@ -1988,6 +1991,34 @@ public class KerasZooClassifier extends AbstractClassifier implements
     b.append(")\n\n");
   }
 
+  protected void checkAvailableGPUs() throws Exception{
+    if (m_availableGPUs > -1) {
+      return;
+    }
+    // now determine if multiple GPUs are available...
+    PythonSession session = PythonSession.acquireSession(this);
+    StringBuilder temp = new StringBuilder();
+    temp.append("from keras import backend as K\n\n");
+    temp
+      .append("def _normalize_device_name(name):\n"
+        + "    name = '/' + ':'.join(name.lower().replace('/', '').split(':')[-2:])\n"
+        + "    return name\n\n");
+    temp.append("z = [x.name for x in K.get_session().list_devices()]\n");
+    temp
+      .append("available_devices = [_normalize_device_name(name) for name in z]\n");
+    temp
+      .append("gpus = len([x for x in available_devices if '/gpu:' in x])\n");
+
+    logMessage("Checking available gpus:\n\n" + temp.toString());
+    List<String> outAndErr = session.executeScript(temp.toString(), getDebug());
+    logOutAndErrFromPython(outAndErr);
+    String actualG =
+      session.getVariableValueFromPythonAsPlainString("gpus", getDebug());
+
+    m_availableGPUs = Integer.parseInt(actualG);
+    logMessage("Number of available GPUs: " + m_availableGPUs);
+  }
+
   /**
    * Generates the python code related to setting up a mutli_gpu_model
    *
@@ -2007,11 +2038,23 @@ public class KerasZooClassifier extends AbstractClassifier implements
       }
 
       if (numG <= 1) {
+        m_parallelWrapper = false;
         return;
       }
 
       if (numG % 2 != 0) {
         throw new WekaException("Must specify an even number of GPUs");
+      }
+
+      checkAvailableGPUs();
+
+      if (m_availableGPUs <= 1) {
+        m_parallelWrapper = false;
+        return; // not enough GPUs available to use multi_gpu_model
+      }
+      if (m_availableGPUs < numG) {
+        throw new WekaException("Requested number of GPUs (" + numG
+          + ") is more " + "than are available (" + m_availableGPUs + ")");
       }
 
       b.append("p_" + modelName + " = ")
@@ -2122,8 +2165,10 @@ public class KerasZooClassifier extends AbstractClassifier implements
         if (nG % 2 != 0) {
           throw new WekaException("Must use an even number of GPUs");
         }
-        b.append("import tensorflow as tf\n");
-        b.append("with tf.device('/cpu:0'):\n").append("    ");
+        if (m_availableGPUs >= nG) {
+          b.append("import tensorflow as tf\n");
+          b.append("with tf.device('/cpu:0'):\n").append("    ");
+        }
       }
     }
     b.append("keras_zoo_" + m_modelHash + " = ").append("load_model(")
@@ -2752,6 +2797,7 @@ public class KerasZooClassifier extends AbstractClassifier implements
     if (m_modelHash == null) {
       m_modelHash = "" + hashCode();
     }
+    checkAvailableGPUs();
 
     boolean loadModel =
       getContinueTraining() && modelLoadPathValid(m_modelLoadPath);
@@ -2790,6 +2836,10 @@ public class KerasZooClassifier extends AbstractClassifier implements
       m_pythonModelPrefix = "keras_zoo";
     }
 
+    // clean up
+    toExecute.append("del " + m_pythonModelPrefix + "_" + m_modelHash).append("\n");
+    toExecute.append("K.clear_session()\n\n");
+
     return toExecute.toString();
   }
 
@@ -2804,8 +2854,10 @@ public class KerasZooClassifier extends AbstractClassifier implements
   public String generateTestingCode(Instances data, boolean loadModel)
     throws Exception {
 
+    checkAvailableGPUs();
+
     StringBuilder b = new StringBuilder();
-    generateImports(b, loadModel, m_model);
+    generateImports(b, true, m_model);
     generateImageDataGenerator(b, true, false);
     if (loadModel) {
       if (m_modelHash == null) {
@@ -2826,6 +2878,10 @@ public class KerasZooClassifier extends AbstractClassifier implements
           + data.numInstances() + ".0 / " + environmentSubstitute(m_batchSize)
           + ")").append(")\n").append("predictions = predictions.tolist()\n\n");
     // b.append("import json\nr = json.dumps(preds)\nl = len(r)\n");
+
+    // clean up
+    b.append("del " + parallel + m_pythonModelPrefix + "_" + m_modelHash).append("\n");
+    b.append("K.clear_session()").append("\n\n");
 
     return b.toString();
   }
@@ -2873,14 +2929,14 @@ public class KerasZooClassifier extends AbstractClassifier implements
       m_zeroR = null;
     }
 
-    // check for empty classes
+    /* // check for empty classes
     AttributeStats stats = data.attributeStats(data.classIndex());
     m_nominalEmptyClassIndexes = new boolean[data.classAttribute().numValues()];
     for (int i = 0; i < stats.nominalWeights.length; i++) {
       if (stats.nominalWeights[i] == 0) {
         m_nominalEmptyClassIndexes[i] = true;
       }
-    }
+    } */
 
     PythonSession session = PythonSession.acquireSession(this);
     session.instancesToPython(data, "keras_zoo_train_" + m_modelHash,
@@ -3023,6 +3079,7 @@ public class KerasZooClassifier extends AbstractClassifier implements
       throw new WekaException(message);
     }
     m_parallelWrapper = false;
+    m_availableGPUs = -1;
 
     // Zero epochs is OK if model load path is valid. I.e user just wan't to
     // evaluate existing model (h5) without training (or having a pre-existing
@@ -3148,6 +3205,11 @@ public class KerasZooClassifier extends AbstractClassifier implements
       boolean loadModel =
         !session.checkIfPythonVariableIsSet(m_pythonModelPrefix + "_"
           + m_modelHash, getDebug());
+
+      if (loadModel) {
+        m_availableGPUs = -1;
+      }
+
       String toExecute = generateTestingCode(insts, loadModel);
       String message =
         "KerasZooClassifier - generated testing code\n\n" + toExecute;
@@ -3181,9 +3243,9 @@ public class KerasZooClassifier extends AbstractClassifier implements
         double[] newDist = new double[insts.classAttribute().numValues()];
         int k = 0;
         for (int i = 0; i < newDist.length; i++) {
-          if (m_nominalEmptyClassIndexes[i]) {
+          /* if (m_nominalEmptyClassIndexes[i]) {
             continue;
-          }
+          } */
           newDist[i] = dist.get(k++).doubleValue();
         }
         try {
