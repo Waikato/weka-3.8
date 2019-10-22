@@ -24,7 +24,6 @@ package weka.classifiers.keras;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.rules.ZeroR;
 import weka.core.Attribute;
-import weka.core.AttributeStats;
 import weka.core.BatchPredictor;
 import weka.core.Capabilities;
 import weka.core.CapabilitiesHandler;
@@ -49,9 +48,209 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * <!-- globalinfo-start --> <!-- globalinfo-end -->
+ <!-- globalinfo-start -->
+ * Wrapper classifier for Keras zoo models.
+ * <br><br>
+ <!-- globalinfo-end -->
  *
- * <!-- options-start --> <!-- options-end -->
+ <!-- options-start -->
+ * Valid options are: <p>
+ * 
+ * <pre> -seed &lt;integer&gt;
+ *  Random seed</pre>
+ * 
+ * <pre> -zoo [Xception | VGG16 | VGG19 | ResNet | ResNetV2 | ResNeXt | InceptionV3 | InceptionResNetV2 | MobileNet | MobileNetV2 | DenseNet | NASNet]
+ *  The zoo model to use</pre>
+ * 
+ * <pre> -weights [imagenet | None]
+ *  Pre-trained or not</pre>
+ * 
+ * <pre> -epochs &lt;interger&gt;
+ *  Number of epochs to perform</pre>
+ * 
+ * <pre> -max-queue &lt;integer&gt;
+ *  Integer: Maximum size for the image generator queue.</pre>
+ * 
+ * <pre> -workers &lt;integer&gt;
+ *  Number of workers to use for populating the generator queue</pre>
+ * 
+ * <pre> -optimizer [SGD | RMSProp | Adam | Adamax | Nadam | Adagrad | Adadelta]
+ *  Optimizer to use when training full network from scratch, orthe top dense layers when transfer learning using pre-trained weights.</pre>
+ * 
+ * <pre> -optimizer-opts &lt;string&gt;
+ *  Options for the selected optimizer (comma separated)</pre>
+ * 
+ * <pre> -top-5
+ *  Output the top-5 accuracy when iterating</pre>
+ * 
+ * <pre> -fcl &lt;comma separated list of layer sizes&gt;
+ *  Number (and size) of fully connected layers as a comma-separated list to add to the end of the network</pre>
+ * 
+ * <pre> -gap
+ *  Add a GAP layer before fully connected layers (replaces AP layer if set)</pre>
+ * 
+ * <pre> -ap
+ *  Add an AP layer before fully connected layers</pre>
+ * 
+ * <pre> -pool-size &lt;int,int&gt;
+ *  Pool size (comma separated)</pre>
+ * 
+ * <pre> -dropout
+ *  Whether to add a Dropout layer after each fully connected connected layer</pre>
+ * 
+ * <pre> -dropout-rate &lt;number&gt;
+ *  Rate (between 0 and 1) for dropout</pre>
+ * 
+ * <pre> -finetune
+ *  Whether to fine-tune top convolutional layers</pre>
+ * 
+ * <pre> -continue
+ *  Continue training using network/weights loaded from model file (don't set this if performing a cross-validation)</pre>
+ * 
+ * <pre> -print-layer-indexes
+ *  Print this info instead of model summary. This can help in deciding which layers to fine tune.</pre>
+ * 
+ * <pre> -initial-epoch &lt;integer&gt;
+ *  When continuing training, start from this epoch; num epochs is added to this to determine the final epoch number</pre>
+ * 
+ * <pre> -load &lt;path to .hdf5 file&gt;
+ *  Path to load network structure and weights from (i.e. to continue training an existing model)</pre>
+ * 
+ * <pre> -finetune-index &lt;index&gt;
+ *  Fine-tune all top layers above and including this layer</pre>
+ * 
+ * <pre> -save &lt;path to .hdf5 file&gt;
+ *  Path to save the final trained network (structure and weights) to</pre>
+ * 
+ * <pre> -finetune-optimizer [SGD | RMSProp | Adam | Adamax | Nadam | Adagrad | Adadelta]
+ *  Optimizer to use for fine-tuning the network</pre>
+ * 
+ * <pre> -log &lt;log file path&gt;
+ *  File to write training performance to while iterating</pre>
+ * 
+ * <pre> -dont-use-model-specific
+ *  Don't apply the preprocess_input function associated with the selected zoo model. This function is applied in conjunction with manually specified image processing options.</pre>
+ * 
+ * <pre> -finetune-optimizer-opts &lt;string&gt;
+ *  Options for the fine-tune optimizer</pre>
+ * 
+ * <pre> -images &lt;directory&gt;
+ *  Directory containing images</pre>
+ * 
+ * <pre> -finetune-use-lr-schedule
+ *  Override the learning rate in the fine-tune optimizer options with those set by the LR schedule callback (if defined)</pre>
+ * 
+ * <pre> -validation-split &lt;number between 0 and 1&gt;
+ *  Amount of training data/images to use for validation as a fraction between 0 and 1. 0 = no validation split.</pre>
+ * 
+ * <pre> -validation-data &lt;path to arff or csv file&gt;
+ *  Separate file for validation (arff or csv)</pre>
+ * 
+ * <pre> -mini-batch &lt;integer&gt;
+ *  Size of the mini batches to train with</pre>
+ * 
+ * <pre> -width &lt;integer&gt;
+ *  The target width of the images</pre>
+ * 
+ * <pre> -height &lt;integer&gt;
+ *  The target image height</pre>
+ * 
+ * <pre> -samplewise-center
+ *  Samplewise center</pre>
+ * 
+ * <pre> -samplewise-normalization
+ *  Samplewise std. normalization</pre>
+ * 
+ * <pre> -rotation &lt;integer&gt;
+ *  Degree range for random rotations</pre>
+ * 
+ * <pre> -width-shift-range &lt;number&gt;
+ *  Fraction of width if &lt; 1; range [-x, x) if x &gt;= 1</pre>
+ * 
+ * <pre> -height-shift-range &lt;number&gt;
+ *  Fraction of height if &lt;1; [-x, x) if x &gt;= 1</pre>
+ * 
+ * <pre> -rescale [number | expression]
+ *  Rescaling factor (0/None for no rescaling)</pre>
+ * 
+ * <pre> -shear-range &lt;number&gt;
+ *  Shear Intensity (Shear angle in counter-clockwise direction in degrees)</pre>
+ * 
+ * <pre> -zoom-range &lt;number&gt;
+ *  Range for random zoom. If a float, [lower, upper] = [1-zoom_range, 1+zoom_range]</pre>
+ * 
+ * <pre> -channel-shift &lt;number&gt;
+ *  Range for random channel shifts</pre>
+ * 
+ * <pre> -horizontal-flip
+ *  Randomly flip inputs horizontally</pre>
+ * 
+ * <pre> -vertical-flip
+ *  Randomly flip inputs vertically</pre>
+ * 
+ * <pre> -fill-mode [constant | nearest | reflect | wrap]
+ *  One of {'constant', 'nearest', 'reflect' or 'wrap'}</pre>
+ * 
+ * <pre> -cval &lt;number&gt;
+ *   Float or Int. Value used for points outside the boundaries when fill_mode = 'constant'</pre>
+ * 
+ * <pre> -reduce-lr
+ *  Reduce learning rate when loss has stopped improving</pre>
+ * 
+ * <pre> -reduce-lr-factor &lt;number between 0 and 1&gt;
+ *  Factor by which the learning rate will be reduced. new_lr = lr * factor</pre>
+ * 
+ * <pre> -reduce-lr-patience &lt;integer num epochs&gt;
+ *  Number of epochs with no improvement after which learning rate will be reduced.</pre>
+ * 
+ * <pre> -reduce-lr-min-delta &lt;number&gt;
+ *  Threshold for measuring the new optimum, to only focus on significant changes.</pre>
+ * 
+ * <pre> -reduce-lr-cooldown &lt;integer num epochs&gt;
+ *  number of epochs to wait before resuming normal operation after lr has been reduced.</pre>
+ * 
+ * <pre> -reduce-lr-min-lr &lt;number&gt;
+ *  Lower bound on the learning rate.</pre>
+ * 
+ * <pre> -lr-schedule
+ *  Use an epoch-drive if-then-else learning rate schedule</pre>
+ * 
+ * <pre> -lr-schedule-def &lt;condition:rate,condition:rate,...,rate&gt;
+ *  Definition of if-then-else schedule - format epoch:lr rate, epoch:lr, ..., lr, interpreted as if epoch # &lt; epoch then lr; else if ...; else lr</pre>
+ * 
+ * <pre> -checkpoints
+ *  Save model after each epoch</pre>
+ * 
+ * <pre> -checkpoint-path &lt;path string&gt;
+ *  Path to save checkpoint models to</pre>
+ * 
+ * <pre> -checkpoint-period &lt;integer&gt;
+ *  How often (in epochs) to save a checkpoint model</pre>
+ * 
+ * <pre> -checkpoint-monitor &lt;[loss | val_loss]&gt;
+ *  Monitor this metric - prevents best saved model from being overwritten, unless outperformed (loss, val_loss)</pre>
+ * 
+ * <pre> -gpus &lt;integer&gt;
+ *  Number of GPUs to use (for best results, mini-batch size should be divisible by number of GPUs)</pre>
+ * 
+ * <pre> -gpu-turn-off-cpu-merge
+ *  Multi-gpu: Do not force merging of model weights under the scope of the CPU (useful when NVLink is available)</pre>
+ * 
+ * <pre> -output-debug-info
+ *  If set, classifier is run in debug mode and
+ *  may output additional info to the console</pre>
+ * 
+ * <pre> -do-not-check-capabilities
+ *  If set, classifier capabilities are not checked before classifier is built
+ *  (use with caution).</pre>
+ * 
+ * <pre> -num-decimal-places
+ *  The number of decimal places for the output of numbers in the model (default 2).</pre>
+ * 
+ * <pre> -batch-size
+ *  The desired batch size for batch prediction  (default 100).</pre>
+ * 
+ <!-- options-end -->
  *
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
  */
@@ -978,7 +1177,7 @@ public class KerasZooClassifier extends AbstractClassifier implements
 
   /**
    * Set the directory in which to find images
-   * 
+   *
    * @param location the directory in which to find images
    */
   @FilePropertyMetadata(fileChooserDialogType = KFGUIConsts.OPEN_DIALOG,
@@ -1004,7 +1203,7 @@ public class KerasZooClassifier extends AbstractClassifier implements
   /**
    * Set the fraction of the training data to use for validation. 0 = no
    * validation split.
-   * 
+   *
    * @param validationSplitPercentage the fraction (between 0 and 1) of the
    *          training data to use for validation
    */
@@ -1898,7 +2097,7 @@ public class KerasZooClassifier extends AbstractClassifier implements
    * training data contains a string attribute as the first attribute (values
    * contain paths, relative to the images directory, of images) and a nominal
    * class attribute as the second attribute.
-   * 
+   *
    * @param data the meta training data
    * @throws WekaException if there is a problem with the training data or
    *           images directory
@@ -2152,6 +2351,8 @@ public class KerasZooClassifier extends AbstractClassifier implements
       loadPath += ".hdf5";
     }
 
+    loadPath = escapeWindowsBackslashes(loadPath);
+
     int nG = 0;
     if (m_numGPUs.length() > 0) {
       String numG = environmentSubstitute(m_numGPUs);
@@ -2280,6 +2481,8 @@ public class KerasZooClassifier extends AbstractClassifier implements
     String imageDirectory = m_imageDirectory.toString();
     imageDirectory = environmentSubstitute(imageDirectory);
 
+    imageDirectory = escapeWindowsBackslashes(imageDirectory);
+
     String shape =
       m_weightsType == WeightsType.None ? m_model.getDefaultShape()
         : environmentSubstitute(m_targetWidth) + ","
@@ -2359,13 +2562,14 @@ public class KerasZooClassifier extends AbstractClassifier implements
     if (!logAppend && f.exists() && f.isFile()) {
       f.delete();
     }
+    logF = escapeWindowsBackslashes(logF);
     return "csv_logger = CSVLogger('" + logF + "'" + ",append="
       + (logAppend ? "True" : "False") + ",separator=',')";
   }
 
   /**
    * Generates the python code for various user requested callbacks
-   * 
+   *
    * @param b the StringBuilder to add the code to
    * @param logAppend true if the CSV log is being appended to (i.e. training
    *          continues with a previously saved mode)
@@ -2503,7 +2707,7 @@ public class KerasZooClassifier extends AbstractClassifier implements
 
   /**
    * Get the number of instances in the validation data.
-   * 
+   *
    * @param trainData the training data (if percentage split validation is being
    *          used)
    * @return the number of instances in the validation data
@@ -2534,7 +2738,7 @@ public class KerasZooClassifier extends AbstractClassifier implements
 
   /**
    * Generate the python code for training the network.
-   * 
+   *
    * @param b the StringBuilder to add the code to
    * @param data the training instances
    * @param modelName the name of the variable holding the model in python
@@ -2656,7 +2860,7 @@ public class KerasZooClassifier extends AbstractClassifier implements
   /**
    * Generate the python code to unfreeze the layers involved in fine tuning
    * when performing transfer learning.
-   * 
+   *
    * @param b the StringBuilder to add the code to
    * @param modelName the name of the variable that holds the model in python
    */
@@ -2702,7 +2906,7 @@ public class KerasZooClassifier extends AbstractClassifier implements
 
   /**
    * Generate the python code for fitting the model from a generator
-   * 
+   *
    * @param b the StringBuilder to add the code to
    * @param modelName the name of the variable that holds the model in python
    * @param loadModel true if the model has been loaded
@@ -2769,7 +2973,7 @@ public class KerasZooClassifier extends AbstractClassifier implements
 
   /**
    * Generates the python code for saving the network to a .hdf5 file
-   * 
+   *
    * @param b the StringBuilder to add the code to
    * @param modelName the name of the variable that holds the model in python
    */
@@ -2780,6 +2984,8 @@ public class KerasZooClassifier extends AbstractClassifier implements
       if (!savePath.endsWith(".hdf5")) {
         savePath += ".hdf5";
       }
+
+      savePath = escapeWindowsBackslashes(savePath);
 
       b.append(modelName + "_" + m_modelHash).append(
         ".save('" + savePath + "')\n\n");
@@ -3420,6 +3626,10 @@ public class KerasZooClassifier extends AbstractClassifier implements
     return result;
   }
 
+  protected static String escapeWindowsBackslashes(String path) {
+    return path.replace("\\", "\\\\");
+  }
+
   /**
    * Enum for zoo models
    */
@@ -3575,3 +3785,4 @@ public class KerasZooClassifier extends AbstractClassifier implements
     }
   }
 }
+
