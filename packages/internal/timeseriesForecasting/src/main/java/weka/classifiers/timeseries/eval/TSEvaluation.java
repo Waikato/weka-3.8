@@ -978,6 +978,17 @@ public class TSEvaluation {
       }
     }
 
+    // make sure that artificial time stamp (if in use) is reset to
+    // end of training data, in case the model is saved
+    if (forecaster instanceof TSLagUser) {
+      // initialize the artificial time stamp value (if in use)
+      if (((TSLagUser) forecaster).getTSLagMaker()
+        .isUsingAnArtificialTimeIndex()) {
+        ((TSLagUser) forecaster).getTSLagMaker()
+          .setArtificialTimeStartValue(m_trainingData.numInstances());
+      }
+    }
+
     // Set the state dependent forecaster ready to make predictions beyond the training data
     // TODO: add checkbox on Forecasting Panel to reset or load state instead
     if (forecaster.usesState()) {
