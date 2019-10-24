@@ -5,10 +5,10 @@
 PackageName=timeseriesForecasting
 
 # Version (required)
-Version=1.0.26
+Version=1.0.27
 
 #Date (year-month-day)
-Date=2019-07-05
+Date=2019-10-25
 
 # Title (required)
 Title=Time series forecasting environment.
@@ -29,13 +29,13 @@ License=GPL 3
 Description=Provides a time series forecasting environment for Weka. Includes a wrapper for Weka regression schemes that automates the process of creating lagged variables and date-derived periodic variables and provides the ability to do closed-loop forecasting. New evaluation routines are provided by a special evaluation module and graphing of predictions/forecasts are provided via the JFreeChart library. Includes both command-line and GUI user interfaces. Sample time series data can be found in ${WEKA_HOME}/packages/timeseriesForecasting/sample-data.
 
 # Package URL for obtaining the package archive (required)
-PackageURL=http://prdownloads.sourceforge.net/weka/timeseriesForecasting1.0.26.zip?download
+PackageURL=http://prdownloads.sourceforge.net/weka/timeseriesForecasting1.0.27.zip?download
 
 # URL for further information
 URL=http://wiki.pentaho.com/display/DATAMINING/Time+Series+Analysis+and+Forecasting+with+Weka
 
 # Changes in this release
-Changes=Fixed a bug that prevented the editor dialog for TSLagMaker from opening in the GUI.
+Changes=Fixed a bug where the TSLagMaker's artificial time index was left in a one step advanced state after generating future predictions from the end of the training data
 
 # Enhances various other packages ?
 # Enhances=packageName1,packageName2,...
