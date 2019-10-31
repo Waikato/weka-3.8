@@ -29,6 +29,7 @@ import weka.core.Drawable;
 import weka.core.EnvironmentHandler;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.LogHandler;
 import weka.core.OptionHandler;
 import weka.core.OptionMetadata;
 import weka.core.SerializationHelper;
@@ -43,7 +44,6 @@ import weka.knowledgeflow.LoggingLevel;
 import weka.knowledgeflow.SingleThreadedExecution;
 import weka.knowledgeflow.StepManager;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
@@ -345,6 +345,10 @@ public class Classifier extends WekaAlgorithmWrapper implements
             m_trainedClassifier.buildClassifier(m_trainedClassifierHeader);
           }
 
+          if (m_trainedClassifier instanceof LogHandler) {
+            ((LogHandler) m_trainedClassifier).setLog(getStepManager().getLog());
+          }
+
           getStepManager()
             .logBasic(
               m_updateIncrementalClassifier && m_classifierIsIncremental ? "Training incrementally"
@@ -420,6 +424,10 @@ public class Classifier extends WekaAlgorithmWrapper implements
       if (classifier instanceof EnvironmentHandler) {
         ((EnvironmentHandler) classifier).setEnvironment(getStepManager()
           .getExecutionEnvironment().getEnvironmentVariables());
+      }
+
+      if (classifier instanceof LogHandler) {
+        ((LogHandler) classifier).setLog(getStepManager().getLog());
       }
 
       // retain the training data
