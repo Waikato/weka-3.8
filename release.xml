@@ -22,7 +22,8 @@
   <property name="dist"  value="dist"/>
   <property name="os"  value="osx"/>
   <property name="makensis"  value="makensis"/>
-  <property name="osx_jre_vendor" value="apple"/>
+  <property name="osx-jvm-vendor" value="azul-zulu"/>
+  <property name="osx_jre_oracle" value="true"/>
   <property environment="env" />
 
   <!-- load the last release date -->
@@ -32,8 +33,9 @@
   <taskdef name="latex" classname="de.dokutransdata.antlatex.LaTeX"/>
 
   <!-- Define the bundleapp task. Java Application Bundler (http://java.net/projects/appbundler) makes Mac OS application 
-       bundles for Java 1.7 or higher (jarbundler does not work for Java 1.7). This requires Oracle Java 1.7 or 
-       higher at build time too - uncomment this taskdef if building a Mac app for Java 1.7 -->
+       bundles for Java 1.8 or higher. This requires Oracle Java 1.8 or 
+       higher at build time too - uncomment this taskdef if building a Mac app for Java >=1.8. The modified appbundler from https://github.com/teras/appbundler is requird for
+    handling Java 1.9 and higher -->
   <taskdef name="bundleapp" classname="com.oracle.appbundler.AppBundlerTask"/>
 
   <target name="init_all" depends="requirements_instructions">
@@ -65,10 +67,10 @@
     <echo message="ant_latex.jar (http://www.dokutransdata.de/ant_latex/)"/>
     <echo message="jarbundler.jar (Mac app for Apple Java 1.6)"/>
     <echo message="xercesImpl.jar"/>
-    <echo message="appbundler (Mac app for Oracle Java 1.7 or higher. http://java.net/projects/appbundler/)"/>
+    <echo message="appbundler (Mac app for Oracle Java 1.8 or higher. https://github.com/teras/appbundler)"/>
     <echo message=""/>
     <echo message="2) To create windows installers the makensis utility from NSIS is needed. Under Linux (Ubuntu), this can be installed by typing sudo apt-get install nsis. For instructions on how to build this for Mac OS X run the nsis_osx_howto target"/>
-    <echo message="3) Building Mac application bundles depends on the target JRE. For JRE 1.6, jarbundler is used. For Oracle JRE >= 1.7, jarbundler does not work and appbundler must be used. Appbundler *requires* Java >= 1.7, so the build script must run under >= 1.7 in this case."/>
+    <echo message="3) Building Mac application bundles depends on the target JRE. For JRE 1.6, jarbundler is used. For Oracle JRE >= 1.8, jarbundler does not work and appbundler must be used. Appbundler *requires* Java >= 1.8, so the build script must run under >= 1.8 in this case."/>
     <echo message="Under Mac OS X, hdiutil is used to create a compressed dmg file. Under Linux, genisoimage (already installed in Ubuntu) is used to first create a dmg and then libdmg (http://shanemcc.co.uk/libdmg/) is used to produce a compressed dmg file from the uncompressed one"/>
     <echo message="LaTeX is required for building Weka's documentation. Additionally the wrapfig.sty style is needed if not already insalled"/>
   </target>
@@ -220,13 +222,16 @@
   <!-- build the Mac application suitable for running under Oracle Java >= 1.7 -->
   <target name="osx_app_oracle" if="${osx_jre_oracle}">
     <bundleapp outputdirectory="${temp}"
-        name="weka-${release}-corretto-jvm"
+        name="weka-${release}-${osx-jvm-vendor}"
         displayname="Weka-${release}"
 	icon="weka/src/main/java/weka/gui/weka_icon_new.icns"
         identifier="nz.ac.waikato.cms.Weka"
         shortversion="${version}"
         mainclassname="weka.gui.GUIChooser">
-      <runtime dir="${env.JAVA_HOME}" />
+<!--      <runtime dir="${env.JAVA_HOME}"> -->
+      <runtime dir="${osx-jre-home}">
+	<include name="conf/**" />
+      </runtime>
       <classpath file="${temp}/weka-${release}/weka.jar"/>
       <option value="-Xss20M"/>
     </bundleapp>
@@ -319,12 +324,12 @@
     <delete dir="${temp}/weka-${release}-${jvm_target}.app"/>
   </target>
 
-  <target name="osx_installer" description="Make an OS X application(s).  Run with -Drelease=&lt;number of release (eg. 3-4-1)&gt; and at least one JVM provider (e.g. -Dosx_jre_apple=true -Dosx_jre_oracle=true).">
+  <target name="osx_installer" description="Make an OS X application(s).  Run with -Drelease=&lt;number of release (eg. 3-4-1)&gt;, the name of the JVM vendor for OSX (e.g. -Dosx-jvm-vendor=azul-zulu) and the location of the OSX JRE to embed (e.g. -Dosx-jre-home=path to JRE).">
 
     <delete dir="${temp}/nsis"/>
 
     <antcall target="osx_app_oracle">
-      <param name="jvm_target" value="corretto-jvm"/>
+      <param name="jvm_target" value="${osx-jvm-vendor}"/>
     </antcall>
     <antcall target="osx_app_apple">
       <param name="jvm_target" value="apple-jvm"/>
@@ -422,12 +427,12 @@
     <delete dir="${temp}/nsis"/>
   </target>
 
-  <target name="installers_no_junit" depends="clean, release_base_zip_no_junit, win_installers, osx_installer" description="Make a release and create installers without running unit tests. Default OS is OSX (add -Dos=linux to build Mac dmg file under Linux with genisoimage). Run with -Drelease=X-Y-Z -Dversion=X.Y.Z -Djre=&lt;path to JRE zip to unpack in Weka windows install directory&gt; -Dmakensis=&lt;absolute path to the makensis executable&gt; (only needed if makensis is not in the PATH). Specify  at least one JVM provider for constructing Mac application bundles (e.g. -Dosx_jre_apple=true -Dosx_jre_oracle=true). Mote that Mac application for oracle requires Java 1.7 and the bundleapp taskdef at the beginning of this build script to be uncommented)">
+  <target name="installers_no_junit" depends="clean, release_base_zip_no_junit, win_installers, osx_installer" description="Make a release and create installers without running unit tests. Default OS is OSX (add -Dos=linux to build Mac dmg file under Linux with genisoimage). Run with -Drelease=X-Y-Z -Dversion=X.Y.Z -Djre=&lt;path to JRE zip to unpack in Weka windows install directory&gt; -Dmakensis=&lt;absolute path to the makensis executable&gt; (only needed if makensis is not in the PATH). Note that Mac application for oracle requires Java >=1.8 and the bundleapp taskdef at the beginning of this build script to be uncommented. Supply the name of the JVM vendor for OSX (e.g. -Dosx-jvm-vendor=azul-zulu) and the location of the OSX JRE to embed (e.g. -Dosx-jre-home=path to JRE).">
     <echo message="Cleaning up..."/>
     <delete dir="${temp}"/>
   </target>
 
-  <target name="installers" depends="clean, release_base_zip, win_installers, osx_installer" description="Make a release and create instalers. Default OS is OSX (add -Dos=linux to build Mac dmg file under Linux with genisoimage). Run with -Drelease=X-Y-Z -Dversion=X.Y.Z -Djre=&lt;path to JRE zip to unpack in Weka windows install directory&gt; -Dmakensis=&lt;absolute path to the makensis executable&gt; (only needed if makensis is not in the PATH). Specify  at least one JVM provider for constructing Mac application bundles (e.g. -Dosx_jre_apple=true -Dosx_jre_oracle=true). Mote that Mac application for oracle requires Java 1.7 and the bundleapp taskdef at the beginning of this build script to be uncommented)">
+  <target name="installers" depends="clean, release_base_zip, win_installers, osx_installer" description="Make a release and create instalers. Default OS is OSX (add -Dos=linux to build Mac dmg file under Linux with genisoimage). Run with -Drelease=X-Y-Z -Dversion=X.Y.Z -Djre=&lt;path to JRE zip to unpack in Weka windows install directory&gt; -Dmakensis=&lt;absolute path to the makensis executable&gt; (only needed if makensis is not in the PATH). Note that Mac application for oracle requires Java >=1.8 and the bundleapp taskdef at the beginning of this build script to be uncommented. Supply the name of the JVM vendor for OSX (e.g. -Dosx-jvm-vendor=azul-zulu) and the location of the OSX JRE to embed (e.g. -Dosx-jre-home=path to JRE).">
     <echo message="Cleaning up..."/>
     <delete dir="${temp}"/>
   </target>
