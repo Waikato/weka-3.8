@@ -5,7 +5,7 @@
 
   <groupId>nz.ac.waikato.cms.weka</groupId>
   <artifactId>wekaPython</artifactId>
-  <version>1.0.10-SNAPSHOT</version>
+  <version>1.0.11-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>wekaPython</name>
@@ -105,9 +105,14 @@ Integration with CPython for Weka. Python version 2.7.x or higher is required. A
     </dependency>
 
     <dependency>
-      <groupId>io.fastjson</groupId>
-      <artifactId>boon</artifactId>
-      <version>0.34</version>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.10.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.module</groupId>
+      <artifactId>jackson-module-parameter-names</artifactId>
+      <version>2.10.1</version>
     </dependency>
 
     <dependency>

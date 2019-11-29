@@ -21,8 +21,6 @@
 
 package weka.python;
 
-import static org.boon.Boon.puts;
-
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
@@ -42,9 +40,14 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import org.apache.commons.codec.binary.Base64;
-import org.boon.json.JsonFactory;
-import org.boon.json.ObjectMapper;
 
 import weka.core.Attribute;
 import weka.core.Instance;
@@ -54,6 +57,9 @@ import weka.core.WekaException;
 import weka.core.converters.CSVSaver;
 import weka.gui.Logger;
 
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
+import static com.fasterxml.jackson.annotation.PropertyAccessor.FIELD;
+
 /**
  * Contains routines for getting data in and out of python.
  *
@@ -61,6 +67,17 @@ import weka.gui.Logger;
  * @version $Revision: $
  */
 public class ServerUtils {
+
+  public static final ObjectMapper MAPPER = new ObjectMapper() {
+    {
+      this.registerModule(new ParameterNamesModule());
+      this.setVisibility(FIELD, ANY);
+      this.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+      this.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+      this.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+      this.configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false);
+    }
+  };
 
   /**
    * Create a simple header definition to transfer as json to the server
@@ -153,11 +170,8 @@ public class ServerUtils {
     throws WekaException {
     Map<String, Object> command = new HashMap<String, Object>();
     command.put("command", "shutdown");
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    ObjectMapper mapper = JsonFactory.create();
-    mapper.writeValue(bos, command);
-    byte[] bytes = bos.toByteArray();
     try {
+      byte[] bytes = MAPPER.writeValueAsBytes(command);
       // write the command
       writeDelimitedToOutputStream(bytes, outputStream);
     } catch (IOException ex) {
@@ -186,16 +200,13 @@ public class ServerUtils {
     }
     List<String> outAndErr = new ArrayList<String>();
 
-    ObjectMapper objectMapper = JsonFactory.create();
     Map<String, Object> command = new HashMap<String, Object>();
     command.put("command", "execute_script");
     command.put("script", script);
     command.put("debug", debug);
     if (inputStream != null && outputStream != null) {
-      ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      objectMapper.writeValue(bos, command);
-      byte[] bytes = bos.toByteArray();
       try {
+        byte[] bytes = MAPPER.writeValueAsBytes(command);
         if (debug) {
           outputCommandDebug(command, log);
         }
@@ -203,8 +214,10 @@ public class ServerUtils {
 
         // get the result of execution
         bytes = readDelimitedFromInputStream(inputStream);
-        ObjectMapper mapper = JsonFactory.create();
-        Map<String, Object> ack = mapper.readValue(bytes, Map.class);
+        Map<String, Object> ack =
+          MAPPER.readValue(bytes, new TypeReference<Map<String, Object>>() {
+          });
+        // mapper.readValue(bytes, Map.class);
         if (!ack.get("response").toString().equals("ok")) {
           // fatal error
           throw new WekaException(ack.get("error_message").toString());
@@ -259,7 +272,7 @@ public class ServerUtils {
 
     // Assumes that data has had nominals (except the class) converted
     // to binary indicators and all missing values replaced
-    ObjectMapper mapper = JsonFactory.create();
+    // ObjectMapper mapper = JsonFactory.create();
     Map<String, Object> simpleHeader = createSimpleHeader(instances, frameName);
     Map<String, Object> command = new HashMap<String, Object>();
     command.put("command", "put_instances");
@@ -267,10 +280,8 @@ public class ServerUtils {
     command.put("header", simpleHeader);
     command.put("debug", debug);
     if (inputStream != null && outputStream != null) {
-      ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      mapper.writeValue(bos, command);
-      byte[] bytes = bos.toByteArray();
       try {
+        byte[] bytes = MAPPER.writeValueAsBytes(command);
         if (debug) {
           outputCommandDebug(command, log);
         }
@@ -304,7 +315,7 @@ public class ServerUtils {
           if (debug) {
             System.err.println(builder.toString());
           }
-          bos = new ByteArrayOutputStream();
+          ByteArrayOutputStream bos = new ByteArrayOutputStream();
           BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(bos));
           bw.write(builder.toString());
           bw.flush();
@@ -375,7 +386,6 @@ public class ServerUtils {
     OutputStream outputStream, InputStream inputStream, Logger log,
     boolean debug) throws WekaException {
 
-    ObjectMapper mapper = JsonFactory.create();
     Map<String, Object> simpleHeader = createSimpleHeader(instances, frameName);
     Map<String, Object> command = new HashMap<String, Object>();
     command.put("command", "put_instances");
@@ -406,10 +416,8 @@ public class ServerUtils {
     }
 
     if (inputStream != null && outputStream != null) {
-      ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      mapper.writeValue(bos, command);
-      byte[] bytes = bos.toByteArray();
       try {
+        byte[] bytes = MAPPER.writeValueAsBytes(command);
         if (debug) {
           outputCommandDebug(command, log);
         }
@@ -421,7 +429,7 @@ public class ServerUtils {
         if (instances.numInstances() > 0) {
           CSVSaver saver = new CSVSaver();
           saver.setInstances(instances);
-          bos = new ByteArrayOutputStream();
+          ByteArrayOutputStream bos = new ByteArrayOutputStream();
           saver.setDestination(bos);
           saver.writeBatch();
           bytes = bos.toByteArray();
@@ -452,8 +460,9 @@ public class ServerUtils {
   protected static String receiveServerAck(InputStream inputStream)
     throws IOException {
     byte[] bytes = readDelimitedFromInputStream(inputStream);
-    ObjectMapper mapper = JsonFactory.create();
-    Map<String, Object> ack = mapper.readValue(bytes, Map.class);
+    Map<String, Object> ack =
+      MAPPER.readValue(bytes, new TypeReference<Map<String, Object>>() {
+      });
 
     String response = ack.get("response").toString();
     if (response.equals("ok")) {
@@ -474,8 +483,9 @@ public class ServerUtils {
   protected static int receiveServerPIDAck(InputStream inputStream)
     throws IOException {
     byte[] bytes = readDelimitedFromInputStream(inputStream);
-    ObjectMapper mapper = JsonFactory.create();
-    Map<String, Object> ack = mapper.readValue(bytes, Map.class);
+    Map<String, Object> ack =
+      MAPPER.readValue(bytes, new TypeReference<Map<String, Object>>() {
+      });
 
     String response = ack.get("response").toString();
     if (response.equals("pid_response")) {
@@ -503,15 +513,12 @@ public class ServerUtils {
     boolean debug) throws WekaException {
 
     List<String[]> results = new ArrayList<String[]>();
-    ObjectMapper mapper = JsonFactory.create();
     Map<String, Object> command = new HashMap<String, Object>();
     command.put("command", "get_variable_list");
     command.put("debug", debug);
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    mapper.writeValue(bos, command);
-    byte[] bytes = bos.toByteArray();
     if (inputStream != null && outputStream != null) {
       try {
+        byte[] bytes = MAPPER.writeValueAsBytes(command);
         if (debug) {
           outputCommandDebug(command, log);
         }
@@ -520,7 +527,9 @@ public class ServerUtils {
         writeDelimitedToOutputStream(bytes, outputStream);
 
         bytes = readDelimitedFromInputStream(inputStream);
-        Map<String, Object> ack = mapper.readValue(bytes, Map.class);
+        Map<String, Object> ack =
+          MAPPER.readValue(bytes, new TypeReference<Map<String, Object>>() {
+          });
         if (!ack.get("response").toString().equals("ok")) {
           // fatal error
           throw new WekaException(ack.get("error_message").toString());
@@ -565,17 +574,14 @@ public class ServerUtils {
     boolean debug) throws WekaException {
 
     Object variableValue = "";
-    ObjectMapper mapper = JsonFactory.create();
     Map<String, Object> command = new HashMap<String, Object>();
     command.put("command", "get_variable_value");
     command.put("variable_name", varName);
     command.put("variable_encoding", "json");
     command.put("debug", debug);
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    mapper.writeValue(bos, command);
-    byte[] bytes = bos.toByteArray();
     if (inputStream != null && outputStream != null) {
       try {
+        byte[] bytes = MAPPER.writeValueAsBytes(command);
         if (debug) {
           outputCommandDebug(command, log);
         }
@@ -584,7 +590,9 @@ public class ServerUtils {
         writeDelimitedToOutputStream(bytes, outputStream);
 
         bytes = readDelimitedFromInputStream(inputStream);
-        Map<String, Object> ack = mapper.readValue(bytes, Map.class);
+        Map<String, Object> ack =
+          MAPPER.readValue(bytes, new TypeReference<Map<String, Object>>() {
+          });
         if (!ack.get("response").toString().equals("ok")) {
           // fatal error
           throw new WekaException(ack.get("error_message").toString());
@@ -631,18 +639,15 @@ public class ServerUtils {
     Logger log, boolean debug) throws WekaException {
 
     String objectValue = "";
-    ObjectMapper mapper = JsonFactory.create();
     Map<String, Object> command = new HashMap<String, Object>();
     command.put("command", "get_variable_value");
     command.put("variable_name", varName);
     command.put("variable_encoding", plainString ? "string" : "pickled");
     command.put("debug", debug);
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    mapper.writeValue(bos, command);
-    byte[] bytes = bos.toByteArray();
 
     if (inputStream != null && outputStream != null) {
       try {
+        byte[] bytes = MAPPER.writeValueAsBytes(command);
         if (debug) {
           outputCommandDebug(command, log);
         }
@@ -651,7 +656,9 @@ public class ServerUtils {
         writeDelimitedToOutputStream(bytes, outputStream);
 
         bytes = readDelimitedFromInputStream(inputStream);
-        Map<String, Object> ack = mapper.readValue(bytes, Map.class);
+        Map<String, Object> ack =
+          MAPPER.readValue(bytes, new TypeReference<Map<String, Object>>() {
+          });
         if (!ack.get("response").toString().equals("ok")) {
           // fatal error
           throw new WekaException(ack.get("error_message").toString());
@@ -687,15 +694,11 @@ public class ServerUtils {
     InputStream inputStream, Logger log, boolean debug) throws WekaException {
     List<String> stdOutStdErr = new ArrayList<String>();
 
-    ObjectMapper mapper = JsonFactory.create();
     Map<String, Object> command = new HashMap<String, Object>();
     command.put("command", "get_debug_buffer");
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    mapper.writeValue(bos, command);
-    byte[] bytes = bos.toByteArray();
-
     if (inputStream != null && outputStream != null) {
       try {
+        byte[] bytes = MAPPER.writeValueAsBytes(command);
         if (debug) {
           outputCommandDebug(command, log);
         }
@@ -704,7 +707,9 @@ public class ServerUtils {
         writeDelimitedToOutputStream(bytes, outputStream);
 
         bytes = readDelimitedFromInputStream(inputStream);
-        Map<String, Object> ack = mapper.readValue(bytes, Map.class);
+        Map<String, Object> ack =
+          MAPPER.readValue(bytes, new TypeReference<Map<String, Object>>() {
+          });
         if (!ack.get("response").toString().equals("ok")) {
           // fatal error
           throw new WekaException(ack.get("error_message").toString());
@@ -739,18 +744,15 @@ public class ServerUtils {
     String varValue, OutputStream outputStream, InputStream inputStream,
     Logger log, boolean debug) throws WekaException {
 
-    ObjectMapper mapper = JsonFactory.create();
     Map<String, Object> command = new HashMap<String, Object>();
     command.put("command", "set_variable_value");
     command.put("variable_name", varName);
     command.put("variable_encoding", "pickled");
     command.put("variable_value", varValue);
     command.put("debug", debug);
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    mapper.writeValue(bos, command);
-    byte[] bytes = bos.toByteArray();
     if (inputStream != null && outputStream != null) {
       try {
+        byte[] bytes = MAPPER.writeValueAsBytes(command);
         if (debug) {
           outputCommandDebug(command, log);
         }
@@ -787,17 +789,14 @@ public class ServerUtils {
     OutputStream outputStream, InputStream inputStream, Logger log,
     boolean debug) throws WekaException {
 
-    ObjectMapper mapper = JsonFactory.create();
     Map<String, Object> command = new HashMap<String, Object>();
     command.put("command", "get_image");
     command.put("variable_name", varName);
     command.put("debug", debug);
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    mapper.writeValue(bos, command);
-    byte[] bytes = bos.toByteArray();
 
     if (inputStream != null && outputStream != null) {
       try {
+        byte[] bytes = MAPPER.writeValueAsBytes(command);
         if (debug) {
           outputCommandDebug(command, log);
         }
@@ -805,8 +804,9 @@ public class ServerUtils {
         writeDelimitedToOutputStream(bytes, outputStream);
 
         bytes = readDelimitedFromInputStream(inputStream);
-        mapper = JsonFactory.create();
-        Map<String, Object> ack = mapper.readValue(bytes, Map.class);
+        Map<String, Object> ack =
+          MAPPER.readValue(bytes, new TypeReference<Map<String, Object>>() {
+          });
         if (!ack.get("response").toString().equals("ok")) {
           // fatal error
           throw new WekaException(ack.get("error_message").toString());
@@ -852,17 +852,14 @@ public class ServerUtils {
     String varName, OutputStream outputStream, InputStream inputStream,
     Logger log, boolean debug) throws WekaException {
 
-    ObjectMapper mapper = JsonFactory.create();
     Map<String, Object> command = new HashMap<String, Object>();
     command.put("command", "get_variable_type");
     command.put("variable_name", varName);
     command.put("debug", debug);
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    mapper.writeValue(bos, command);
-    byte[] bytes = bos.toByteArray();
 
     if (inputStream != null && outputStream != null) {
       try {
+        byte[] bytes = MAPPER.writeValueAsBytes(command);
         if (debug) {
           outputCommandDebug(command, log);
         }
@@ -870,8 +867,9 @@ public class ServerUtils {
         writeDelimitedToOutputStream(bytes, outputStream);
 
         bytes = readDelimitedFromInputStream(inputStream);
-        mapper = JsonFactory.create();
-        Map<String, Object> ack = mapper.readValue(bytes, Map.class);
+        Map<String, Object> ack =
+          MAPPER.readValue(bytes, new TypeReference<Map<String, Object>>() {
+          });
         if (!ack.get("response").toString().equals("ok")) {
           // fatal error
           throw new WekaException(ack.get("error_message").toString());
@@ -919,17 +917,14 @@ public class ServerUtils {
     OutputStream outputStream, InputStream inputStream, Logger log,
     boolean debug) throws WekaException {
 
-    ObjectMapper mapper = JsonFactory.create();
     Map<String, Object> command = new HashMap<String, Object>();
     command.put("command", "variable_is_set");
     command.put("variable_name", varName);
     command.put("debug", debug);
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    mapper.writeValue(bos, command);
-    byte[] bytes = bos.toByteArray();
 
     if (inputStream != null && outputStream != null) {
       try {
+        byte[] bytes = MAPPER.writeValueAsBytes(command);
         if (debug) {
           outputCommandDebug(command, log);
         }
@@ -937,8 +932,9 @@ public class ServerUtils {
         writeDelimitedToOutputStream(bytes, outputStream);
 
         bytes = readDelimitedFromInputStream(inputStream);
-        mapper = JsonFactory.create();
-        Map<String, Object> ack = mapper.readValue(bytes, Map.class);
+        Map<String, Object> ack =
+          MAPPER.readValue(bytes, new TypeReference<Map<String, Object>>() {
+          });
         if (!ack.get("response").toString().equals("ok")) {
           // fatal error
           throw new WekaException(ack.get("error_message").toString());
@@ -978,17 +974,14 @@ public class ServerUtils {
     OutputStream outputStream, InputStream inputStream, Logger log,
     boolean debug) throws WekaException {
 
-    ObjectMapper mapper = JsonFactory.create();
     Map<String, Object> command = new HashMap<String, Object>();
     command.put("command", "get_instances");
     command.put("frame_name", frameName);
     command.put("debug", debug);
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    mapper.writeValue(bos, command);
-    byte[] bytes = bos.toByteArray();
 
     if (inputStream != null && outputStream != null) {
       try {
+        byte[] bytes = MAPPER.writeValueAsBytes(command);
         if (debug) {
           outputCommandDebug(command, log);
         }
@@ -1002,7 +995,9 @@ public class ServerUtils {
 
         // read the header
         bytes = readDelimitedFromInputStream(inputStream);
-        Map<String, Object> headerResponse = mapper.readValue(bytes, Map.class);
+        Map<String, Object> headerResponse =
+          MAPPER.readValue(bytes, new TypeReference<Map<String, Object>>() {
+          });
         if (headerResponse == null) {
           throw new WekaException("Map is null!");
         }
@@ -1073,7 +1068,8 @@ public class ServerUtils {
     int numRead = inputStream.read(sizeBytes, 0, 4);
     if (numRead < 4) {
       throw new IOException(
-        "Failed to read the message size from the input stream!");
+        "Failed to read the message size from the input stream! Num bytes read: "
+          + numRead);
     }
 
     int messageLength = ByteBuffer.wrap(sizeBytes).getInt();
@@ -1100,13 +1096,19 @@ public class ServerUtils {
    */
   protected static void outputCommandDebug(Map<String, Object> command,
     Logger log) {
-    ObjectMapper mapper = JsonFactory.create();
-    String serialized = mapper.writeValueAsString(command);
-    if (log != null) {
-      log.logMessage("Sending command:\n" + serialized);
-    } else {
-      System.err.println("Sending command: ");
-      puts(serialized);
+    try {
+      String serialized = MAPPER.writeValueAsString(command);
+      if (log != null) {
+        log.logMessage("Sending command:\n" + serialized);
+      } else {
+        System.err.println("Sending command: ");
+        String indented =
+          MAPPER.writerWithDefaultPrettyPrinter()
+            .writeValueAsString(serialized);
+        System.out.println(indented);
+      }
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
     }
   }
 
