@@ -176,12 +176,6 @@ public class ElasticNet extends AbstractClassifier implements OptionHandler, Wei
 
 		data = new Instances(data);
 
-		String[] opts = getOptions();
-		StringBuilder optList = new StringBuilder();
-		for(String opt : opts) {
-			optList.append(opt).append(" ");
-		}
-		
 		m_numPredictors = data.numAttributes()-1;
 		m_numInstances = data.numInstances();
 		m_classIndex = data.classIndex();
@@ -371,26 +365,26 @@ public class ElasticNet extends AbstractClassifier implements OptionHandler, Wei
 	/**
 	 * Validates a list of options
 	 */
-	public void validate() {
+	public void validate() throws Exception {
 		if(m_alpha > 1) {
-			m_alpha = 1;
+			throw new IllegalArgumentException("ElasticNet: alpha cannot be greater than 1!");
 		} else if(m_alpha < 1e-3) {
-			m_alpha = 1e-3;
+			throw new IllegalArgumentException("ElasticNet: alpha cannot be smaller than 1e-3!");
 		}
 		if(m_epsilon > 1 || m_epsilon < 0) {
-			m_epsilon = 1e-4;
+			throw new IllegalArgumentException("ElasticNet: epsilon must be in (0,1)!");
 		}
 		if(m_numModels < 2) {
-			m_numModels = 100;
+			throw new IllegalArgumentException("ElasticNet: length of lambda sequence to built must be greater than 1!");
 		}
 		if(m_maxIt <= 0) {
-			m_maxIt = (int) 1e7;
+			throw new IllegalArgumentException("ElasticNet: maximum number of iterations must be positive!");
 		}
 		if(m_threshold <= 0) {
-			m_threshold = 1e-7;
+			throw new IllegalArgumentException("ElasticNet: threshold must be positive!");
 		}
 		if(m_numInnerFolds < 2) {
-			m_numInnerFolds = 10;
+			throw new IllegalArgumentException("ElasticNet: number of CV folds must be greater than 1!");
 		}
 		
 		String[] splits = m_lambda_seq.split(",");
@@ -419,6 +413,7 @@ public class ElasticNet extends AbstractClassifier implements OptionHandler, Wei
 		} else {
 			m_lambda_seq = "";
 			m_lambda_values = null;
+			System.err.println("ElasticNet: no useful sequence of lambda values provided, will build own one!");
 		}
 	}
 	
@@ -526,7 +521,6 @@ public class ElasticNet extends AbstractClassifier implements OptionHandler, Wei
 		result.add(m_additionalStats==true ? "y" : "n");
 
 	    Collections.addAll(result, super.getOptions());
-	    validate();
 	    return result.toArray(new String[result.size()]);
 	}
 	

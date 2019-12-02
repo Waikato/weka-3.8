@@ -2,9 +2,9 @@
 
 PackageName=elasticNet
 
-Version=1.0.0
+Version=1.0.1
 
-Date=2015-11-16
+Date=2019-12-02
 
 Title=An implementation of the elastic net method for linear regression
 
@@ -18,10 +18,10 @@ License=GPL
 
 Description=Implements the elastic method for linear regression
 
-#Changes=
+Changes=Now works with FilteredClassifier (again?). When run using -m2 n, i.e., switching off covariance mode, space for covariance matrix is no longer allocated, making application to large-dimensional data possible.
 
 # Package URL for obtaining the package archive
-PackageURL=http://prdownloads.sourceforge.net/weka/elasticNet1.0.0.zip?download
+PackageURL=http://prdownloads.sourceforge.net/weka/elasticNet1.0.1.zip?download
 
 # URL for further information
 URL=file:///${WEKA_HOME}/packages/elasticNet/ML_Report.pdf

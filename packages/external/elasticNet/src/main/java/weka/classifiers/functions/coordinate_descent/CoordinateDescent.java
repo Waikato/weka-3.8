@@ -141,8 +141,13 @@ public class CoordinateDescent extends AbstractClassifier {
 		m_numInstances = data.numInstances();
 		m_alpha = alpha;
 		m_classIndex = data.classIndex();
-		m_covariance_matrix = new double[m_numPredictors][m_numPredictors];
-		m_covariances_filled = new boolean[m_numPredictors];
+		if(covarianceMode) {
+			m_covariance_matrix = new double[m_numPredictors][m_numPredictors];
+			m_covariances_filled = new boolean[m_numPredictors];
+		} else {
+			m_covariance_matrix = null;
+			m_covariances_filled = null;
+		}
 		
 		m_coefficients = new double[m_numPredictors];
 		m_covarianceMode = covarianceMode;
