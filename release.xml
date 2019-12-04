@@ -22,7 +22,7 @@
   <property name="dist"  value="dist"/>
   <property name="os"  value="osx"/>
   <property name="makensis"  value="makensis"/>
-  <property name="osx-jvm-vendor" value="azul-zulu"/>
+  <property name="jvm-vendor" value="azul-zulu"/>
   <property name="osx_jre_oracle" value="true"/>
   <property environment="env" />
 
@@ -222,7 +222,7 @@
   <!-- build the Mac application suitable for running under Oracle Java >= 1.7 -->
   <target name="osx_app_oracle" if="${osx_jre_oracle}">
     <bundleapp outputdirectory="${temp}"
-        name="weka-${release}-${osx-jvm-vendor}"
+        name="weka-${release}-${jvm-vendor}"
         displayname="Weka-${release}"
 	icon="weka/src/main/java/weka/gui/weka_icon_new.icns"
         identifier="nz.ac.waikato.cms.Weka"
@@ -292,7 +292,7 @@
       <arg value="-volname"/>
       <arg value="weka-${release}"/>
       <arg value="-ov"/>
-      <arg value="${dist}/weka-${release}-${jvm_target}.dmg"/>
+      <arg value="${dist}/weka-${release}-${jvm_target}-osx.dmg"/>
       <arg value="-fs"/>
       <arg value="HFS+"/>
     </exec>
@@ -317,19 +317,20 @@
     <exec executable="dmg" os="Linux">
       <arg value="dmg"/>
       <arg value="${dist}/weka-${release}-temp.dmg"/>
-      <arg value="${dist}/weka-${release}-${jvm_target}.dmg"/>
+      <arg value="${dist}/weka-${release}-${jvm_target}-osx.dmg"/>
     </exec>
 
     <delete file="${dist}/weka-${release}-temp.dmg"/>
     <delete dir="${temp}/weka-${release}-${jvm_target}.app"/>
   </target>
 
-  <target name="osx_installer" description="Make an OS X application(s).  Run with -Drelease=&lt;number of release (eg. 3-4-1)&gt;, the name of the JVM vendor for OSX (e.g. -Dosx-jvm-vendor=azul-zulu) and the location of the OSX JRE to embed (e.g. -Dosx-jre-home=path to JRE).">
+  <target name="osx_installer" description="Make an OS X application(s).  Run with -Drelease=&lt;number of release (eg. 3-4-1)&gt;, the name of the JVM vendor (e.g. -Djvm-vendor=azul-zulu) and the location of the OSX JRE to embed (e.g. -Dosx-jre-home=path to JRE).">
 
     <delete dir="${temp}/nsis"/>
+    <delete dir="${temp}/weka-${release}/jre"/>
 
     <antcall target="osx_app_oracle">
-      <param name="jvm_target" value="${osx-jvm-vendor}"/>
+      <param name="jvm_target" value="${jvm-vendor}"/>
     </antcall>
     <antcall target="osx_app_apple">
       <param name="jvm_target" value="apple-jvm"/>
@@ -338,32 +339,6 @@
 
   <target name="installer_init">
     <unzip src="${dist}/weka-${release}.zip" dest="${temp}"/>
-    <!-- add unziped jre to the release dir -->
-    <mkdir dir="${temp}/weka-${release}/jre"/>
-    <unzip src="${jre}" dest="${temp}/weka-${release}/jre"/>
-    <mkdir dir="${temp}/nsis"/>
-
-    <copy todir="${temp}/nsis">
-      <fileset dir="installer/nsis/">
-        <include name="**/*"/>
-      </fileset>
-    </copy>
-
-    <javac srcdir="${temp}/nsis" 
-      fork="yes"
-      destdir="${temp}/nsis"
-      includeantruntime="false"
-      source="1.6" target="1.6">
-      <include name="GenerateSetup.java"/>
-    </javac>
-
-    <javac srcdir="${temp}/nsis/templates" 
-      fork="yes"
-      destdir="${temp}/nsis/templates"
-      includeantruntime="false"
-      source="1.6" target="1.6">
-      <include name="RunWeka.java"/>
-    </javac>
   </target>
 
   <target name="release_base_zip_no_junit" depends="copy-files" description="Make a distribution of Weka. Run with -Drelease=number (e.g. 3-7-10)">
@@ -386,8 +361,49 @@
     <ant antfile="build.xml" dir="${weka}" target="clean" inheritall="false"/>
   </target>
 
+  <target name="linux_archive" depends="installer_init">
+    <delete dir="${temp}/jre"/>
+    <delete dir="${temp}/nsis"/>
+    <mkdir dir="${temp}/weka-${release}/jre"/>
+    <untar src="${jre-linux}" dest="${temp}/weka-${release}/jre" compression="gzip"/>
+    <copy file="${weka}/src/main/scripts/weka.sh" tofile="${temp}/weka-${release}/weka.sh"/>
+    <chmod file="${temp}/weka-${release}/weka.sh" perm="ugo+rx"/>
+    <echo message="Making weka-${release}-${jvm-vendor}-linux.zip ..."/>
+    <zip destfile="${dist}/weka-${release}-${jvm-vendor}-linux.zip" basedir="${temp}">
+      <include name="**/*"/>
+      <zipfileset dir="${temp}/weka-${release}" includes="weka.sh" fullpath="weka-${release}/weka.sh" filemode="755"/>
+    </zip>
+  </target> 
+
   <target name="win_installers" depends="installer_init">
-    <!-- non-jre installer - 32 bit -->
+    <delete dir="${temp}/nsis"/>
+    <mkdir dir="${temp}/nsis"/>
+    <copy todir="${temp}/nsis">
+      <fileset dir="installer/nsis/">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
+
+    <javac srcdir="${temp}/nsis" 
+      fork="yes"
+      destdir="${temp}/nsis"
+      includeantruntime="false"
+      source="1.6" target="1.6">
+      <include name="GenerateSetup.java"/>
+    </javac>
+
+    <javac srcdir="${temp}/nsis/templates" 
+      fork="yes"
+      destdir="${temp}/nsis/templates"
+      includeantruntime="false"
+      source="1.6" target="1.6">
+      <include name="RunWeka.java"/>
+    </javac>
+
+    <delete dir="${temp}/weka-${release}/jre"/>
+    <mkdir dir="${temp}/weka-${release}/jre"/>
+    <unzip src="${jre}" dest="${temp}/weka-${release}/jre"/>
+    <!-- non-jre installer - 32 bit
     <echo message="Creating nsis script for 32 bit installer"/>
     <java dir="${temp}/nsis" classname="GenerateSetup" fork="true">
       <arg line="-version ${version} -input-dir ../weka-${release} -output-dir ./output -dir Weka-${release} -link-prefix 'Weka ${version}'"/>
@@ -395,9 +411,9 @@
         <pathelement location="${temp}/nsis"/>
         <pathelement path="${java.class.path}"/>
       </classpath>
-    </java>
+    </java> -->
 
-    <!-- non-jre installer - 64 bit -->
+    <!-- jre installer - 64 bit -->
     <echo message="Creating nsis script for 64 bit installer"/>
     <java dir="${temp}/nsis" classname="GenerateSetup" fork="true">
       <arg line="-version ${version} -input-dir ../weka-${release} -output-dir ./output -dir Weka-${release} -link-prefix 'Weka ${version}' -x64 true"/>
@@ -407,32 +423,33 @@
       </classpath>
     </java>
 
-    <echo message="Compiling nsis script for 32 bit installer to executable"/>
+    <!-- <echo message="Compiling nsis script for 32 bit installer to executable"/>
     <exec executable="${makensis}">
       <arg value="temp/nsis/output/weka-${release}.nsi"/>
-    </exec>
+    </exec> -->
 
     <echo message="Compiling nsis script for 64 bit installer to executable"/>
     <exec executable="${makensis}">
       <arg value="temp/nsis/output/weka-${release}-x64.nsi"/>
     </exec>
 
-    <!-- copy all exe installers to dist -->
+    <!-- rename installer file -->
+    <move file="${temp}/nsis/output/weka-${release}-x64.exe" tofile="${dist}/weka-${release}-${jvm-vendor}-windows.exe"/>
+
+    <!-- copy all exe installers to dist
     <copy todir="${dist}">
       <fileset dir="${temp}/nsis/output/">
         <include name="**/*.exe"/>
         </fileset>
-    </copy>
-    
-    <delete dir="${temp}/nsis"/>
+    </copy>    -->
   </target>
 
-  <target name="installers_no_junit" depends="clean, release_base_zip_no_junit, win_installers, osx_installer" description="Make a release and create installers without running unit tests. Default OS is OSX (add -Dos=linux to build Mac dmg file under Linux with genisoimage). Run with -Drelease=X-Y-Z -Dversion=X.Y.Z -Djre=&lt;path to JRE zip to unpack in Weka windows install directory&gt; -Dmakensis=&lt;absolute path to the makensis executable&gt; (only needed if makensis is not in the PATH). Note that Mac application for oracle requires Java >=1.8 and the bundleapp taskdef at the beginning of this build script to be uncommented. Supply the name of the JVM vendor for OSX (e.g. -Dosx-jvm-vendor=azul-zulu) and the location of the OSX JRE to embed (e.g. -Dosx-jre-home=path to JRE).">
+  <target name="installers_no_junit" depends="clean, release_base_zip_no_junit, win_installers, osx_installer, linux_archive" description="Make a release and create installers without running unit tests. Default OS is OSX (add -Dos=linux to build Mac dmg file under Linux with genisoimage). Run with -Drelease=X-Y-Z -Dversion=X.Y.Z -Djre=&lt;path to JRE zip to unpack in Weka windows install directory&gt; -Dlinux-jre=&lt;path to a linux JRE tgz to include in the linux archive -Djvm-vendor=JVM vendor (e.g. -Djvm-vendor=azul-zulu) -Dmakensis=&lt;absolute path to the makensis executable&gt; (only needed if makensis is not in the PATH). Note that Mac application for oracle requires Java >=1.8 and the bundleapp taskdef at the beginning of this build script to be uncommented. Also supply the location of the OSX JRE to embed (e.g. -Dosx-jre-home=path to JRE). Note that the OSX JRE needs to be in Mac application format (i.e. has a ./Contents/... directory structure including Info.plist file)">
     <echo message="Cleaning up..."/>
     <delete dir="${temp}"/>
   </target>
 
-  <target name="installers" depends="clean, release_base_zip, win_installers, osx_installer" description="Make a release and create instalers. Default OS is OSX (add -Dos=linux to build Mac dmg file under Linux with genisoimage). Run with -Drelease=X-Y-Z -Dversion=X.Y.Z -Djre=&lt;path to JRE zip to unpack in Weka windows install directory&gt; -Dmakensis=&lt;absolute path to the makensis executable&gt; (only needed if makensis is not in the PATH). Note that Mac application for oracle requires Java >=1.8 and the bundleapp taskdef at the beginning of this build script to be uncommented. Supply the name of the JVM vendor for OSX (e.g. -Dosx-jvm-vendor=azul-zulu) and the location of the OSX JRE to embed (e.g. -Dosx-jre-home=path to JRE).">
+  <target name="installers" depends="clean, release_base_zip, win_installers, osx_installer, linux_archive" description="Make a release and create installers. Default OS is OSX (add -Dos=linux to build Mac dmg file under Linux with genisoimage). Run with -Drelease=X-Y-Z -Dversion=X.Y.Z -Djre=&lt;path to JRE zip to unpack in Weka windows install directory&gt; -Dlinux-jre=&lt;path to a linux JRE tgz to include in the linux archive -Djvm-vendor=JVM vendor (e.g. -Djvm-vendor=azul-zulu) -Dmakensis=&lt;absolute path to the makensis executable&gt; (only needed if makensis is not in the PATH). Note that Mac application for oracle requires Java >=1.8 and the bundleapp taskdef at the beginning of this build script to be uncommented. Also supply the location of the OSX JRE to embed (e.g. -Dosx-jre-home=path to JRE). Note that the OSX JRE needs to be in Mac application format (i.e. has a ./Contents/... directory structure including Info.plist file)">
     <echo message="Cleaning up..."/>
     <delete dir="${temp}"/>
   </target>
