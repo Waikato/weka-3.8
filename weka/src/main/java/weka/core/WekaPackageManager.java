@@ -197,7 +197,7 @@ public class WekaPackageManager {
 
   /** Primary repository */
   private static String PRIMARY_REPOSITORY =
-    "http://weka.sourceforge.net/packageMetaData";
+    "https://weka.sourceforge.io/packageMetaData";
 
   /** Backup mirror of the repository */
   private static String REP_MIRROR;
