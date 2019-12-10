@@ -140,7 +140,7 @@
     <ant antfile="build.xml" dir="${weka}" target="packages_changelog" inheritall="false">
       <property name="date_range" value="{${lastReleaseDate}}:{${TODAY}}"/>
       <property name="release" value="${release}"/>
-      <property name="weka_branch" value="trunk"/>
+      <property name="weka_branch" value="branches/stable-3-8"/>
     </ant>
   </target>
 
