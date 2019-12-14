@@ -58,7 +58,7 @@ public abstract class DataGenerator implements OptionHandler, Randomizable,
   /** The format for the generated dataset */
   protected Instances m_DatasetFormat = null;
 
-  /** Relation name the dataset should have */
+  /** Relation name specified by the user (relation name will be auto-generated if empty) */
   protected String m_RelationName = "";
 
   /**
@@ -80,7 +80,7 @@ public abstract class DataGenerator implements OptionHandler, Randomizable,
   /** random number generator */
   protected Random m_Random = null;
 
-  /** flag, that indicates whether the relationname is currently assembled */
+  /** This flag is no longer used (left here to maintain compatibility for serialization) */
   protected boolean m_CreatingRelationName = false;
 
   /**
@@ -199,10 +199,9 @@ public abstract class DataGenerator implements OptionHandler, Randomizable,
   public String[] getOptions() {
     Vector<String> result = new Vector<String>();
 
-    // to avoid endless loop
-    if (!m_CreatingRelationName) {
+    if (getRelationName().length() > 0) {
       result.add("-r");
-      result.add(Utils.quote(getRelationNameToUse()));
+      result.add(Utils.quote(getRelationName()));
     }
 
     if (getDebug()) {
@@ -216,18 +215,16 @@ public abstract class DataGenerator implements OptionHandler, Randomizable,
   }
 
   /**
-   * Initializes the format for the dataset produced. Must be called before the
-   * generateExample or generateExamples methods are used. Also sets a default
-   * relation name in case the current relation name is empty.
+   * Constructs the Instances object representing the format of the generated data.
+   *
+   * This default implementation simply returns the Instances object that holds the dataset format
+   * currently stored in m_DatasetFormat.
    * 
    * @return the format for the dataset
    * @throws Exception if the generating of the format failed
    * @see #defaultRelationName()
    */
   public Instances defineDataFormat() throws Exception {
-    if (getRelationName().length() == 0) {
-      setRelationName(defaultRelationName());
-    }
 
     return m_DatasetFormat;
   }
@@ -328,8 +325,6 @@ public abstract class DataGenerator implements OptionHandler, Randomizable,
     String option;
     int i;
 
-    m_CreatingRelationName = true;
-
     result = new StringBuffer(this.getClass().getName());
 
     options = getOptions();
@@ -340,8 +335,6 @@ public abstract class DataGenerator implements OptionHandler, Randomizable,
       }
       result.append(option.replaceAll(" ", "_"));
     }
-
-    m_CreatingRelationName = false;
 
     return result.toString();
   }

@@ -120,16 +120,11 @@ public class DataGenerator extends WekaAlgorithmWrapper {
       if (getStepManager()
         .numOutgoingConnectionsOfType(StepManager.CON_DATASET) > 0) {
         getStepManager().processing();
-        StringWriter output = new StringWriter();
         try {
-          generator.setOutput(new PrintWriter(output));
           getStepManager().statusMessage("Generating...");
           getStepManager().logBasic("Generating data");
-          weka.datagenerators.DataGenerator.makeData(generator,
-            generator.getOptions());
-          Instances instances =
-            new Instances(new StringReader(output.toString()));
-
+          generator.defineDataFormat();
+          Instances instances = generator.generateExamples();
           if (!isStopRequested()) {
             Data outputData = new Data(StepManager.CON_DATASET, instances);
             getStepManager().outputData(outputData);
@@ -161,7 +156,7 @@ public class DataGenerator extends WekaAlgorithmWrapper {
 
         try {
           getStepManager().logBasic("Generating...");
-          generator.setDatasetFormat(generator.defineDataFormat());
+          generator.defineDataFormat();
 
           for (int i = 0; i < generator.getNumExamplesAct(); i++) {
             m_flowThroughput.updateStart();

@@ -163,7 +163,6 @@ public class DataGeneratorPanel
     
     boolean result = true;
     DataGenerator generator = (DataGenerator) m_GeneratorEditor.getValue();
-    String relName = generator.getRelationName();
 
     String cname = generator.getClass().getName().replaceAll(".*\\.", "");
     String cmd = generator.getClass().getName();
@@ -179,7 +178,7 @@ public class DataGeneratorPanel
 
       // define dataset format
       // computes actual number of examples to be produced
-      generator.setDatasetFormat(generator.defineDataFormat());
+      generator.defineDataFormat();
 
       if (storeOutput) {
         m_Output.append(generator.getPrologue());
@@ -208,8 +207,6 @@ public class DataGeneratorPanel
       m_Output    = new StringWriter();
       result      = false;
     }
-
-    generator.setRelationName(relName);
 
     return result;
   }
