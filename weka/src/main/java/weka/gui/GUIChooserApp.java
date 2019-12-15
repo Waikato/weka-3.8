@@ -1021,7 +1021,7 @@ public class GUIChooserApp extends JFrame {
                   BorderLayout.CENTER);
                 appFrame.addWindowListener(new WindowAdapter() {
                   @Override
-                  public void windowClosed(WindowEvent e) {
+                  public void windowClosing(WindowEvent e) {
                     if (checkWindowShouldBeClosed(e)) {
                       disposeWindow(appFrame, this);
                     }
