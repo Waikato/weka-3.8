@@ -82,7 +82,8 @@ else
 fi
 
 # launch class
-"$JCMD" \
+$JCMD \
+  --add-opens java.base/java.lang=ALL-UNNAMED \
   -classpath "$CLASSPATH" \
   $HEAP \
   $HEADLESS \
