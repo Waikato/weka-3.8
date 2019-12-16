@@ -68,7 +68,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import weka.core.*;
 import weka.gui.beans.GOECustomizer;
 
