@@ -228,7 +228,7 @@ public class InterquartileRange extends SimpleBatchFilter implements WeightedAtt
         "\tGenerates an additional attribute 'Offset' per Outlier/ExtremeValue\n"
           + "\tpair that contains the multiplier that the value is off the median.\n"
           + "\t   value = median + 'multiplier' * IQR\n"
-          + "Note: implicitely sets '-P'." + "\t(default: off)", "M", 0, "-M"));
+          + "\tNote: implicitely sets '-P'." + "\t(default: off)", "M", 0, "-M"));
 
     result.addAll(Collections.list(super.listOptions()));
 
@@ -800,7 +800,7 @@ public class InterquartileRange extends SimpleBatchFilter implements WeightedAtt
    * not
    * 
    * @param inst the instance to test
-   * @param index the attribute index
+   * @param index the index of the attribute index in the list of selected attributes
    * @return true if the instance is an outlier
    */
   protected boolean isOutlier(Instance inst, int index) {
@@ -847,7 +847,7 @@ public class InterquartileRange extends SimpleBatchFilter implements WeightedAtt
    * attribute or not
    * 
    * @param inst the instance to test
-   * @param index the attribute index
+   * @param index the index of the attribute index in the list of selected attributes
    * @return true if the instance is an extreme value
    */
   protected boolean isExtremeValue(Instance inst, int index) {
@@ -894,7 +894,7 @@ public class InterquartileRange extends SimpleBatchFilter implements WeightedAtt
    * particular attribute.
    * 
    * @param inst the instance to test
-   * @param index the attribute index
+   * @param index the index of the attribute index in the list of selected attributes
    * @return the multiplier
    */
   protected double calculateMultiplier(Instance inst, int index) {
@@ -964,11 +964,11 @@ public class InterquartileRange extends SimpleBatchFilter implements WeightedAtt
           }
 
           // outlier?
-          if (isOutlier(instOld, m_AttributeIndices[i])) {
+          if (isOutlier(instOld, i)) {
             values[m_OutlierAttributePosition[i]] = 1;
           }
           // extreme value?
-          if (isExtremeValue(instOld, m_AttributeIndices[i])) {
+          if (isExtremeValue(instOld, i)) {
             values[m_OutlierAttributePosition[i] + 1] = 1;
             // tag extreme values also as outliers?
             if (getExtremeValuesAsOutliers()) {
@@ -977,8 +977,7 @@ public class InterquartileRange extends SimpleBatchFilter implements WeightedAtt
           }
           // add multiplier?
           if (getOutputOffsetMultiplier()) {
-            values[m_OutlierAttributePosition[i] + 2] =
-              calculateMultiplier(instOld, m_AttributeIndices[i]);
+            values[m_OutlierAttributePosition[i] + 2] = calculateMultiplier(instOld, i);
           }
         }
       }
