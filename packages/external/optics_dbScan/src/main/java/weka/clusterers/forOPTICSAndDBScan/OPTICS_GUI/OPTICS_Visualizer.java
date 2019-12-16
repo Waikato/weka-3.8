@@ -24,7 +24,7 @@ package weka.clusterers.forOPTICSAndDBScan.OPTICS_GUI;
 
 import weka.core.RevisionHandler;
 import weka.core.RevisionUtils;
-import weka.gui.LookAndFeel;
+import weka.core.WekaPackageClassLoaderManager;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -180,8 +180,6 @@ public class OPTICS_Visualizer
     public OPTICS_Visualizer(SERObject serObject, String title) {
         this.serObject = serObject;
 
-        LookAndFeel.setLookAndFeel();
-    
         frame = new JFrame(title);
 
         frame.addWindowListener(new WindowAdapter() {
@@ -386,20 +384,20 @@ public class OPTICS_Visualizer
     private JComponent createTabbedPane() {
         tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Table", new ImageIcon(Toolkit.getDefaultToolkit().
-            getImage(ClassLoader.getSystemResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Table16.gif"))),
+            getImage(WekaPackageClassLoaderManager.getWekaPackageClassLoaderManager().findResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Table16.gif"))),
             clusteringResultsTable(),
         "Show table of DataObjects, Core- and Reachability-Distances");
         if (serObject != null)
           tabbedPane.addTab("Graph - Epsilon: " + serObject.getEpsilon() + ", MinPoints: " + serObject.getMinPoints()
               , new ImageIcon(Toolkit.getDefaultToolkit().
-        	  getImage(ClassLoader.getSystemResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Graph16.gif"))),
+        	  getImage(WekaPackageClassLoaderManager.getWekaPackageClassLoaderManager().findResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Graph16.gif"))),
         	  graphPanel(),
           "Show Plot of Core- and Reachability-Distances");
         else
           tabbedPane.addTab(
               "Graph - Epsilon: --, MinPoints: --", 
               new ImageIcon(
-        	  Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Graph16.gif"))),
+        	  Toolkit.getDefaultToolkit().getImage(WekaPackageClassLoaderManager.getWekaPackageClassLoaderManager().findResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Graph16.gif"))),
         	  graphPanel(),
           "Show Plot of Core- and Reachability-Distances");
 
@@ -425,20 +423,20 @@ public class OPTICS_Visualizer
         toolBar.setName("OPTICS Visualizer ToolBar");
         toolBar.setFloatable(false);
         toolBarButton_open = new JButton(new ImageIcon(Toolkit.getDefaultToolkit().
-                getImage(ClassLoader.getSystemResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Open16.gif"))));
+                getImage(WekaPackageClassLoaderManager.getWekaPackageClassLoaderManager().findResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Open16.gif"))));
         toolBarButton_open.setToolTipText("Open OPTICS-Session");
         toolBarButton_open.addActionListener(frameListener);
         toolBar.add(toolBarButton_open);
 
         toolBarButton_save = new JButton(new ImageIcon(Toolkit.getDefaultToolkit().
-                getImage(ClassLoader.getSystemResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Save16.gif"))));
+                getImage(WekaPackageClassLoaderManager.getWekaPackageClassLoaderManager().findResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Save16.gif"))));
         toolBarButton_save.setToolTipText("Save OPTICS-Session");
         toolBarButton_save.addActionListener(frameListener);
         toolBar.add(toolBarButton_save);
         toolBar.addSeparator(new Dimension(10, 25));
 
         toolBarButton_parameters = new JButton(new ImageIcon(Toolkit.getDefaultToolkit().
-                getImage(ClassLoader.getSystemResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Parameters16.gif"))));
+                getImage(WekaPackageClassLoaderManager.getWekaPackageClassLoaderManager().findResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Parameters16.gif"))));
         toolBarButton_parameters.setToolTipText("Show epsilon, MinPoints...");
         toolBarButton_parameters.addActionListener(frameListener);
         toolBar.add(toolBarButton_parameters);
@@ -446,13 +444,13 @@ public class OPTICS_Visualizer
         toolBar.addSeparator(new Dimension(10, 25));
 
         toolBarButton_help = new JButton(new ImageIcon(Toolkit.getDefaultToolkit().
-                getImage(ClassLoader.getSystemResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Help16.gif"))));
+                getImage(WekaPackageClassLoaderManager.getWekaPackageClassLoaderManager().findResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Help16.gif"))));
         toolBarButton_help.setToolTipText("Help topics");
         toolBarButton_help.addActionListener(frameListener);
         toolBar.add(toolBarButton_help);
 
         toolBarButton_about = new JButton(new ImageIcon(Toolkit.getDefaultToolkit().
-                getImage(ClassLoader.getSystemResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Information16.gif"))));
+                getImage(WekaPackageClassLoaderManager.getWekaPackageClassLoaderManager().findResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Information16.gif"))));
         toolBarButton_about.setToolTipText("About");
         toolBarButton_about.addActionListener(frameListener);
         toolBar.add(toolBarButton_about);
@@ -530,14 +528,14 @@ public class OPTICS_Visualizer
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic('F');
         open = new JMenuItem("Open...", new ImageIcon(Toolkit.getDefaultToolkit().
-                getImage(ClassLoader.getSystemResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Open16.gif"))));
+                getImage(WekaPackageClassLoaderManager.getWekaPackageClassLoaderManager().findResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Open16.gif"))));
         open.setMnemonic('O');
         open.setAccelerator(KeyStroke.getKeyStroke('O', Event.CTRL_MASK));
         open.addActionListener(frameListener);
         fileMenu.add(open);
 
         save = new JMenuItem("Save...", new ImageIcon(Toolkit.getDefaultToolkit().
-                getImage(ClassLoader.getSystemResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Save16.gif"))));
+                getImage(WekaPackageClassLoaderManager.getWekaPackageClassLoaderManager().findResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Save16.gif"))));
         save.setMnemonic('S');
         save.setAccelerator(KeyStroke.getKeyStroke('S', Event.CTRL_MASK));
         save.addActionListener(frameListener);
@@ -554,7 +552,7 @@ public class OPTICS_Visualizer
         JMenu toolsMenu = new JMenu("View");
         toolsMenu.setMnemonic('V');
         parameters = new JMenuItem("Parameters...", new ImageIcon(Toolkit.getDefaultToolkit().
-                getImage(ClassLoader.getSystemResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Parameters16.gif"))));
+                getImage(WekaPackageClassLoaderManager.getWekaPackageClassLoaderManager().findResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Parameters16.gif"))));
         parameters.setMnemonic('P');
         parameters.setAccelerator(KeyStroke.getKeyStroke('P', Event.CTRL_MASK));
         parameters.addActionListener(frameListener);
@@ -565,14 +563,14 @@ public class OPTICS_Visualizer
         JMenu miscMenu = new JMenu("Help");
         miscMenu.setMnemonic('H');
         help = new JMenuItem("Help Topics", new ImageIcon(Toolkit.getDefaultToolkit().
-                getImage(ClassLoader.getSystemResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Help16.gif"))));
+                getImage(WekaPackageClassLoaderManager.getWekaPackageClassLoaderManager().findResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Help16.gif"))));
         help.setMnemonic('H');
         help.setAccelerator(KeyStroke.getKeyStroke('H', Event.CTRL_MASK));
         help.addActionListener(frameListener);
         miscMenu.add(help);
 
         about = new JMenuItem("About...", new ImageIcon(Toolkit.getDefaultToolkit().
-                getImage(ClassLoader.getSystemResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Information16.gif"))));
+                getImage(WekaPackageClassLoaderManager.getWekaPackageClassLoaderManager().findResource("weka/clusterers/forOPTICSAndDBScan/OPTICS_GUI/Graphics/Information16.gif"))));
         about.setMnemonic('A');
         about.setAccelerator(KeyStroke.getKeyStroke('A', Event.CTRL_MASK));
         about.addActionListener(frameListener);
