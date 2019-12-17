@@ -43,10 +43,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Menu;
-import java.awt.MenuItem;
 import java.awt.Point;
-import java.awt.PopupMenu;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.event.ActionEvent;
@@ -631,10 +628,10 @@ public class LayoutPanel extends PrintablePanel {
     Map<String, List<StepManagerImpl[]>> closestConnections =
       m_visLayout.findClosestConnections(new Point(x, y), 10);
 
-    PopupMenu contextualMenu = new PopupMenu();
+    JPopupMenu contextualMenu = new JPopupMenu();
     int menuItemCount = 0;
     if (m_visLayout.getSelectedSteps().size() > 0) {
-      MenuItem snapItem = new MenuItem("Snap selected to grid");
+      JMenuItem snapItem = new JMenuItem("Snap selected to grid");
       snapItem.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -644,7 +641,7 @@ public class LayoutPanel extends PrintablePanel {
       contextualMenu.add(snapItem);
       menuItemCount++;
 
-      MenuItem copyItem = new MenuItem("Copy selected");
+      JMenuItem copyItem = new JMenuItem("Copy selected");
       copyItem.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -659,7 +656,7 @@ public class LayoutPanel extends PrintablePanel {
       contextualMenu.add(copyItem);
       menuItemCount++;
 
-      MenuItem cutItem = new MenuItem("Cut selected");
+      JMenuItem cutItem = new JMenuItem("Cut selected");
       cutItem.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -674,7 +671,7 @@ public class LayoutPanel extends PrintablePanel {
       contextualMenu.add(cutItem);
       menuItemCount++;
 
-      MenuItem deleteSelected = new MenuItem("Delete selected");
+      JMenuItem deleteSelected = new JMenuItem("Delete selected");
       deleteSelected.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -694,7 +691,7 @@ public class LayoutPanel extends PrintablePanel {
       contextualMenu.addSeparator();
       menuItemCount++;
 
-      MenuItem pasteItem = new MenuItem("Paste");
+      JMenuItem pasteItem = new JMenuItem("Paste");
       pasteItem.addActionListener(new ActionListener() {
 
         @Override
@@ -714,7 +711,7 @@ public class LayoutPanel extends PrintablePanel {
       contextualMenu.addSeparator();
       menuItemCount++;
 
-      MenuItem deleteConnection = new MenuItem("Delete connection:");
+      JMenuItem deleteConnection = new JMenuItem("Delete connection:");
       deleteConnection.setEnabled(false);
       contextualMenu.insert(deleteConnection, menuItemCount++);
 
@@ -725,8 +722,8 @@ public class LayoutPanel extends PrintablePanel {
           final StepManagerImpl source = cons[0];
           final StepManagerImpl target = cons[1];
 
-          MenuItem deleteItem =
-            new MenuItem(connName + "-->" + target.getName());
+          JMenuItem deleteItem =
+            new JMenuItem(connName + "-->" + target.getName());
           deleteItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -756,7 +753,7 @@ public class LayoutPanel extends PrintablePanel {
       menuItemCount++;
     }
 
-    MenuItem noteItem = new MenuItem("New note");
+    JMenuItem noteItem = new JMenuItem("New note");
     noteItem.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -797,17 +794,17 @@ public class LayoutPanel extends PrintablePanel {
    */
   protected void stepContextualMenu(final StepVisual step, final int x,
     final int y) {
-    PopupMenu stepContextMenu = new PopupMenu();
+    JPopupMenu stepContextMenu = new JPopupMenu();
     boolean executing = m_visLayout.isExecuting();
 
     int menuItemCount = 0;
-    MenuItem edit = new MenuItem("Edit:");
+    JMenuItem edit = new JMenuItem("Edit:");
     edit.setEnabled(false);
     stepContextMenu.insert(edit, menuItemCount);
     menuItemCount++;
 
     if (m_visLayout.getSelectedSteps().size() > 0) {
-      MenuItem copyItem = new MenuItem("Copy");
+      JMenuItem copyItem = new JMenuItem("Copy");
       copyItem.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -824,7 +821,7 @@ public class LayoutPanel extends PrintablePanel {
       menuItemCount++;
     }
 
-    MenuItem deleteItem = new MenuItem("Delete");
+    JMenuItem deleteItem = new JMenuItem("Delete");
     deleteItem.addActionListener(new ActionListener() {
 
       @Override
@@ -860,7 +857,7 @@ public class LayoutPanel extends PrintablePanel {
     stepContextMenu.add(deleteItem);
     menuItemCount++;
 
-    MenuItem nameItem = new MenuItem("Set name...");
+    JMenuItem nameItem = new JMenuItem("Set name...");
     nameItem.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -880,7 +877,7 @@ public class LayoutPanel extends PrintablePanel {
     stepContextMenu.add(nameItem);
     menuItemCount++;
 
-    MenuItem configItem = new MenuItem("Configure...");
+    JMenuItem configItem = new JMenuItem("Configure...");
     configItem.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -898,13 +895,13 @@ public class LayoutPanel extends PrintablePanel {
     List<String> outgoingConnTypes =
       step.getStepManager().getManagedStep().getOutgoingConnectionTypes();
     if (outgoingConnTypes != null && outgoingConnTypes.size() > 0) {
-      MenuItem connections = new MenuItem("Connections:");
+      JMenuItem connections = new JMenuItem("Connections:");
       connections.setEnabled(false);
       stepContextMenu.insert(connections, menuItemCount);
       menuItemCount++;
 
       for (final String connType : outgoingConnTypes) {
-        MenuItem conItem = new MenuItem(connType);
+        JMenuItem conItem = new JMenuItem(connType);
         conItem.setEnabled(!executing);
         conItem.addActionListener(new ActionListener() {
           @Override
@@ -924,20 +921,20 @@ public class LayoutPanel extends PrintablePanel {
     Map<String, StepInteractiveViewer> interactiveViewsImpls =
       step.getStepManager().getManagedStep().getInteractiveViewersImpls();
     if (interactiveViews != null && interactiveViews.size() > 0) {
-      MenuItem actions = new MenuItem("Actions:");
+      JMenuItem actions = new JMenuItem("Actions:");
       actions.setEnabled(false);
       stepContextMenu.insert(actions, menuItemCount++);
 
       for (Map.Entry<String, String> e : interactiveViews.entrySet()) {
         String command = e.getKey();
         String viewerClassName = e.getValue();
-        addInteractiveViewMenuItem(step, e.getKey(), !executing, e.getValue(),
+        addInteractiveViewJMenuItem(step, e.getKey(), !executing, e.getValue(),
           null, stepContextMenu);
         menuItemCount++;
       }
     } else if (interactiveViewsImpls != null
       && interactiveViewsImpls.size() > 0) {
-      MenuItem actions = new MenuItem("Actions:");
+      JMenuItem actions = new JMenuItem("Actions:");
       actions.setEnabled(false);
       stepContextMenu.insert(actions, menuItemCount++);
 
@@ -945,7 +942,7 @@ public class LayoutPanel extends PrintablePanel {
         .entrySet()) {
         String command = e.getKey();
         StepInteractiveViewer impl = e.getValue();
-        addInteractiveViewMenuItem(step, e.getKey(), !executing, null, impl,
+        addInteractiveViewJMenuItem(step, e.getKey(), !executing, null, impl,
           stepContextMenu);
         menuItemCount++;
       }
@@ -977,8 +974,8 @@ public class LayoutPanel extends PrintablePanel {
         menuItemCount++;
 
         if (perspectives.size() > 1) {
-          MenuItem sendToAllPerspectives =
-            new MenuItem("Send to all perspectives");
+          JMenuItem sendToAllPerspectives =
+            new JMenuItem("Send to all perspectives");
           menuItemCount++;
           sendToAllPerspectives.addActionListener(new ActionListener() {
             @Override
@@ -988,7 +985,7 @@ public class LayoutPanel extends PrintablePanel {
           });
           stepContextMenu.add(sendToAllPerspectives);
         }
-        Menu sendToPerspective = new Menu("Send to perspective...");
+        JMenu sendToPerspective = new JMenu("Send to perspective...");
         stepContextMenu.add(sendToPerspective);
         menuItemCount++;
         for (int i = 0; i < perspectives.size(); i++) {
@@ -998,7 +995,7 @@ public class LayoutPanel extends PrintablePanel {
             && !perspectives.get(i).getPerspectiveID()
               .equalsIgnoreCase(KFDefaults.MAIN_PERSPECTIVE_ID)) {
             String pName = perspectives.get(i).getPerspectiveTitle();
-            final MenuItem pI = new MenuItem(pName);
+            final JMenuItem pI = new JMenuItem(pName);
             pI.addActionListener(new ActionListener() {
               @Override
               public void actionPerformed(ActionEvent e) {
@@ -1147,11 +1144,11 @@ public class LayoutPanel extends PrintablePanel {
    *          instance
    * @param stepContextMenu the menu to add the item to
    */
-  protected void addInteractiveViewMenuItem(final StepVisual step,
+  protected void addInteractiveViewJMenuItem(final StepVisual step,
     String entryText, boolean enabled, final String viewerClassName,
-    final StepInteractiveViewer viewerImpl, PopupMenu stepContextMenu) {
+    final StepInteractiveViewer viewerImpl, JPopupMenu stepContextMenu) {
 
-    MenuItem viewItem = new MenuItem(entryText);
+    JMenuItem viewItem = new JMenuItem(entryText);
     viewItem.setEnabled(enabled);
     viewItem.addActionListener(new ActionListener() {
       @Override
