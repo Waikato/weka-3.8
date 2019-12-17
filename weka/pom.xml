@@ -9,9 +9,9 @@
   <packaging>jar</packaging>
 
   <name>weka-stable</name>
-  <description>The Waikato Environment for Knowledge Analysis (WEKA), a machine 
-  learning workbench. This is the stable version. Apart from bugfixes, this version
-  does not receive any other updates.
+  <description>The Waikato Environment for Knowledge Analysis (WEKA), a machine
+    learning workbench. This is the stable version. Apart from bugfixes, this version
+    does not receive any other breaking updates.
   </description>
   <url>http://www.cs.waikato.ac.nz/ml/weka/</url>
   <organization>
@@ -37,9 +37,9 @@
   <mailingLists>
     <mailingList>
       <name>wekalist</name>
-      <subscribe>https://list.waikato.ac.nz/mailman/listinfo/wekalist</subscribe>
-      <unsubscribe>https://list.waikato.ac.nz/mailman/listinfo/wekalist</unsubscribe>
-      <archive>https://list.waikato.ac.nz/mailman/htdig/wekalist/</archive>
+      <subscribe>https://list.waikato.ac.nz/postorius/lists/wekalist.list.waikato.ac.nz/</subscribe>
+      <unsubscribe>https://list.waikato.ac.nz/postorius/lists/wekalist.list.waikato.ac.nz/</unsubscribe>
+      <archive>https://list.waikato.ac.nz/hyperkitty/list/wekalist@list.waikato.ac.nz/</archive>
     </mailingList>
   </mailingLists>
 
@@ -69,7 +69,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.1</version>
+            <version>1.6</version>
             <executions>
               <execution>
                 <id>sign-artifacts</id>
@@ -83,7 +83,49 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <id>java8-compiler-plugin</id>
+      <activation>
+        <jdk>1.8</jdk>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <version>3.8.1</version>
+              <configuration>
+                <source>1.8</source>
+                <target>1.8</target>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
 
+    <profile>
+      <id>java9andlater-compiler-plugin</id>
+      <activation>
+        <jdk>[9,)</jdk>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <version>3.8.1</version>
+              <configuration>
+                <release>8</release>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+    
     <profile>
       <!-- used for skipping tests -->
       <id>no-tests</id>
@@ -231,23 +273,23 @@
     </dependency>
 
     <dependency>
-      <groupId>nz.ac.waikato.cms.weka.thirdparty</groupId>
-      <artifactId>java-cup-11b</artifactId>
-      <version>2015.03.26</version>
+      <groupId>com.github.vbmacher</groupId>
+      <artifactId>java-cup</artifactId>
+      <version>11b-20160615</version>
       <scope>compile</scope>
-    </dependency>    
+    </dependency>
 
     <dependency>
-      <groupId>nz.ac.waikato.cms.weka.thirdparty</groupId>
-      <artifactId>java-cup-11b-runtime</artifactId>
-      <version>2015.03.26</version>
-    </dependency>    
+      <groupId>com.github.vbmacher</groupId>
+      <artifactId>java-cup-runtime</artifactId>
+      <version>11b-20160615</version>
+    </dependency>
 
     <dependency>
       <groupId>nz.ac.waikato.cms.weka.thirdparty</groupId>
       <artifactId>bounce</artifactId>
       <version>0.18</version>
-    </dependency>    
+    </dependency>
 
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -255,7 +297,7 @@
       <version>1.19</version>
       <optional>true</optional>
     </dependency>
-    
+
     <dependency>
       <groupId>com.googlecode.matrix-toolkits-java</groupId>
       <artifactId>mtj</artifactId>
@@ -272,13 +314,38 @@
       <groupId>com.googlecode.netlib-java</groupId>
       <artifactId>netlib-java</artifactId>
       <version>1.1</version>
-    </dependency>    
+    </dependency>
 
     <dependency>
       <groupId>com.github.fracpete</groupId>
       <artifactId>jfilechooser-bookmarks</artifactId>
       <version>0.1.6</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.sun.istack</groupId>
+      <artifactId>istack-commons-runtime</artifactId>
+      <version>3.0.8</version>
+    </dependency>
+
+    <dependency>
+      <groupId>jakarta.activation</groupId>
+      <artifactId>jakarta.activation-api</artifactId>
+      <version>1.2.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <version>2.3.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <version>2.3.2</version>
+    </dependency>
+    
   </dependencies>
 
   <properties>
@@ -351,20 +418,11 @@
 
     <pluginManagement>
       <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>2.0.2</version>
-          <configuration>
-            <source>1.8</source>
-            <target>1.8</target>
-          </configuration>
-        </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.7.2</version>
+          <version>2.22.2</version>
           <configuration>
             <includes>
               <include>**/*Test.java</include>
@@ -373,8 +431,8 @@
             <redirectTestOutputToFile>true</redirectTestOutputToFile>
             <systemPropertyVariables>
               <weka.test.Regression.root>src/test/resources/wekarefs</weka.test.Regression.root>
-	      <weka.test.maventest>true</weka.test.maventest>
-	      <user.timezone>Pacific/Auckland</user.timezone>
+              <weka.test.maventest>true</weka.test.maventest>
+              <user.timezone>Pacific/Auckland</user.timezone>
             </systemPropertyVariables>
           </configuration>
         </plugin>
@@ -382,13 +440,13 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
-          <version>2.1</version>
+          <version>2.5.3</version>
           <configuration>
             <tagBase>https://svn.cms.waikato.ac.nz/svn/weka/tags</tagBase>
             <useReleaseProfile>false</useReleaseProfile>
             <!-- tests are performed with the ant build file, hence skipped here. -->
             <preparationGoals>clean verify -P no-tests</preparationGoals>
-            <goals>deploy -P no-tests</goals> 
+            <goals>deploy -P no-tests</goals>
           </configuration>
         </plugin>
 
@@ -404,7 +462,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-clean-plugin</artifactId>
-        <version>2.4.1</version>
+        <version>3.1.0</version>
         <configuration>
           <filesets>
             <fileset>
@@ -423,7 +481,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>2.3.2</version>
+        <version>3.2.0</version>
         <configuration>
           <archive>
             <manifest>
@@ -443,7 +501,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>2.1.2</version>
+        <version>3.2.0</version>
         <executions>
           <execution>
             <id>attach-sources</id>
@@ -464,26 +522,26 @@
       </plugin>
 
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.8.1</version>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-javadoc-plugin</artifactId>
+	<version>3.1.1</version>
         <configuration>
-          <maxmemory>1000m</maxmemory>
-          <subpackages>weka:org</subpackages>
-          <show>public</show>
-          <outputDirectory>${project.basedir}/doc</outputDirectory>
-          <!-- when using Java 8, use this setting to avoid overly strict javadoclet -->
-          <additionalparam>-Xdoclint:none</additionalparam>
+	  <maxmemory>1000m</maxmemory>
+	  <subpackages>weka</subpackages>
+	  <show>public</show>
+	  <outputDirectory>${project.basedir}/doc</outputDirectory>
+	  <doclint>none</doclint>
         </configuration>
         <executions>
-          <execution>
-            <id>attach-javadocs</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
+	  <execution>
+	    <id>attach-javadocs</id>
+	    <goals>
+	      <goal>jar</goal>
+	    </goals>
+	  </execution>
         </executions>
       </plugin>
+      
     </plugins>
   </build>
 </project>
