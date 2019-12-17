@@ -723,7 +723,7 @@ public class MainKFPerspectiveToolBar extends JPanel {
       @Override
       public void actionPerformed(ActionEvent e) {
         // createTemplateMenuPopup();
-        PopupMenu popupMenu = new PopupMenu();
+        JPopupMenu popupMenu = new JPopupMenu();
         List<String> builtinTemplates =
           m_mainPerspective.getTemplateManager()
             .getBuiltinTemplateDescriptions();
@@ -732,7 +732,7 @@ public class MainKFPerspectiveToolBar extends JPanel {
             .getPluginTemplateDescriptions();
 
         for (final String desc : builtinTemplates) {
-          MenuItem menuItem = new MenuItem(desc);
+          JMenuItem menuItem = new JMenuItem(desc);
           menuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -752,7 +752,7 @@ public class MainKFPerspectiveToolBar extends JPanel {
           popupMenu.addSeparator();
         }
         for (final String desc : pluginTemplates) {
-          MenuItem menuItem = new MenuItem(desc);
+          JMenuItem menuItem = new JMenuItem(desc);
           menuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
