@@ -466,7 +466,14 @@ public class PrincipalComponents extends UnsupervisedAttributeEvaluator
     buildAttributeConstructor(data);
   }
 
-  private void buildAttributeConstructor(Instances data) throws Exception {
+  /**
+   * Intializes the evaluator, filters the input data and computes the
+   * correlation/covariance matrix.
+   *
+   * @param data the instances to analyse
+   * @throws Exception if a problem occurs
+   */
+  public void initializeAndComputeMatrix(Instances data) throws Exception {
     m_eigenvalues = null;
     m_outputNumAtts = -1;
     m_attributeFilter = null;
@@ -528,7 +535,11 @@ public class PrincipalComponents extends UnsupervisedAttributeEvaluator
     m_numAttribs = m_trainInstances.numAttributes();
 
     fillCovariance();
+  }
 
+  private void buildAttributeConstructor(Instances data) throws Exception {
+
+    initializeAndComputeMatrix(data);
     SymmDenseEVD evd = SymmDenseEVD.factorize(m_correlation);
 
     m_eigenvectors = Matrices.getArray(evd.getEigenvectors());
