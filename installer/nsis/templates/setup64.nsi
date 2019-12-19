@@ -43,9 +43,9 @@ Name "Weka ${WEKA_VERSION}"
 !define MUI_UNFINISHPAGE_NOAUTOCLOSE
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_BITMAP "${WEKA_HEADERIMAGE}"
-!define MUI_FINISHPAGE_RUN
-!define MUI_FINISHPAGE_RUN_TEXT "Start ${WEKA_WEKA}"
-!define MUI_FINISHPAGE_RUN_FUNCTION "LaunchProgram"
+#!define MUI_FINISHPAGE_RUN
+#!define MUI_FINISHPAGE_RUN_TEXT "Start ${WEKA_WEKA}"
+#!define MUI_FINISHPAGE_RUN_FUNCTION "LaunchProgram"
 
 # Included files
 !include Sections.nsh
