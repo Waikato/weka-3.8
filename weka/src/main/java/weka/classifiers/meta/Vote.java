@@ -24,33 +24,16 @@ package weka.classifiers.meta;
 import weka.classifiers.Classifier;
 import weka.classifiers.RandomizableMultipleClassifiersCombiner;
 import weka.classifiers.misc.InputMappedClassifier;
-import weka.core.Aggregateable;
-import weka.core.Capabilities;
+import weka.core.*;
 import weka.core.Capabilities.Capability;
-import weka.core.Environment;
-import weka.core.EnvironmentHandler;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.Option;
-import weka.core.OptionHandler;
-import weka.core.RevisionUtils;
-import weka.core.SelectedTag;
-import weka.core.Tag;
-import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
-import weka.core.TechnicalInformationHandler;
-import weka.core.Utils;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * <!-- globalinfo-start --> Class for combining classifiers. Different
@@ -64,6 +47,9 @@ import java.util.Vector;
  * J. Kittler, M. Hatef, Robert P.W. Duin, J. Matas (1998). On combining
  * classifiers. IEEE Transactions on Pattern Analysis and Machine Intelligence.
  * 20(3):226-239.
+ * <br>
+ * If a base classifier cannot handle instance weights, and the instance weights are not uniform,
+ * the data will be resampled with replacement based on the weights before being passed to that base classifier.
  * <p/>
  * <!-- globalinfo-end -->
  * 
@@ -162,7 +148,7 @@ import java.util.Vector;
  * @version $Revision$
  */
 public class Vote extends RandomizableMultipleClassifiersCombiner implements
-  TechnicalInformationHandler, EnvironmentHandler, Aggregateable<Classifier> {
+  TechnicalInformationHandler, EnvironmentHandler, Aggregateable<Classifier>, WeightedInstancesHandler {
 
   /** for serialization */
   static final long serialVersionUID = -637891196294399624L;
@@ -216,7 +202,10 @@ public class Vote extends RandomizableMultipleClassifiersCombiner implements
   public String globalInfo() {
     return "Class for combining classifiers. Different combinations of "
       + "probability estimates for classification are available.\n\n"
-      + "For more information see:\n\n" + getTechnicalInformation().toString();
+      + "For more information see:\n\n" + getTechnicalInformation().toString() + "\n\n"
+      + "If a base classifier cannot handle instance weights, and the instance weights are not uniform, "
+      + "the data will be resampled with replacement based on the weights before being passed "
+      + "to that base classifier.";
   }
 
   /**
@@ -461,11 +450,9 @@ public class Vote extends RandomizableMultipleClassifiersCombiner implements
   }
 
   /**
-   * Buildclassifier selects a classifier from the set of classifiers by
-   * minimising error on the training data.
+   * Builds all classifiers in the ensemble
    * 
-   * @param data the training data to be used for generating the boosted
-   *          classifier.
+   * @param data the training data to be used for generating the ensemble.
    * @throws Exception if the classifier could not be built successfully
    */
   @Override
@@ -474,7 +461,7 @@ public class Vote extends RandomizableMultipleClassifiersCombiner implements
     // remove instances with missing class
     Instances newData = new Instances(data);
     newData.deleteWithMissingClass();
-    m_structure = new Instances(newData, 0);
+    m_structure = newData.stringFreeStructure();
 
     if (m_classifiersToLoad.size() > 0) {
       m_preBuiltClassifiers.clear();
@@ -488,10 +475,16 @@ public class Vote extends RandomizableMultipleClassifiersCombiner implements
     }
 
     // can classifier handle the data?
-    getCapabilities().testWithFail(data);
+    getCapabilities().testWithFail(newData);
 
+    boolean uniformWeights = newData.allInstanceWeightsIdentical();
     for (int i = 0; i < m_Classifiers.length; i++) {
-      getClassifier(i).buildClassifier(newData);
+      if (!uniformWeights && !(getClassifier(i) instanceof WeightedInstancesHandler)) {
+        Random r = (newData.numInstances() > 0) ? newData.getRandomNumberGenerator(getSeed()) : new Random(getSeed());
+        getClassifier(i).buildClassifier(newData.resampleWithWeights(r));
+      } else {
+        getClassifier(i).buildClassifier(newData);
+      }
     }
   }
 
