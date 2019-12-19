@@ -95,7 +95,7 @@ import weka.filters.unsupervised.attribute.MakeIndicator;
 */
 public class ClassificationViaRegression 
   extends SingleClassifierEnhancer
-  implements TechnicalInformationHandler {
+  implements TechnicalInformationHandler, WeightedInstancesHandler {
 
   /** for serialization */
   static final long serialVersionUID = 4500023123618669859L;
@@ -191,7 +191,12 @@ public class ClassificationViaRegression
     // remove instances with missing class
     insts = new Instances(insts);
     insts.deleteWithMissingClass();
-    
+
+    if (!insts.allInstanceWeightsIdentical() && !(m_Classifier instanceof WeightedInstancesHandler)) {
+      throw new IllegalArgumentException("ClassificationViaRegression: training data has non-uniform instance weights " +
+              "and base classifier cannot handle instance weights");
+    }
+
     m_Classifiers = AbstractClassifier.makeCopies(m_Classifier, insts.numClasses());
     m_ClassFilters = new MakeIndicator[insts.numClasses()];
     for (int i = 0; i < insts.numClasses(); i++) {
