@@ -22,12 +22,10 @@
 package weka.attributeSelection;
 
 import java.io.Serializable;
+import java.util.Enumeration;
+import java.util.Vector;
 
-import weka.core.Instances;
-import weka.core.RevisionHandler;
-import weka.core.RevisionUtils;
-import weka.core.SerializedObject;
-import weka.core.Utils;
+import weka.core.*;
 
 /** 
  * Abstract attribute selection search class.
@@ -36,11 +34,50 @@ import weka.core.Utils;
  * @version $Revision$
  */
 public abstract class ASSearch
-  implements Serializable, RevisionHandler {
+  implements Serializable, RevisionHandler, OptionHandler {
 
   /** for serialization */
   private static final long serialVersionUID = 7591673350342236548L;
-  
+
+  /**
+   * Returns an enumeration describing the available options.
+   *
+   * @return an enumeration of all the available options.
+   */
+  @Override
+  public Enumeration<Option> listOptions() {
+    Vector<Option> result = Option.listOptionsForClassHierarchy(this.getClass(), ASSearch.class);
+
+    return result.elements();
+  }
+
+  /**
+   * Parses a given list of options.
+   * <p/>
+   *
+   * @param options the list of options as an array of strings
+   * @throws Exception if an option is not supported
+   */
+  @Override
+  public void setOptions(String[] options) throws Exception {
+    Option.setOptionsForHierarchy(options, this, ASSearch.class);
+  }
+
+  /**
+   * Gets the current settings of the search.
+   *
+   * @return an array of strings suitable for passing to setOptions
+   */
+  @Override
+  public String[] getOptions() {
+    Vector<String> result = new Vector<String>();
+    for (String s : Option.getOptionsForHierarchy(this, ASSearch.class)) {
+      result.add(s);
+    }
+
+    return result.toArray(new String[result.size()]);
+  }
+
   // ===============
   // Public methods.
   // ===============

@@ -22,6 +22,7 @@
 package weka.attributeSelection;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -188,7 +189,7 @@ public class PrincipalComponents extends UnsupervisedAttributeEvaluator
    **/
   @Override
   public Enumeration<Option> listOptions() {
-    Vector<Option> newVector = new Vector<Option>(4);
+    Vector<Option> newVector = new Vector<Option>(6);
 
     newVector.addElement(new Option("\tCenter (rather than standardize) the"
       + "\n\tdata and compute PCA using the covariance (rather"
@@ -204,6 +205,9 @@ public class PrincipalComponents extends UnsupervisedAttributeEvaluator
     newVector.addElement(new Option(
       "\tMaximum number of attributes to include in "
         + "\n\ttransformed attribute names. (-1 = include all)", "A", 1, "-A"));
+
+    newVector.addAll(Collections.list(super.listOptions()));
+
     return newVector.elements();
   }
 
@@ -263,6 +267,10 @@ public class PrincipalComponents extends UnsupervisedAttributeEvaluator
 
     setTransformBackToOriginal(Utils.getFlag('O', options));
     setCenterData(Utils.getFlag('C', options));
+
+    super.setOptions(options);
+
+    Utils.checkForRemainingOptions(options);
   }
 
   /**
@@ -420,6 +428,8 @@ public class PrincipalComponents extends UnsupervisedAttributeEvaluator
     if (getTransformBackToOriginal()) {
       options.add("-O");
     }
+
+    Collections.addAll(options, super.getOptions());
 
     return options.toArray(new String[0]);
   }

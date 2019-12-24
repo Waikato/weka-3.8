@@ -45,7 +45,7 @@ public abstract class HoldOutSubsetEvaluator
    * Evaluates a subset of attributes with respect to a set of instances.
    * @param subset a bitset representing the attribute subset to be
    * evaluated
-   * @param holdOut a set of instances (possibly seperate and distinct
+   * @param holdOut a set of instances (possibly separate and distinct
    * from those use to build/train the evaluator) with which to
    * evaluate the merit of the subset
    * @return the "merit" of the subset on the holdOut data

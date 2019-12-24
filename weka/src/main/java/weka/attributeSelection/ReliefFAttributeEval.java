@@ -21,6 +21,7 @@
 
 package weka.attributeSelection;
 
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Random;
 import java.util.Vector;
@@ -309,7 +310,7 @@ public class ReliefFAttributeEval extends ASEvaluation implements
    **/
   @Override
   public Enumeration<Option> listOptions() {
-    Vector<Option> newVector = new Vector<Option>(4);
+    Vector<Option> newVector = new Vector<Option>(7);
     newVector.addElement(new Option("\tSpecify the number of instances to\n"
       + "\tsample when estimating attributes.\n"
       + "\tIf not specified, then all instances\n" + "\twill be used.", "M", 1,
@@ -328,6 +329,9 @@ public class ReliefFAttributeEval extends ASEvaluation implements
       + "\tSensible value=1/5 to 1/10 of the\n"
       + "\tnumber of nearest neighbours.\n" + "\t(Default = 2)", "A", 1,
       "-A <num>"));
+
+    newVector.addAll(Collections.list(super.listOptions()));
+
     return newVector.elements();
   }
 
@@ -409,6 +413,10 @@ public class ReliefFAttributeEval extends ASEvaluation implements
       setWeightByDistance(true); // turn on weighting by distance
       setSigma(Integer.parseInt(optionString));
     }
+
+    super.setOptions(options);
+
+    Utils.checkForRemainingOptions(options);
   }
 
   /**
@@ -585,6 +593,8 @@ public class ReliefFAttributeEval extends ASEvaluation implements
       options.add("-A");
       options.add("" + getSigma());
     }
+
+    Collections.addAll(options, super.getOptions());
 
     return options.toArray(new String[0]);
   }

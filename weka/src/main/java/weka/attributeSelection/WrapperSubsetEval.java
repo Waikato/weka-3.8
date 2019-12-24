@@ -338,7 +338,7 @@ public class WrapperSubsetEval extends ASEvaluation
    **/
   @Override
   public Enumeration<Option> listOptions() {
-    Vector<Option> newVector = new Vector<Option>(4);
+    Vector<Option> newVector = new Vector<Option>(8);
     newVector.addElement(new Option(
       "\tclass name of base learner to use for \taccuracy estimation.\n"
         + "\tPlace any classifier options LAST on the command line\n"
@@ -373,6 +373,8 @@ public class WrapperSubsetEval extends ASEvaluation
         + "\tIR statistics (f-meas, auc or auprc). Omitting this option will use\n"
         + "\tthe class-weighted average.",
       "IRclass", 1, "-IRclass <label | index>"));
+
+    newVector.addAll(Collections.list(super.listOptions()));
 
     if ((m_BaseClassifier != null)
       && (m_BaseClassifier instanceof OptionHandler)) {
@@ -498,6 +500,11 @@ public class WrapperSubsetEval extends ASEvaluation
     if (optionString.length() > 0) {
       setIRClassValue(optionString);
     }
+
+    super.setOptions(options);
+
+    Utils.checkForRemainingOptions(options);
+
   }
 
   /**
@@ -688,46 +695,38 @@ public class WrapperSubsetEval extends ASEvaluation
    */
   @Override
   public String[] getOptions() {
-    String[] classifierOptions = new String[0];
 
-    if ((m_BaseClassifier != null)
-      && (m_BaseClassifier instanceof OptionHandler)) {
-      classifierOptions = ((OptionHandler) m_BaseClassifier).getOptions();
-    }
-
-    String[] options = new String[13 + classifierOptions.length];
-    int current = 0;
+    Vector<String> options = new Vector<String>();
 
     if (getClassifier() != null) {
-      options[current++] = "-B";
-      options[current++] = getClassifier().getClass().getName();
+      options.add("-B");
+      options.add(getClassifier().getClass().getName());
     }
 
-    options[current++] = "-F";
-    options[current++] = "" + getFolds();
-    options[current++] = "-T";
-    options[current++] = "" + getThreshold();
-    options[current++] = "-R";
-    options[current++] = "" + getSeed();
+    options.add("-F");
+    options.add("" + getFolds());
+    options.add("-T");
+    options.add("" + getThreshold());
+    options.add("-R");
+    options.add("" + getSeed());
 
-    options[current++] = "-E";
-    options[current++] = m_evaluationMeasure.getIDStr();
+    options.add("-E");
+    options.add(m_evaluationMeasure.getIDStr());
 
     if (m_IRClassValS != null && m_IRClassValS.length() > 0) {
-      options[current++] = "-IRClass";
-      options[current++] = m_IRClassValS;
+      options.add("-IRClass");
+      options.add(m_IRClassValS);
     }
 
-    options[current++] = "--";
-    System.arraycopy(classifierOptions, 0, options, current,
-      classifierOptions.length);
-    current += classifierOptions.length;
+    Collections.addAll(options, super.getOptions());
 
-    while (current < options.length) {
-      options[current++] = "";
+    options.add("--");
+
+    if ((m_BaseClassifier != null) && (m_BaseClassifier instanceof OptionHandler)) {
+      Collections.addAll(options, ((OptionHandler) m_BaseClassifier).getOptions());
     }
 
-    return options;
+    return options.toArray(new String[0]);
   }
 
   protected void resetOptions() {

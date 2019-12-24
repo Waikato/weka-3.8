@@ -52,7 +52,7 @@ import weka.filters.unsupervised.attribute.Remove;
  <!-- globalinfo-start -->
  * Classifier subset evaluator:<br>
  * <br>
- * Evaluates attribute subsets on training data or a seperate hold out testing set. Uses a classifier to estimate the 'merit' of a set of attributes.
+ * Evaluates attribute subsets on training data or a separate hold out testing set. Uses a classifier to estimate the 'merit' of a set of attributes.
  * <br><br>
  <!-- globalinfo-end -->
  * 
@@ -143,7 +143,7 @@ public class ClassifierSubsetEval extends HoldOutSubsetEvaluator implements
    */
   private Classifier m_Classifier = new ZeroR();
 
-  /** the file that containts hold out/test instances */
+  /** the file that contains hold out/test instances */
   private File m_holdOutFile = new File("Click to set hold out or "
     + "test instances");
 
@@ -240,7 +240,7 @@ public class ClassifierSubsetEval extends HoldOutSubsetEvaluator implements
    *         explorer/experimenter gui
    */
   public String globalInfo() {
-    return "Classifier subset evaluator:\n\nEvaluates attribute subsets on training data or a seperate "
+    return "Classifier subset evaluator:\n\nEvaluates attribute subsets on training data or a separate "
       + "hold out testing set. Uses a classifier to estimate the 'merit' of a set of attributes.";
   }
 
@@ -287,6 +287,8 @@ public class ClassifierSubsetEval extends HoldOutSubsetEvaluator implements
           + "\tIR statistics (f-meas, auc or auprc). Omitting this option will use\n"
           + "\tthe class-weighted average.", "IRclass", 1,
         "-IRclass <label | index>"));
+
+    newVector.addAll(Collections.list(super.listOptions()));
 
     if ((m_ClassifierTemplate != null)
       && (m_ClassifierTemplate instanceof OptionHandler)) {
@@ -409,6 +411,10 @@ public class ClassifierSubsetEval extends HoldOutSubsetEvaluator implements
     if (optionString.length() > 0) {
       setSeed(Integer.parseInt(optionString));
     }
+
+    super.setOptions(options);
+
+    Utils.checkForRemainingOptions(options);
   }
 
   /**
@@ -690,6 +696,8 @@ public class ClassifierSubsetEval extends HoldOutSubsetEvaluator implements
       options.add("-IRClass");
       options.add(m_IRClassValS);
     }
+
+    Collections.addAll(options, super.getOptions());
 
     if ((m_ClassifierTemplate != null)
       && (m_ClassifierTemplate instanceof OptionHandler)) {

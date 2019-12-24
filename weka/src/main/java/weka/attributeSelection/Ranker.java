@@ -252,7 +252,7 @@ public class Ranker extends ASSearch implements RankedOutputSearch,
     return "Specify a set of attributes to ignore. "
       + " When generating the ranking, Ranker will not evaluate the attributes "
       + " in this list. " + "This is specified as a comma "
-      + "seperated list off attribute indexes starting at 1. It can include "
+      + "separated list off attribute indexes starting at 1. It can include "
       + "ranges. Eg. 1,2,5-9,17.";
   }
 
@@ -387,7 +387,7 @@ public class Ranker extends ASSearch implements RankedOutputSearch,
    * can be specified in different ways from the command line---eg 1,2,3 == 1-3.
    * This is to ensure that stuff that is stored in a database is comparable.
    * 
-   * @return a comma seperated list of individual attribute numbers as a String
+   * @return a comma separated list of individual attribute numbers as a String
    */
   private String startSetToString() {
     StringBuffer FString = new StringBuffer();

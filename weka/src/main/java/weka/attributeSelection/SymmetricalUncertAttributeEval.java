@@ -21,6 +21,7 @@
 
 package weka.attributeSelection;
 
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -52,7 +53,7 @@ import weka.filters.supervised.attribute.Discretize;
  * 
  * <pre>
  * -M
- *  treat missing values as a seperate value.
+ *  treat missing values as a separate value.
  * </pre>
  * 
  * <!-- options-end -->
@@ -79,7 +80,7 @@ public class SymmetricalUncertAttributeEval extends ASEvaluation implements
   /** The number of classes */
   private int m_numClasses;
 
-  /** Treat missing values as a seperate value */
+  /** Treat missing values as a separate value */
   private boolean m_missing_merge;
 
   /**
@@ -110,8 +111,11 @@ public class SymmetricalUncertAttributeEval extends ASEvaluation implements
   @Override
   public Enumeration<Option> listOptions() {
     Vector<Option> newVector = new Vector<Option>(1);
-    newVector.addElement(new Option("\ttreat missing values as a seperate "
+    newVector.addElement(new Option("\ttreat missing values as a separate "
       + "value.", "M", 0, "-M"));
+
+    newVector.addAll(Collections.list(super.listOptions()));
+
     return newVector.elements();
   }
 
@@ -124,7 +128,7 @@ public class SymmetricalUncertAttributeEval extends ASEvaluation implements
    * 
    * <pre>
    * -M
-   *  treat missing values as a seperate value.
+   *  treat missing values as a separate value.
    * </pre>
    * 
    * <!-- options-end -->
@@ -136,6 +140,10 @@ public class SymmetricalUncertAttributeEval extends ASEvaluation implements
   public void setOptions(String[] options) throws Exception {
     resetOptions();
     setMissingMerge(!(Utils.getFlag('M', options)));
+
+    super.setOptions(options);
+
+    Utils.checkForRemainingOptions(options);
   }
 
   /**
@@ -175,18 +183,16 @@ public class SymmetricalUncertAttributeEval extends ASEvaluation implements
    */
   @Override
   public String[] getOptions() {
-    String[] options = new String[1];
-    int current = 0;
+
+    Vector<String> options = new Vector<String>();
 
     if (!getMissingMerge()) {
-      options[current++] = "-M";
+      options.add("-M");
     }
 
-    while (current < options.length) {
-      options[current++] = "";
-    }
+    Collections.addAll(options, super.getOptions());
 
-    return options;
+    return options.toArray(new String[0]);
   }
 
   /**
@@ -397,7 +403,7 @@ public class SymmetricalUncertAttributeEval extends ASEvaluation implements
     } else {
       text.append("\tSymmetrical Uncertainty Ranking Filter");
       if (!m_missing_merge) {
-        text.append("\n\tMissing values treated as seperate");
+        text.append("\n\tMissing values treated as separate");
       }
     }
 

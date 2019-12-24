@@ -21,11 +21,7 @@
 
 package weka.attributeSelection;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 import weka.core.Capabilities;
 import weka.core.Capabilities.Capability;
@@ -124,11 +120,12 @@ public class CorrelationAttributeEval extends ASEvaluation implements
    **/
   @Override
   public Enumeration<Option> listOptions() {
-    // TODO Auto-generated method stub
     Vector<Option> newVector = new Vector<Option>();
 
     newVector.addElement(new Option(
       "\tOutput detailed info for nominal attributes", "D", 0, "-D"));
+
+    newVector.addAll(Collections.list(super.listOptions()));
 
     return newVector.elements();
   }
@@ -154,6 +151,10 @@ public class CorrelationAttributeEval extends ASEvaluation implements
   public void setOptions(String[] options) throws Exception {
 
     setOutputDetailedInfo(Utils.getFlag('D', options));
+
+    super.setOptions(options);
+
+    Utils.checkForRemainingOptions(options);
   }
 
   /**
@@ -163,15 +164,18 @@ public class CorrelationAttributeEval extends ASEvaluation implements
    */
   @Override
   public String[] getOptions() {
-    String[] options = new String[1];
+
+    Vector<String> options = new Vector<String>();
 
     if (getOutputDetailedInfo()) {
-      options[0] = "-D";
+      options.add("-D");
     } else {
-      options[0] = "";
+      options.add("");
     }
 
-    return options;
+    Collections.addAll(options, super.getOptions());
+
+    return options.toArray(new String[0]);
   }
 
   /**

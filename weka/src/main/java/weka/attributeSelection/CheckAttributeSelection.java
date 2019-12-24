@@ -188,7 +188,7 @@ import weka.core.WeightedInstancesHandler;
  * 
  * <pre>
  * -M
- *  Treat missing values as a seperate value.
+ *  Treat missing values as a separate value.
  * </pre>
  * 
  * <pre>
@@ -376,7 +376,7 @@ public class CheckAttributeSelection extends CheckScheme {
    * 
    * <pre>
    * -M
-   *  Treat missing values as a seperate value.
+   *  Treat missing values as a separate value.
    * </pre>
    * 
    * <pre>

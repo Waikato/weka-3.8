@@ -21,6 +21,7 @@
 
 package weka.attributeSelection;
 
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Random;
 import java.util.Vector;
@@ -232,7 +233,7 @@ public class OneRAttributeEval extends ASEvaluation implements
   @Override
   public Enumeration<Option> listOptions() {
 
-    Vector<Option> newVector = new Vector<Option>(4);
+    Vector<Option> newVector = new Vector<Option>(6);
 
     newVector.addElement(new Option(
       "\tRandom number seed for cross validation\n" + "\t(default = 1)", "S",
@@ -248,6 +249,8 @@ public class OneRAttributeEval extends ASEvaluation implements
     newVector.addElement(new Option("\tMinimum number of objects in a bucket\n"
       + "\t(passed on to " + "OneR, default = 6)", "B", 1,
       "-B <minimum bucket size>"));
+
+    newVector.addAll(Collections.list(super.listOptions()));
 
     return newVector.elements();
   }
@@ -306,6 +309,9 @@ public class OneRAttributeEval extends ASEvaluation implements
     }
 
     setEvalUsingTrainingData(Utils.getFlag('D', options));
+
+    super.setOptions(options);
+
     Utils.checkForRemainingOptions(options);
   }
 
@@ -329,6 +335,8 @@ public class OneRAttributeEval extends ASEvaluation implements
     options.add("" + getFolds());
     options.add("-B");
     options.add("" + getMinimumBucketSize());
+
+    Collections.addAll(options, super.getOptions());
 
     return options.toArray(new String[0]);
   }

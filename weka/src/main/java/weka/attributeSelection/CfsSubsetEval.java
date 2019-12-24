@@ -21,17 +21,14 @@
 
 package weka.attributeSelection;
 
-import java.util.BitSet;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import weka.classifiers.AbstractClassifier;
 import weka.core.Capabilities;
 import weka.core.Capabilities.Capability;
 import weka.core.ContingencyTables;
@@ -227,7 +224,8 @@ public class CfsSubsetEval extends ASEvaluation implements SubsetEvaluator,
    **/
   @Override
   public Enumeration<Option> listOptions() {
-    Vector<Option> newVector = new Vector<Option>(6);
+
+    Vector<Option> newVector = new Vector<Option>(8);
     newVector.addElement(new Option("\tTreat missing values as a separate "
       + "value.", "M", 0, "-M"));
     newVector.addElement(new Option(
@@ -237,11 +235,14 @@ public class CfsSubsetEval extends ASEvaluation implements SubsetEvaluator,
       "\t" + preComputeCorrelationMatrixTipText(), "Z", 0, "-Z"));
 
     newVector.addElement(new Option(
-      "\t" + poolSizeTipText() + " (default 1)\n", "P", 1, "-P <int>"));
+      "\t" + poolSizeTipText() + " (default 1)", "P", 1, "-P <int>"));
     newVector.addElement(new Option("\t" + numThreadsTipText()
-      + " (default 1)\n", "E", 1, "-E <int>"));
+      + " (default 1)", "E", 1, "-E <int>"));
     newVector.addElement(new Option("\tOutput debugging info" + ".", "D", 0,
       "-D"));
+
+    newVector.addAll(Collections.list(super.listOptions()));
+
     return newVector.elements();
   }
 
@@ -310,6 +311,10 @@ public class CfsSubsetEval extends ASEvaluation implements SubsetEvaluator,
     }
 
     setDebug(Utils.getFlag('D', options));
+
+    super.setOptions(options);
+
+    Utils.checkForRemainingOptions(options);
   }
 
   /**
@@ -512,6 +517,8 @@ public class CfsSubsetEval extends ASEvaluation implements SubsetEvaluator,
     if (getDebug()) {
       options.add("-D");
     }
+
+    Collections.addAll(options, super.getOptions());
 
     return options.toArray(new String[0]);
   }

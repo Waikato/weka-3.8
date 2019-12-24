@@ -21,17 +21,11 @@
 
 package weka.attributeSelection;
 
-import weka.core.Capabilities;
-import weka.core.CapabilitiesHandler;
-import weka.core.CapabilitiesIgnorer;
-import weka.core.CommandlineRunnable;
-import weka.core.Instances;
-import weka.core.RevisionHandler;
-import weka.core.RevisionUtils;
-import weka.core.SerializedObject;
-import weka.core.Utils;
+import weka.core.*;
 
 import java.io.Serializable;
+import java.util.Enumeration;
+import java.util.Vector;
 
 /**
  * Abstract attribute selection evaluation class
@@ -40,7 +34,7 @@ import java.io.Serializable;
  * @version $Revision$
  */
 public abstract class ASEvaluation implements Serializable, CapabilitiesHandler,
-  CapabilitiesIgnorer, RevisionHandler, CommandlineRunnable {
+  CapabilitiesIgnorer, RevisionHandler, CommandlineRunnable, OptionHandler {
 
   /** for serialization */
   private static final long serialVersionUID = 2091705669885950849L;
@@ -79,6 +73,54 @@ public abstract class ASEvaluation implements Serializable, CapabilitiesHandler,
   public boolean getDoNotCheckCapabilities() {
 
     return m_DoNotCheckCapabilities;
+  }
+
+  /**
+   * Returns an enumeration describing the available options.
+   *
+   * @return an enumeration of all the available options.
+   */
+  @Override
+  public Enumeration<Option> listOptions() {
+    Vector<Option> result = Option.listOptionsForClassHierarchy(this.getClass(), ASEvaluation.class);
+    result.addElement(new Option(
+            "\tIf set, evaluator capabilities are not checked before evaluator is built\n"
+                    + "\t(use with caution).",
+            "-do-not-check-capabilities", 0, "-do-not-check-capabilities"));
+
+    return result.elements();
+  }
+
+  /**
+   * Parses a given list of options.
+   * <p/>
+   *
+   * @param options the list of options as an array of strings
+   * @throws Exception if an option is not supported
+   */
+  @Override
+  public void setOptions(String[] options) throws Exception {
+    Option.setOptionsForHierarchy(options, this, ASEvaluation.class);
+    setDoNotCheckCapabilities(
+            Utils.getFlag("do-not-check-capabilities", options));
+  }
+
+  /**
+   * Gets the current settings of the evaluator.
+   *
+   * @return an array of strings suitable for passing to setOptions
+   */
+  @Override
+  public String[] getOptions() {
+    Vector<String> result = new Vector<String>();
+    for (String s : Option.getOptionsForHierarchy(this, ASEvaluation.class)) {
+      result.add(s);
+    }
+    if (getDoNotCheckCapabilities()) {
+      result.add("-do-not-check-capabilities");
+    }
+
+    return result.toArray(new String[result.size()]);
   }
 
   // ===============

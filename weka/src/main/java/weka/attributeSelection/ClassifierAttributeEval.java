@@ -21,12 +21,7 @@
 
 package weka.attributeSelection;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -51,10 +46,15 @@ import weka.core.Utils;
  * 
  <!-- options-start -->
  * Valid options are: <p/>
+ *
  * <pre> -L
  *  Evaluate an attribute by measuring the impact of leaving it out
  *  from the full set instead of considering its worth in isolation</pre>
- * 
+ *
+ * <pre> -execution-slots &lt;integer&gt;
+ *  Number of attributes to evaluate in parallel.
+ *  Default = 1 (i.e. no parallelism)</pre>
+ *
  * <pre> -B &lt;base learner&gt;
  *  class name of base learner to use for  accuracy estimation.
  *  Place any classifier options LAST on the command line
@@ -95,11 +95,7 @@ import weka.core.Utils;
  * <pre> -do-not-check-capabilities
  *  If set, classifier capabilities are not checked before classifier is built
  *  (use with caution).</pre>
- * 
- * <pre> -execution-slots &lt;integer&gt;
- *  Number of attributes to evaluate in parallel.
- *  Default = 1 (i.e. no parallelism)</pre>
- * 
+ *
  <!-- options-end -->
  * 
  * @author Mark Hall (mhall@cs.waikato.ac.nz)
@@ -163,20 +159,25 @@ public class ClassifierAttributeEval extends ASEvaluation implements
   public Enumeration<Option> listOptions() {
     Vector<Option> result = new Vector<Option>();
 
+    result.addElement(new Option(
+            "\tEvaluate an attribute by measuring the impact of leaving it out\n\t"
+                    + "from the full set instead of considering its worth in isolation",
+            "L", 0, "-L"));
+
+    result.addElement(new Option(
+            "\tNumber of attributes to evaluate in parallel.\n\t"
+                    + "Default = 1 (i.e. no parallelism)", "execution-slots", 1,
+            "-execution-slots <integer>"));
+
+    result.addAll(Collections.list(super.listOptions()));
+
+    result.addElement(new Option("", "", 0, "\nOptions specific to "
+            + "scheme " + m_wrapperTemplate.getClass().getName() + ":"));
+
     Enumeration<Option> wrapperOpts = m_wrapperTemplate.listOptions();
     while (wrapperOpts.hasMoreElements()) {
       result.addElement(wrapperOpts.nextElement());
     }
-
-    result.addElement(new Option(
-      "\tEvaluate an attribute by measuring the impact of leaving it out\n\t"
-        + "from the full set instead of considering its worth in isolation",
-      "L", 0, "-L"));
-
-    result.addElement(new Option(
-      "\tNumber of attributes to evaluate in parallel.\n\t"
-        + "Default = 1 (i.e. no parallelism)", "execution-slots", 1,
-      "-execution-slots <integer>"));
 
     return result.elements();
   }
@@ -187,7 +188,15 @@ public class ClassifierAttributeEval extends ASEvaluation implements
    * 
    <!-- options-start -->
    * Valid options are: <p/>
-   * 
+   *
+   * <pre> -L
+   *  Evaluate an attribute by measuring the impact of leaving it out
+   *  from the full set instead of considering its worth in isolation</pre>
+   *
+   * <pre> -execution-slots &lt;integer&gt;
+   *  Number of attributes to evaluate in parallel.
+   *  Default = 1 (i.e. no parallelism)</pre>
+   *
    * <pre> -B &lt;base learner&gt;
    *  class name of base learner to use for  accuracy estimation.
    *  Place any classifier options LAST on the command line
@@ -228,15 +237,7 @@ public class ClassifierAttributeEval extends ASEvaluation implements
    * <pre> -do-not-check-capabilities
    *  If set, classifier capabilities are not checked before classifier is built
    *  (use with caution).</pre>
-   * 
-   * <pre> -L
-   *  Evaluate an attribute by measuring the impact of leaving it out
-   *  from the full set instead of considering its worth in isolation</pre>
-   * 
-   * <pre> -execution-slots &lt;integer&gt;
-   *  Number of attributes to evaluate in parallel.
-   *  Default = 1 (i.e. no parallelism)</pre>
-   * 
+   *
    <!-- options-end -->
    * 
    * @param options the list of options as an array of strings
@@ -248,9 +249,12 @@ public class ClassifierAttributeEval extends ASEvaluation implements
 
     m_leaveOneOut = Utils.getFlag('L', options);
     String slots = Utils.getOption("execution-slots", options);
+
     if (slots.length() > 0) {
       m_executionSlots = Integer.parseInt(slots);
     }
+    super.setOptions(options);
+
     m_wrapperTemplate.setOptions(options);
 
     Utils.checkForRemainingOptions(options);
@@ -273,6 +277,8 @@ public class ClassifierAttributeEval extends ASEvaluation implements
 
     result.add("-execution-slots");
     result.add("" + m_executionSlots);
+
+    Collections.addAll(result, super.getOptions());
 
     for (String o : m_wrapperTemplate.getOptions()) {
       result.add(o);

@@ -21,6 +21,7 @@
 
 package weka.attributeSelection;
 
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -52,7 +53,7 @@ import weka.filters.unsupervised.attribute.NumericToBinary;
  * 
  * <pre>
  * -M
- *  treat missing values as a seperate value.
+ *  treat missing values as a separate value.
  * </pre>
  * 
  * <pre>
@@ -74,7 +75,7 @@ public class InfoGainAttributeEval extends ASEvaluation implements
   /** for serialization */
   static final long serialVersionUID = -1949849512589218930L;
 
-  /** Treat missing values as a seperate value */
+  /** Treat missing values as a separate value */
   private boolean m_missing_merge;
 
   /** Just binarize numeric attributes */
@@ -110,11 +111,14 @@ public class InfoGainAttributeEval extends ASEvaluation implements
   @Override
   public Enumeration<Option> listOptions() {
     Vector<Option> newVector = new Vector<Option>(2);
-    newVector.addElement(new Option("\ttreat missing values as a seperate "
+    newVector.addElement(new Option("\ttreat missing values as a separate "
       + "value.", "M", 0, "-M"));
     newVector.addElement(new Option(
       "\tjust binarize numeric attributes instead \n"
         + "\tof properly discretizing them.", "B", 0, "-B"));
+
+    newVector.addAll(Collections.list(super.listOptions()));
+
     return newVector.elements();
   }
 
@@ -127,7 +131,7 @@ public class InfoGainAttributeEval extends ASEvaluation implements
    * 
    * <pre>
    * -M
-   *  treat missing values as a seperate value.
+   *  treat missing values as a separate value.
    * </pre>
    * 
    * <pre>
@@ -147,6 +151,10 @@ public class InfoGainAttributeEval extends ASEvaluation implements
     resetOptions();
     setMissingMerge(!(Utils.getFlag('M', options)));
     setBinarizeNumericAttributes(Utils.getFlag('B', options));
+
+    super.setOptions(options);
+
+    Utils.checkForRemainingOptions(options);
   }
 
   /**
@@ -156,21 +164,19 @@ public class InfoGainAttributeEval extends ASEvaluation implements
    */
   @Override
   public String[] getOptions() {
-    String[] options = new String[2];
-    int current = 0;
+
+    Vector<String> options = new Vector<String>();
 
     if (!getMissingMerge()) {
-      options[current++] = "-M";
+      options.add("-M");
     }
     if (getBinarizeNumericAttributes()) {
-      options[current++] = "-B";
+      options.add("-B");
     }
 
-    while (current < options.length) {
-      options[current++] = "";
-    }
+    Collections.addAll(options, super.getOptions());
 
-    return options;
+    return options.toArray(new String[0]);
   }
 
   /**
@@ -444,7 +450,7 @@ public class InfoGainAttributeEval extends ASEvaluation implements
     } else {
       text.append("\tInformation Gain Ranking Filter");
       if (!m_missing_merge) {
-        text.append("\n\tMissing values treated as seperate");
+        text.append("\n\tMissing values treated as separate");
       }
       if (m_Binarize) {
         text.append("\n\tNumeric attributes are just binarized");

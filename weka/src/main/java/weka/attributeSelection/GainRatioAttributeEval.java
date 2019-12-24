@@ -21,6 +21,7 @@
 
 package weka.attributeSelection;
 
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -51,7 +52,7 @@ import weka.filters.supervised.attribute.Discretize;
  * 
  * <pre>
  * -M
- *  treat missing values as a seperate value.
+ *  treat missing values as a separate value.
  * </pre>
  * 
  * <!-- options-end -->
@@ -109,8 +110,11 @@ public class GainRatioAttributeEval extends ASEvaluation implements
   @Override
   public Enumeration<Option> listOptions() {
     Vector<Option> newVector = new Vector<Option>(1);
-    newVector.addElement(new Option("\ttreat missing values as a seperate "
+    newVector.addElement(new Option("\ttreat missing values as a separate "
       + "value.", "M", 0, "-M"));
+
+    newVector.addAll(Collections.list(super.listOptions()));
+
     return newVector.elements();
   }
 
@@ -123,7 +127,7 @@ public class GainRatioAttributeEval extends ASEvaluation implements
    * 
    * <pre>
    * -M
-   *  treat missing values as a seperate value.
+   *  treat missing values as a separate value.
    * </pre>
    * 
    * <!-- options-end -->
@@ -135,6 +139,10 @@ public class GainRatioAttributeEval extends ASEvaluation implements
   public void setOptions(String[] options) throws Exception {
     resetOptions();
     setMissingMerge(!(Utils.getFlag('M', options)));
+
+    super.setOptions(options);
+
+    Utils.checkForRemainingOptions(options);
   }
 
   /**
@@ -174,15 +182,18 @@ public class GainRatioAttributeEval extends ASEvaluation implements
    */
   @Override
   public String[] getOptions() {
-    String[] options = new String[1];
+
+    Vector<String> options = new Vector<String>();
 
     if (!getMissingMerge()) {
-      options[0] = "-M";
+      options.add("-M");
     } else {
-      options[0] = "";
+      options.add("");
     }
 
-    return options;
+    Collections.addAll(options, super.getOptions());
+
+    return options.toArray(new String[0]);
   }
 
   /**
@@ -394,7 +405,7 @@ public class GainRatioAttributeEval extends ASEvaluation implements
       text.append("\tGain Ratio feature evaluator");
 
       if (!m_missing_merge) {
-        text.append("\n\tMissing values treated as seperate");
+        text.append("\n\tMissing values treated as separate");
       }
     }
 
