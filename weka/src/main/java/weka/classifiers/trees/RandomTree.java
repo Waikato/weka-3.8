@@ -678,8 +678,6 @@ public class RandomTree extends AbstractClassifier implements OptionHandler,
     setBreakTiesRandomly(Utils.getFlag('B', options));
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

@@ -475,8 +475,6 @@ public class JRip extends AbstractClassifier implements
     m_UsePruning = !Utils.getFlag('P', options);
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

@@ -609,8 +609,6 @@ public class J48 extends AbstractClassifier implements OptionHandler, Drawable,
     }
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

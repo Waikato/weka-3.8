@@ -636,7 +636,6 @@ public class LinearRegression extends AbstractClassifier implements
     setUseQRDecomposition(Utils.getFlag("use-qr", options));
 
     super.setOptions(options);
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

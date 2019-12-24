@@ -693,8 +693,6 @@ public class GaussianProcesses extends RandomizableClassifier implements
     }
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

@@ -903,8 +903,6 @@ public class IterativeClassifierOptimizer extends RandomizableClassifier
   @Override
   public void setOptions(String[] options) throws Exception {
 
-    super.setOptions(options);
-
     setUseAverage(Utils.getFlag('A', options));
 
     String lookAheadIterations = Utils.getOption('L', options);
@@ -988,6 +986,8 @@ public class IterativeClassifierOptimizer extends RandomizableClassifier
       setIterativeClassifier(getIterativeClassifier(
         defaultIterativeClassifierString(), Utils.partitionOptions(options)));
     }
+
+    super.setOptions(options);
   }
 
   /**

@@ -335,6 +335,7 @@ public abstract class AbstractClassifier implements Classifier, BatchPredictor,
     if (optionString.length() != 0) {
       setBatchSize(optionString);
     }
+    Utils.checkForRemainingOptions(options);
   }
 
   /**

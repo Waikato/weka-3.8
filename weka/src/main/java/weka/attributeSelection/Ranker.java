@@ -21,6 +21,7 @@
 
 package weka.attributeSelection;
 
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -298,6 +299,8 @@ public class Ranker extends ASSearch implements RankedOutputSearch,
     newVector.addElement(new Option("\tSpecify number of attributes to select",
       "N", 1, "-N <num to select>"));
 
+    newVector.addAll(Collections.list(super.listOptions()));
+
     return newVector.elements();
 
   }
@@ -354,6 +357,8 @@ public class Ranker extends ASSearch implements RankedOutputSearch,
     if (optionString.length() != 0) {
       setNumToSelect(Integer.parseInt(optionString));
     }
+
+    super.setOptions(options);
   }
 
   /**
@@ -376,6 +381,8 @@ public class Ranker extends ASSearch implements RankedOutputSearch,
 
     options.add("-N");
     options.add("" + getNumToSelect());
+
+    Collections.addAll(options, super.getOptions());
 
     return options.toArray(new String[0]);
   }

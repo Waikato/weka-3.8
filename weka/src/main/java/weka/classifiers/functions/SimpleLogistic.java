@@ -455,8 +455,6 @@ public class SimpleLogistic extends AbstractClassifier implements
     setUseAIC(Utils.getFlag('A', options));
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

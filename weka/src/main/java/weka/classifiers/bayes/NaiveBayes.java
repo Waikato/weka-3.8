@@ -442,13 +442,12 @@ public class NaiveBayes extends AbstractClassifier implements OptionHandler,
   @Override
   public void setOptions(String[] options) throws Exception {
 
-    super.setOptions(options);
     boolean k = Utils.getFlag('K', options);
     boolean d = Utils.getFlag('D', options);
     setUseSupervisedDiscretization(d);
     setUseKernelEstimator(k);
     setDisplayModelInOldFormat(Utils.getFlag('O', options));
-    Utils.checkForRemainingOptions(options);
+    super.setOptions(options);
   }
 
   /**

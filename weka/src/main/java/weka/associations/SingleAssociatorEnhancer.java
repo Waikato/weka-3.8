@@ -69,6 +69,8 @@ public abstract class SingleAssociatorEnhancer extends AbstractAssociator
     result.addElement(new Option("\tFull name of base associator.\n"
       + "\t(default: " + defaultAssociatorString() + ")", "W", 1, "-W"));
 
+    result.addAll(Collections.list(super.listOptions()));
+
     if (m_Associator instanceof OptionHandler) {
       result.addElement(new Option("", "", 0,
         "\nOptions specific to associator " + m_Associator.getClass().getName()
@@ -113,6 +115,8 @@ public abstract class SingleAssociatorEnhancer extends AbstractAssociator
       setAssociator(AbstractAssociator.forName(defaultAssociatorString(),
         Utils.partitionOptions(options)));
     }
+
+    super.setOptions(options);
   }
 
   /**
@@ -130,6 +134,8 @@ public abstract class SingleAssociatorEnhancer extends AbstractAssociator
 
     result.add("-W");
     result.add(getAssociator().getClass().getName());
+
+    Collections.addAll(result, super.getOptions());
 
     if (getAssociator() instanceof OptionHandler) {
       options = ((OptionHandler) getAssociator()).getOptions();

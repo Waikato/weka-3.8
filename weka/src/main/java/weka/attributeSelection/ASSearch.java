@@ -61,6 +61,7 @@ public abstract class ASSearch
   @Override
   public void setOptions(String[] options) throws Exception {
     Option.setOptionsForHierarchy(options, this, ASSearch.class);
+    Utils.checkForRemainingOptions(options);
   }
 
   /**

@@ -717,8 +717,6 @@ public class IBk
       this.setNearestNeighbourSearchAlgorithm(new LinearNNSearch());
     
     super.setOptions(options);
-    
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

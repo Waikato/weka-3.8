@@ -1036,8 +1036,6 @@ public class SGDText extends RandomizableClassifier implements
     }
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

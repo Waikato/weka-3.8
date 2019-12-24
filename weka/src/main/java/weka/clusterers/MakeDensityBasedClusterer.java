@@ -579,8 +579,6 @@ public class MakeDensityBasedClusterer extends AbstractDensityBasedClusterer
       Utils.partitionOptions(options)));
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

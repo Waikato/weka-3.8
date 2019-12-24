@@ -92,7 +92,6 @@ public abstract class SingleClustererEnhancer extends AbstractClusterer
     String tmpStr;
 
     tmpStr = Utils.getOption('W', options);
-    super.setOptions(options);
     if (tmpStr.length() > 0) {
       setClusterer(AbstractClusterer.forName(tmpStr, null));
       setClusterer(AbstractClusterer.forName(tmpStr,
@@ -102,6 +101,8 @@ public abstract class SingleClustererEnhancer extends AbstractClusterer
       setClusterer(AbstractClusterer.forName(defaultClustererString(),
         Utils.partitionOptions(options)));
     }
+
+    super.setOptions(options);
   }
 
   /**

@@ -933,8 +933,6 @@ public class DecisionTable extends AbstractClassifier implements OptionHandler,
 
     resetOptions();
 
-    super.setOptions(options);
-
     optionString = Utils.getOption('X', options);
     if (optionString.length() != 0) {
       m_CVFolds = Integer.parseInt(optionString);
@@ -971,7 +969,7 @@ public class DecisionTable extends AbstractClassifier implements OptionHandler,
     searchSpec[0] = "";
     setSearch(ASSearch.forName(searchName, searchSpec));
 
-    Utils.checkForRemainingOptions(options);
+    super.setOptions(options);
   }
 
   /**

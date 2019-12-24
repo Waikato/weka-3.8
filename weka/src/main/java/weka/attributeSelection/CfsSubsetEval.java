@@ -313,8 +313,6 @@ public class CfsSubsetEval extends ASEvaluation implements SubsetEvaluator,
     setDebug(Utils.getFlag('D', options));
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

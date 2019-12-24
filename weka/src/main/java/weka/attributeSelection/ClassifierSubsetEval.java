@@ -413,8 +413,6 @@ public class ClassifierSubsetEval extends HoldOutSubsetEvaluator implements
     }
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

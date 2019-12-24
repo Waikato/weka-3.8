@@ -305,8 +305,6 @@ public class AttributeSelectedClassifier
     setSearch(ASSearch.forName(searchName, searchSpec));
 
     super.setOptions(options);
-    
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

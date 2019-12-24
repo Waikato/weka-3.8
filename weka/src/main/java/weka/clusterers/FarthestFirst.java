@@ -564,8 +564,6 @@ public class FarthestFirst extends RandomizableClusterer implements
     }
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

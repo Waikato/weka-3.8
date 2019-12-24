@@ -75,6 +75,7 @@ public abstract class AbstractAssociator
   @Override
   public void setOptions(String[] options) throws Exception {
     Option.setOptionsForHierarchy(options, this, AbstractAssociator.class);
+    Utils.checkForRemainingOptions(options);
   }
 
   /**

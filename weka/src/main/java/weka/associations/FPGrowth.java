@@ -1932,6 +1932,8 @@ public class FPGrowth extends AbstractAssociator implements
       "-rules <comma separated list " + "of attribute names>"));
     newVector.add(new Option(string10, "use-or", 0, "-use-or"));
 
+    newVector.addAll(Collections.list(super.listOptions()));
+
     return newVector.elements();
   }
 
@@ -2073,6 +2075,8 @@ public class FPGrowth extends AbstractAssociator implements
     setUseORForMustContainList(Utils.getFlag("use-or", options));
 
     setFindAllRulesForSupportLevel(Utils.getFlag('S', options));
+
+    super.setOptions(options);
   }
 
   /**
@@ -2118,7 +2122,9 @@ public class FPGrowth extends AbstractAssociator implements
       options.add("-use-or");
     }
 
-    return options.toArray(new String[1]);
+    Collections.addAll(options, super.getOptions());
+
+    return options.toArray(new String[0]);
   }
 
   private Instances parseTransactionsMustContain(Instances data) {

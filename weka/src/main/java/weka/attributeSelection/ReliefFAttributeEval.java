@@ -415,8 +415,6 @@ public class ReliefFAttributeEval extends ASEvaluation implements
     }
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

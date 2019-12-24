@@ -318,8 +318,6 @@ public class Logistic extends AbstractClassifier implements OptionHandler,
     }
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

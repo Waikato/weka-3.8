@@ -103,6 +103,7 @@ public abstract class ASEvaluation implements Serializable, CapabilitiesHandler,
     Option.setOptionsForHierarchy(options, this, ASEvaluation.class);
     setDoNotCheckCapabilities(
             Utils.getFlag("do-not-check-capabilities", options));
+    Utils.checkForRemainingOptions(options);
   }
 
   /**

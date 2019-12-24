@@ -1930,8 +1930,6 @@ public class SimpleKMeans extends RandomizableClusterer implements
     }
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

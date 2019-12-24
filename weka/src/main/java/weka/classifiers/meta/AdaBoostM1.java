@@ -373,8 +373,6 @@ public class AdaBoostM1 extends RandomizableIteratedSingleClassifierEnhancer
     setResume(Utils.getFlag("resume", options));
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

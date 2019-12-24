@@ -311,8 +311,6 @@ public class OneRAttributeEval extends ASEvaluation implements
     setEvalUsingTrainingData(Utils.getFlag('D', options));
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

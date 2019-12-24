@@ -272,8 +272,6 @@ public class CostSensitiveClassifier
     }
     
     super.setOptions(options);
-    
-    Utils.checkForRemainingOptions(options);
   }
 
 

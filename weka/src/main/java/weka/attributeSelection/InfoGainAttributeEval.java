@@ -153,8 +153,6 @@ public class InfoGainAttributeEval extends ASEvaluation implements
     setBinarizeNumericAttributes(Utils.getFlag('B', options));
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

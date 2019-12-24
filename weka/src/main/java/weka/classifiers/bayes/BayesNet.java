@@ -495,7 +495,6 @@ public class BayesNet extends AbstractClassifier implements OptionHandler,
    */
   @Override
   public void setOptions(String[] options) throws Exception {
-    super.setOptions(options);
     m_bUseADTree = !(Utils.getFlag('D', options));
 
     String sBIFFile = Utils.getOption('B', options);
@@ -519,7 +518,7 @@ public class BayesNet extends AbstractClassifier implements OptionHandler,
       setEstimator(new SimpleEstimator());
     }
 
-    Utils.checkForRemainingOptions(options);
+    super.setOptions(options);
   } // setOptions
 
   /**

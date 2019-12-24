@@ -2507,8 +2507,6 @@ public class MultilayerPerceptron extends AbstractClassifier implements
     setResume(Utils.getFlag("resume", options));
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

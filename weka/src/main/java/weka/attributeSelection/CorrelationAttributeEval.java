@@ -153,8 +153,6 @@ public class CorrelationAttributeEval extends ASEvaluation implements
     setOutputDetailedInfo(Utils.getFlag('D', options));
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

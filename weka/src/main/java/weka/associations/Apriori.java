@@ -21,11 +21,7 @@
 
 package weka.associations;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 import weka.core.AttributeStats;
 import weka.core.Capabilities;
@@ -737,6 +733,8 @@ public class Apriori extends AbstractAssociator implements OptionHandler,
       "-B <toString delimiters>"));
     newVector.add(new Option(string10, "c", 1, "-c <the class index>"));
 
+    newVector.addAll(Collections.list(super.listOptions()));
+
     return newVector.elements();
   }
 
@@ -882,7 +880,7 @@ public class Apriori extends AbstractAssociator implements OptionHandler,
       m_toStringDelimiters = toStringDelimitersString;
     }
 
-    Utils.checkForRemainingOptions(options);
+    super.setOptions(options);
   }
 
   /**
@@ -893,53 +891,51 @@ public class Apriori extends AbstractAssociator implements OptionHandler,
   @Override
   public String[] getOptions() {
 
-    String[] options = new String[23];
-    int current = 0;
+    Vector<String> options = new Vector<String>();
 
     if (m_outputItemSets) {
-      options[current++] = "-I";
+      options.add("-I");
     }
 
     if (getRemoveAllMissingCols()) {
-      options[current++] = "-R";
+      options.add("-R");
     }
 
-    options[current++] = "-N";
-    options[current++] = "" + m_numRules;
-    options[current++] = "-T";
-    options[current++] = "" + m_metricType;
-    options[current++] = "-C";
-    options[current++] = "" + m_minMetric;
-    options[current++] = "-D";
-    options[current++] = "" + m_delta;
-    options[current++] = "-U";
-    options[current++] = "" + m_upperBoundMinSupport;
-    options[current++] = "-M";
-    options[current++] = "" + m_lowerBoundMinSupport;
-    options[current++] = "-S";
-    options[current++] = "" + m_significanceLevel;
+    options.add("-N");
+    options.add("" + m_numRules);
+    options.add("-T");
+    options.add("" + m_metricType);
+    options.add("-C");
+    options.add("" + m_minMetric);
+    options.add("-D");
+    options.add("" + m_delta);
+    options.add("-U");
+    options.add("" + m_upperBoundMinSupport);
+    options.add("-M");
+    options.add("" + m_lowerBoundMinSupport);
+    options.add("-S");
+    options.add("" + m_significanceLevel);
     if (m_car) {
-      options[current++] = "-A";
+      options.add("-A");
     }
     if (m_verbose) {
-      options[current++] = "-V";
+      options.add("-V");
     }
 
     if (m_treatZeroAsMissing) {
-      options[current++] = "-Z";
+      options.add("-Z");
     }
-    options[current++] = "-c";
-    options[current++] = "" + m_classIndex;
+    options.add("-c");
+    options.add("" + m_classIndex);
 
     if (m_toStringDelimiters != null) {
-      options[current++] = "-B";
-      options[current++] = m_toStringDelimiters;
+      options.add("-B");
+      options.add(m_toStringDelimiters);
     }
 
-    while (current < options.length) {
-      options[current++] = "";
-    }
-    return options;
+    Collections.addAll(options, super.getOptions());
+
+    return options.toArray(new String[0]);
   }
 
   /**

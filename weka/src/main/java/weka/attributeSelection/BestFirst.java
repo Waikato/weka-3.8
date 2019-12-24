@@ -22,11 +22,7 @@
 package weka.attributeSelection;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.*;
 
 import weka.core.Instances;
 import weka.core.Option;
@@ -347,6 +343,8 @@ public class BestFirst extends ASSearch implements OptionHandler,
         + "\n\tExpressed as a multiple of the number of"
         + "\n\tattributes in the data set. (default = 1)", "S", 1, "-S <num>"));
 
+    newVector.addAll(Collections.list(super.listOptions()));
+
     return newVector.elements();
   }
 
@@ -419,6 +417,8 @@ public class BestFirst extends ASSearch implements OptionHandler,
     }
 
     m_debug = Utils.getFlag('Z', options);
+
+    super.setOptions(options);
   }
 
   /**
@@ -576,6 +576,8 @@ public class BestFirst extends ASSearch implements OptionHandler,
     options.add("" + m_searchDirection);
     options.add("-N");
     options.add("" + m_maxStale);
+
+    Collections.addAll(options, super.getOptions());
 
     return options.toArray(new String[0]);
   }

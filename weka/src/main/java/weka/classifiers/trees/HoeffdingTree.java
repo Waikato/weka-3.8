@@ -408,8 +408,6 @@ public class HoeffdingTree extends AbstractClassifier implements
   public void setOptions(String[] options) throws Exception {
     reset();
 
-    super.setOptions(options);
-
     String opt = Utils.getOption('L', options);
     if (opt.length() > 0) {
       setLeafPredictionStrategy(new SelectedTag(Integer.parseInt(opt),
@@ -448,7 +446,7 @@ public class HoeffdingTree extends AbstractClassifier implements
 
     m_printLeafModels = Utils.getFlag('P', options);
 
-    Utils.checkForRemainingOptions(options);
+    super.setOptions(options);
   }
 
   /**

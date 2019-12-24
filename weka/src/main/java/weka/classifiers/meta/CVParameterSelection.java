@@ -520,8 +520,6 @@ public class CVParameterSelection
     } while (cvParam.length() != 0);
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

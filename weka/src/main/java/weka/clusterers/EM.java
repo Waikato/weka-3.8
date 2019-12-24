@@ -430,8 +430,6 @@ NumberOfClustersRequestable, WeightedInstancesHandler {
     }
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

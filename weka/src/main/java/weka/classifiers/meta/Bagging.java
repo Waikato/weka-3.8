@@ -386,8 +386,6 @@ public class Bagging
     setPrintClassifiers(Utils.getFlag("print", options));
 
     super.setOptions(options);
-    
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

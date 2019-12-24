@@ -563,8 +563,6 @@ public class LogitBoost extends RandomizableIteratedSingleClassifierEnhancer
     setResume(Utils.getFlag("resume", options));
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

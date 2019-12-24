@@ -554,8 +554,6 @@ public class FilteredClassifier extends RandomizableSingleClassifierEnhancer
     setDoNotCheckForModifiedClassAttribute(Utils.getFlag("doNotCheckForModifiedClassAttribute", options));
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

@@ -289,8 +289,6 @@ public class RandomSubSpace
       setSubSpaceSize(0.5);
 
     super.setOptions(options);
-    
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

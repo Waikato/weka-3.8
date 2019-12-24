@@ -224,8 +224,6 @@ public class FilteredClusterer extends SingleClustererEnhancer implements Drawab
     }
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

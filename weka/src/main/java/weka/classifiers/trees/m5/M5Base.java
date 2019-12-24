@@ -234,7 +234,6 @@ public abstract class M5Base extends AbstractClassifier implements
       setMinNumInstances((new Double(optionString)).doubleValue());
     }
     super.setOptions(options);
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

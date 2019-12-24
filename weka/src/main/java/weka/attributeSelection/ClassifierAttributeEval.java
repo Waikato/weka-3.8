@@ -169,8 +169,6 @@ public class ClassifierAttributeEval extends ASEvaluation implements
                     + "Default = 1 (i.e. no parallelism)", "execution-slots", 1,
             "-execution-slots <integer>"));
 
-    result.addAll(Collections.list(super.listOptions()));
-
     result.addElement(new Option("", "", 0, "\nOptions specific to "
             + "scheme " + m_wrapperTemplate.getClass().getName() + ":"));
 
@@ -253,11 +251,9 @@ public class ClassifierAttributeEval extends ASEvaluation implements
     if (slots.length() > 0) {
       m_executionSlots = Integer.parseInt(slots);
     }
-    super.setOptions(options);
 
     m_wrapperTemplate.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
+    setDoNotCheckCapabilities(m_wrapperTemplate.getDoNotCheckCapabilities());
   }
 
   /**
@@ -277,8 +273,6 @@ public class ClassifierAttributeEval extends ASEvaluation implements
 
     result.add("-execution-slots");
     result.add("" + m_executionSlots);
-
-    Collections.addAll(result, super.getOptions());
 
     for (String o : m_wrapperTemplate.getOptions()) {
       result.add(o);

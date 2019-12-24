@@ -502,9 +502,6 @@ public class WrapperSubsetEval extends ASEvaluation
     }
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
-
   }
 
   /**

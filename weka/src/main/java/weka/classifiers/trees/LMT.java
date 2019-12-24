@@ -476,9 +476,6 @@ public class LMT extends AbstractClassifier implements OptionHandler,
       "doNotMakeSplitPointActualValue", options);
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
-
   }
 
   /**

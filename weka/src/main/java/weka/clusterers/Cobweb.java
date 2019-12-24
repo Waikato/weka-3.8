@@ -1112,8 +1112,6 @@ public class Cobweb extends RandomizableClusterer implements Drawable,
     setSaveInstanceData(Utils.getFlag("save-data", options));
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

@@ -798,8 +798,6 @@ public class MultiClassClassifier
     setLogLossDecoding(Utils.getFlag('L', options));
 
     super.setOptions(options);
-    
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

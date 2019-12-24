@@ -100,8 +100,6 @@ public abstract class SingleClassifierEnhancer extends AbstractClassifier {
    */
   public void setOptions(String[] options) throws Exception {
 
-    super.setOptions(options);
-
     String classifierName = Utils.getOption('W', options);
 
     if (classifierName.length() > 0) {
@@ -119,6 +117,7 @@ public abstract class SingleClassifierEnhancer extends AbstractClassifier {
                                                  defaultClassifierOptions()));
       }
     }
+    super.setOptions(options);
   }
 
   /**

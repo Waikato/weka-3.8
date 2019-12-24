@@ -917,8 +917,6 @@ public class NaiveBayesMultinomialText extends AbstractClassifier implements
   public void setOptions(String[] options) throws Exception {
     reset();
 
-    super.setOptions(options);
-
     setUseWordFrequencies(Utils.getFlag("W", options));
 
     String pruneFreqS = Utils.getOption("P", options);
@@ -988,7 +986,7 @@ public class NaiveBayesMultinomialText extends AbstractClassifier implements
       setTokenizer(tokenizer);
     }
 
-    Utils.checkForRemainingOptions(options);
+    super.setOptions(options);
   }
 
   /**

@@ -142,8 +142,6 @@ public class SymmetricalUncertAttributeEval extends ASEvaluation implements
     setMissingMerge(!(Utils.getFlag('M', options)));
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

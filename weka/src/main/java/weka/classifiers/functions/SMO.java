@@ -1903,8 +1903,6 @@ public class SMO
     setCalibrator(AbstractClassifier.forName(classifierName, classifierSpec));
 
     super.setOptions(options);
-    
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

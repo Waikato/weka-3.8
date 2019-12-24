@@ -269,8 +269,6 @@ public class PrincipalComponents extends UnsupervisedAttributeEvaluator
     setCenterData(Utils.getFlag('C', options));
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

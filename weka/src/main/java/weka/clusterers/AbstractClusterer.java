@@ -170,6 +170,7 @@ public abstract class AbstractClusterer
     setDebug(Utils.getFlag("output-debug-info", options));
     setDoNotCheckCapabilities(
       Utils.getFlag("do-not-check-capabilities", options));
+    Utils.checkForRemainingOptions(options);
   }
 
   /**

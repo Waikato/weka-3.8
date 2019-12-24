@@ -986,8 +986,6 @@ public class HierarchicalClusterer extends AbstractClusterer implements
     }
 
     super.setOptions(options);
-
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

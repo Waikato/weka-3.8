@@ -288,8 +288,6 @@ public class AdditiveRegression extends IteratedSingleClassifierEnhancer impleme
     setResume(Utils.getFlag("resume", options));
 
     super.setOptions(options);
-    
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

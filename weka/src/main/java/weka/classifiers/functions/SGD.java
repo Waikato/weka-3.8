@@ -488,8 +488,6 @@ public class SGD extends RandomizableClassifier implements
   public void setOptions(String[] options) throws Exception {
     reset();
 
-    super.setOptions(options);
-
     String lossString = Utils.getOption('F', options);
     if (lossString.length() != 0) {
       setLossFunction(new SelectedTag(Integer.parseInt(lossString),
@@ -518,8 +516,8 @@ public class SGD extends RandomizableClassifier implements
 
     setDontNormalize(Utils.getFlag("N", options));
     setDontReplaceMissing(Utils.getFlag('M', options));
-    
-    Utils.checkForRemainingOptions(options);
+
+    super.setOptions(options);
   }
 
   /**

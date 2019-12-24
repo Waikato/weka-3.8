@@ -252,8 +252,6 @@ public class VotedPerceptron
     }
     
     super.setOptions(options);
-    
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

@@ -154,14 +154,14 @@ public class SerializedClassifier extends AbstractClassifier {
   public void setOptions(String[] options) throws Exception {
     String tmpStr;
 
-    super.setOptions(options);
-
     tmpStr = Utils.getOption("model", options);
     if (tmpStr.length() != 0) {
       setModelFile(new File(tmpStr));
     } else {
       setModelFile(new File(System.getProperty("user.dir")));
     }
+
+    super.setOptions(options);
   }
 
   /**

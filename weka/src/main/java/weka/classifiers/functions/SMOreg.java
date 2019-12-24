@@ -421,8 +421,6 @@ public class SMOreg
     }
     
     super.setOptions(options);
-    
-    Utils.checkForRemainingOptions(options);
   }
   
   /**

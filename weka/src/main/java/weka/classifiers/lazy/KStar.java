@@ -558,8 +558,6 @@ public class KStar
     }
     
     super.setOptions(options);
-    
-    Utils.checkForRemainingOptions(options);
   }
 
 
