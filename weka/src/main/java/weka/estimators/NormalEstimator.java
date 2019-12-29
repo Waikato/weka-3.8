@@ -38,30 +38,44 @@ import weka.core.Utils;
 public class NormalEstimator extends Estimator implements IncrementalEstimator,
     Aggregateable<NormalEstimator> {
 
-  /** for serialization */
+  /**
+   * for serialization
+   */
   private static final long serialVersionUID = 93584379632315841L;
 
-  /** The sum of the weights */
+  /**
+   * The sum of the weights
+   */
   private double m_SumOfWeights;
 
-  /** The sum of the values seen */
+  /**
+   * The sum of the values seen
+   */
   private double m_SumOfValues;
 
-  /** The sum of the values squared */
+  /**
+   * The sum of the values squared
+   */
   private double m_SumOfValuesSq;
 
-  /** The current mean */
+  /**
+   * The current mean
+   */
   private double m_Mean;
 
-  /** The current standard deviation */
+  /**
+   * The current standard deviation
+   */
   private double m_StandardDev;
 
-  /** The precision of numeric values ( = minimum std dev permitted) */
+  /**
+   * The precision of numeric values ( = minimum std dev permitted)
+   */
   private double m_Precision;
 
   /**
    * Round a data value using the defined precision for this estimator
-   * 
+   *
    * @param data the value to round
    * @return the rounded data value
    */
@@ -75,11 +89,18 @@ public class NormalEstimator extends Estimator implements IncrementalEstimator,
   // ===============
 
   /**
+   * No-arg constructor needed to make WEKA's forName() work. Uses precision of 0.01.
+   */
+  public NormalEstimator() {
+    this(0.01);
+  }
+
+  /**
    * Constructor that takes a precision argument.
-   * 
+   *
    * @param precision the precision to which numeric values are given. For
-   *          example, if the precision is stated to be 0.1, the values in the
-   *          interval (0.25,0.35] are all treated as 0.3.
+   *                  example, if the precision is stated to be 0.1, the values in the
+   *                  interval (0.25,0.35] are all treated as 0.3.
    */
   public NormalEstimator(double precision) {
 
@@ -91,8 +112,8 @@ public class NormalEstimator extends Estimator implements IncrementalEstimator,
 
   /**
    * Add a new data value to the current estimator.
-   * 
-   * @param data the new data value
+   *
+   * @param data   the new data value
    * @param weight the weight assigned to the data value
    */
   @Override
@@ -116,21 +137,21 @@ public class NormalEstimator extends Estimator implements IncrementalEstimator,
     if (m_SumOfWeights > 0) {
       m_Mean = m_SumOfValues / m_SumOfWeights;
       double stdDev = Math.sqrt(Math.abs(m_SumOfValuesSq - m_Mean
-          * m_SumOfValues)
-          / m_SumOfWeights);
+              * m_SumOfValues)
+              / m_SumOfWeights);
       // If the stdDev ~= 0, we really have no idea of scale yet,
       // so stick with the default. Otherwise...
       if (stdDev > 1e-10) {
         m_StandardDev = Math.max(m_Precision / (2 * 3),
-        // allow at most 3sd's within one interval
-            stdDev);
+                // allow at most 3sd's within one interval
+                stdDev);
       }
     }
   }
 
   /**
    * Get a probability estimate for a value
-   * 
+   *
    * @param data the value to estimate the probability of
    * @return the estimated probability of the supplied value
    */
@@ -143,7 +164,7 @@ public class NormalEstimator extends Estimator implements IncrementalEstimator,
 
     double pLower = Statistics.normalProbability(zLower);
     double pUpper = Statistics.normalProbability(zUpper);
-    return pUpper - pLower;
+    return (pUpper - pLower) / m_Precision;
   }
 
   /**
@@ -153,14 +174,14 @@ public class NormalEstimator extends Estimator implements IncrementalEstimator,
   public String toString() {
 
     return "Normal Distribution. Mean = " + Utils.doubleToString(m_Mean, 4)
-        + " StandardDev = " + Utils.doubleToString(m_StandardDev, 4)
-        + " WeightSum = " + Utils.doubleToString(m_SumOfWeights, 4)
-        + " Precision = " + m_Precision + "\n";
+            + " StandardDev = " + Utils.doubleToString(m_StandardDev, 4)
+            + " WeightSum = " + Utils.doubleToString(m_SumOfWeights, 4)
+            + " Precision = " + m_Precision + "\n";
   }
 
   /**
    * Returns default capabilities of the classifier.
-   * 
+   *
    * @return the capabilities of this classifier
    */
   @Override
@@ -183,7 +204,7 @@ public class NormalEstimator extends Estimator implements IncrementalEstimator,
 
   /**
    * Return the value of the mean of this normal estimator.
-   * 
+   *
    * @return the mean
    */
   public double getMean() {
@@ -192,7 +213,7 @@ public class NormalEstimator extends Estimator implements IncrementalEstimator,
 
   /**
    * Return the value of the standard deviation of this normal estimator.
-   * 
+   *
    * @return the standard deviation
    */
   public double getStdDev() {
@@ -201,7 +222,7 @@ public class NormalEstimator extends Estimator implements IncrementalEstimator,
 
   /**
    * Return the value of the precision of this normal estimator.
-   * 
+   *
    * @return the precision
    */
   public double getPrecision() {
@@ -210,7 +231,7 @@ public class NormalEstimator extends Estimator implements IncrementalEstimator,
 
   /**
    * Return the sum of the weights for this normal estimator.
-   * 
+   *
    * @return the sum of the weights
    */
   public double getSumOfWeights() {
@@ -219,7 +240,7 @@ public class NormalEstimator extends Estimator implements IncrementalEstimator,
 
   /**
    * Returns the revision string.
-   * 
+   *
    * @return the revision
    */
   @Override
@@ -229,7 +250,7 @@ public class NormalEstimator extends Estimator implements IncrementalEstimator,
 
   @Override
   public NormalEstimator aggregate(NormalEstimator toAggregate)
-      throws Exception {
+          throws Exception {
 
     m_SumOfWeights += toAggregate.m_SumOfWeights;
     m_SumOfValues += toAggregate.m_SumOfValues;
@@ -290,7 +311,7 @@ public class NormalEstimator extends Estimator implements IncrementalEstimator,
 
   /**
    * Main method for testing this class.
-   * 
+   *
    * @param argv should contain a sequence of numeric values
    */
   public static void main(String[] argv) {
@@ -305,8 +326,7 @@ public class NormalEstimator extends Estimator implements IncrementalEstimator,
       for (int i = 0; i < argv.length; i++) {
         double current = Double.valueOf(argv[i]).doubleValue();
         System.out.println(newEst);
-        System.out.println("Prediction for " + current + " = "
-            + newEst.getProbability(current));
+        System.out.println("Prediction for " + current + " = " + newEst.getProbability(current));
         newEst.addValue(current, 1);
       }
 

@@ -220,7 +220,8 @@ public abstract class Estimator implements Cloneable, Serializable,
 
   /**
    * Initialize the estimator with all values of one attribute of a dataset.
-   * Some estimator might ignore the min and max values.
+   * Some estimator might ignore the min and max values and the factor. This default implementation does.
+   * This default implementation does not check whether the estimator can handle the data.
    * 
    * @param data the dataset used to build this estimator
    * @param attrIndex attribute the estimator is for
@@ -242,8 +243,8 @@ public abstract class Estimator implements Cloneable, Serializable,
   }
 
   /**
-   * Initialize the estimator using only the instance of one class. It is using
-   * the values of one attribute only.
+   * Initialize the estimator using only the instances of one class. It is using
+   * the values of one attribute only. Computes minimum and maximum based on the given data.
    * 
    * @param data the dataset used to build this estimator
    * @param attrIndex attribute the estimator is for
@@ -280,12 +281,13 @@ public abstract class Estimator implements Cloneable, Serializable,
       return;
     }
 
-    addValues(data, attrIndex, min, max, factor);
+    addValues(workData, attrIndex, min, max, factor);
   }
 
   /**
-   * Initialize the estimator using only the instance of one class. It is using
-   * the values of one attribute only.
+   * Initialize the estimator using only the instances of one class. It is using
+   * the values of one attribute only. Some estimator might ignore the min and max values.
+   * This default implementation does.
    * 
    * @param data the dataset used to build this estimator
    * @param attrIndex attribute the estimator is for
@@ -298,6 +300,10 @@ public abstract class Estimator implements Cloneable, Serializable,
   public void addValues(Instances data, int attrIndex, int classIndex,
     int classValue, double min, double max) throws Exception {
 
+    // can estimator handle the data?
+    m_noClass = false;
+    getCapabilities().testWithFail(data);
+
     // extract the instances with the given class value
     Instances workData = new Instances(data, 0);
     double factor = getInstancesFromClass(data, attrIndex, classIndex,
@@ -308,7 +314,7 @@ public abstract class Estimator implements Cloneable, Serializable,
       return;
     }
 
-    addValues(data, attrIndex, min, max, factor);
+    addValues(workData, attrIndex, min, max, factor);
   }
 
   /**
@@ -336,8 +342,7 @@ public abstract class Estimator implements Cloneable, Serializable,
       }
     }
 
-    Double alphaFactor = new Double((double) numClassValue / (double) num);
-    return alphaFactor;
+    return(double) numClassValue / (double) num;
   }
 
   /**
@@ -613,11 +618,17 @@ public abstract class Estimator implements Cloneable, Serializable,
   @Override
   public Enumeration<Option> listOptions() {
 
-    Vector<Option> newVector = new Vector<Option>(1);
+    Vector<Option> newVector = Option.listOptionsForClassHierarchy(this.getClass(), Estimator.class);
 
     newVector.addElement(new Option(
-      "\tIf set, estimator is run in debug mode and\n"
-        + "\tmay output additional info to the console", "D", 0, "-D"));
+            "\tIf set, estimator is run in debug mode and\n"
+                    + "\tmay output additional info to the console",
+            "D", 0, "-D"));
+    newVector.addElement(new Option(
+            "\tIf set, estimator capabilities are not checked before a batch estimator is built\n"
+                    + "\t(use with caution).",
+            "-do-not-check-capabilities", 0, "-do-not-check-capabilities"));
+
     return newVector.elements();
   }
 
@@ -629,14 +640,21 @@ public abstract class Estimator implements Cloneable, Serializable,
    * If set, estimator is run in debug mode and may output additional info to
    * the console.
    * <p>
-   * 
+   *
+   * -do-not-check-capabilities <br>
+   * If set, estimator capabilities are not checked before estimator is built
+   * (use with caution).
+   *
    * @param options the list of options as an array of strings
    * @exception Exception if an option is not supported
    */
   @Override
   public void setOptions(String[] options) throws Exception {
 
-    setDebug(Utils.getFlag('D', options));
+    Option.setOptionsForHierarchy(options, this, Estimator.class);
+    setDebug(Utils.getFlag("D", options));
+    setDoNotCheckCapabilities(Utils.getFlag("do-not-check-capabilities", options));
+    Utils.checkForRemainingOptions(options);
   }
 
   /**
@@ -647,23 +665,26 @@ public abstract class Estimator implements Cloneable, Serializable,
   @Override
   public String[] getOptions() {
 
-    String[] options;
-    if (getDebug()) {
-      options = new String[1];
-      options[0] = "-D";
-    } else {
-      options = new String[0];
+    Vector<String> options = new Vector<String>();
+    for (String s : Option.getOptionsForHierarchy(this, Estimator.class)) {
+      options.add(s);
     }
-    return options;
+    if (getDebug()) {
+      options.add("-D");
+    }
+    if (getDoNotCheckCapabilities()) {
+      options.add("-do-not-check-capabilities");
+    }
+    return options.toArray(new String[0]);
   }
 
   /**
-   * Creates a new instance of a estimatorr given it's class name and (optional)
+   * Creates a new instance of a estimator given it's class name and (optional)
    * arguments to pass to it's setOptions method. If the estimator implements
    * OptionHandler and the options parameter is non-null, the estimator will
    * have it's options set.
    * 
-   * @param name the fully qualified class name of the estimatorr
+   * @param name the fully qualified class name of the estimator
    * @param options an array of options suitable for passing to setOptions. May
    *          be null.
    * @return the newly created estimator, ready for use.

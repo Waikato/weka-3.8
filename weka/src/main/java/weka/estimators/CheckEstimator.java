@@ -847,12 +847,14 @@ public class CheckEstimator implements OptionHandler, RevisionHandler {
     printAttributeSummary(attrTypes, classType);
     print("...");
     ArrayList<String> accepts = new ArrayList<String>();
+    accepts.add("binary");
     accepts.add("nominal");
     accepts.add("numeric");
     accepts.add("string");
     accepts.add("date");
     accepts.add("relational");
     accepts.add("not in classpath");
+    accepts.add("class");
     int numTrain = getNumInstances(), numTest = getNumInstances(), numClasses = 2, missingLevel = 0;
     boolean attributeMissing = false, classMissing = false;
     int numAtts = 1, attrIndex = 0;
@@ -1628,7 +1630,7 @@ public class CheckEstimator implements OptionHandler, RevisionHandler {
               print('"' + accepts.get(i) + '"');
             }
           }
-          println("here are the datasets:\n");
+          println("\nHere are the datasets:\n");
           println("=== Train Dataset ===\n" + train.toString() + "\n");
           println("=== Test Dataset ===\n" + test.toString() + "\n\n");
         }

@@ -185,7 +185,9 @@ public class NNConditionalEstimator implements ConditionalEstimator {
   @Override
   public double getProbability(double data, double given) {
 
-    return getEstimator(given).getProbability(data);
+    // Need to divide by f(given) to get the conditional density
+    return getEstimator(given).getProbability(data) * Math.sqrt(2 * Math.PI * m_Covariance.get(1,1)) /
+            Math.exp(-0.5 * (given - m_CondMean) * (given - m_CondMean) / m_Covariance.get(1,1));
   }
 
   /** Display a representation of this estimator */

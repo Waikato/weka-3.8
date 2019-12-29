@@ -38,37 +38,55 @@ import weka.core.Utils;
 public class KernelEstimator extends Estimator implements IncrementalEstimator,
     Aggregateable<KernelEstimator> {
 
-  /** for serialization */
+  /**
+   * for serialization
+   */
   private static final long serialVersionUID = 3646923563367683925L;
 
-  /** Vector containing all of the values seen */
+  /**
+   * Vector containing all of the values seen
+   */
   private double[] m_Values;
 
-  /** Vector containing the associated weights */
+  /**
+   * Vector containing the associated weights
+   */
   private double[] m_Weights;
 
-  /** Number of values stored in m_Weights and m_Values so far */
+  /**
+   * Number of values stored in m_Weights and m_Values so far
+   */
   private int m_NumValues;
 
-  /** The sum of the weights so far */
+  /**
+   * The sum of the weights so far
+   */
   private double m_SumOfWeights;
 
-  /** The standard deviation */
+  /**
+   * The standard deviation
+   */
   private double m_StandardDev;
 
-  /** The precision of data values */
+  /**
+   * The precision of data values
+   */
   private double m_Precision;
 
-  /** Whether we can optimise the kernel summation */
+  /**
+   * Whether we can optimise the kernel summation
+   */
   private boolean m_AllWeightsOne;
 
-  /** Maximum percentage error permitted in probability calculations */
+  /**
+   * Maximum percentage error permitted in probability calculations
+   */
   private static double MAX_ERROR = 0.01;
 
   /**
    * Execute a binary search to locate the nearest data value
-   * 
-   * @param the data value to locate
+   *
+   * @param key the data value to locate
    * @return the index of the nearest data value
    */
   private int findNearestValue(double key) {
@@ -93,7 +111,7 @@ public class KernelEstimator extends Estimator implements IncrementalEstimator,
 
   /**
    * Round a data value using the defined precision for this estimator
-   * 
+   *
    * @param data the value to round
    * @return the rounded data value
    */
@@ -107,11 +125,18 @@ public class KernelEstimator extends Estimator implements IncrementalEstimator,
   // ===============
 
   /**
+   * No-arg constructor needed to make WEKA's forName() work. Uses precision of 0.01.
+   */
+  public KernelEstimator() {
+    this(0.01);
+  }
+
+  /**
    * Constructor that takes a precision argument.
-   * 
+   *
    * @param precision the precision to which numeric values are given. For
-   *          example, if the precision is stated to be 0.1, the values in the
-   *          interval (0.25,0.35] are all treated as 0.3.
+   *                  example, if the precision is stated to be 0.1, the values in the
+   *                  interval (0.25,0.35] are all treated as 0.3.
    */
   public KernelEstimator(double precision) {
 
@@ -131,8 +156,8 @@ public class KernelEstimator extends Estimator implements IncrementalEstimator,
 
   /**
    * Add a new data value to the current estimator.
-   * 
-   * @param data the new data value
+   *
+   * @param data   the new data value
    * @param weight the weight assigned to the data value
    */
   @Override
@@ -146,10 +171,8 @@ public class KernelEstimator extends Estimator implements IncrementalEstimator,
     if ((m_NumValues <= insertIndex) || (m_Values[insertIndex] != data)) {
       if (m_NumValues < m_Values.length) {
         int left = m_NumValues - insertIndex;
-        System
-            .arraycopy(m_Values, insertIndex, m_Values, insertIndex + 1, left);
-        System.arraycopy(m_Weights, insertIndex, m_Weights, insertIndex + 1,
-            left);
+        System.arraycopy(m_Values, insertIndex, m_Values, insertIndex + 1, left);
+        System.arraycopy(m_Weights, insertIndex, m_Weights, insertIndex + 1, left);
 
         m_Values[insertIndex] = data;
         m_Weights[insertIndex] = weight;
@@ -162,10 +185,8 @@ public class KernelEstimator extends Estimator implements IncrementalEstimator,
         System.arraycopy(m_Weights, 0, newWeights, 0, insertIndex);
         newValues[insertIndex] = data;
         newWeights[insertIndex] = weight;
-        System.arraycopy(m_Values, insertIndex, newValues, insertIndex + 1,
-            left);
-        System.arraycopy(m_Weights, insertIndex, newWeights, insertIndex + 1,
-            left);
+        System.arraycopy(m_Values, insertIndex, newValues, insertIndex + 1, left);
+        System.arraycopy(m_Weights, insertIndex, newWeights, insertIndex + 1, left);
         m_NumValues++;
         m_Values = newValues;
         m_Weights = newWeights;
@@ -181,27 +202,28 @@ public class KernelEstimator extends Estimator implements IncrementalEstimator,
     double range = m_Values[m_NumValues - 1] - m_Values[0];
     if (range > 0) {
       m_StandardDev = Math.max(range / Math.sqrt(m_SumOfWeights),
-      // allow at most 3 sds within one interval
-          m_Precision / (2 * 3));
+              // allow at most 3 sds within one interval
+              m_Precision / (2 * 3));
     }
   }
 
   /**
    * Get a probability estimate for a value.
-   * 
+   *
    * @param data the value to estimate the probability of
    * @return the estimated probability of the supplied value
    */
   @Override
   public double getProbability(double data) {
 
+    data = round(data);
+
     double delta = 0, sum = 0, currentProb = 0;
     double zLower = 0, zUpper = 0;
     if (m_NumValues == 0) {
       zLower = (data - (m_Precision / 2)) / m_StandardDev;
       zUpper = (data + (m_Precision / 2)) / m_StandardDev;
-      return (Statistics.normalProbability(zUpper) - Statistics
-          .normalProbability(zLower));
+      return (Statistics.normalProbability(zUpper) - Statistics.normalProbability(zLower));
     }
     double weightSum = 0;
     int start = findNearestValue(data);
@@ -209,8 +231,7 @@ public class KernelEstimator extends Estimator implements IncrementalEstimator,
       delta = m_Values[i] - data;
       zLower = (delta - (m_Precision / 2)) / m_StandardDev;
       zUpper = (delta + (m_Precision / 2)) / m_StandardDev;
-      currentProb = (Statistics.normalProbability(zUpper) - Statistics
-          .normalProbability(zLower));
+      currentProb = (Statistics.normalProbability(zUpper) - Statistics.normalProbability(zLower));
       sum += currentProb * m_Weights[i];
       /*
        * System.out.print("zL" + (i + 1) + ": " + zLower + " ");
@@ -227,24 +248,25 @@ public class KernelEstimator extends Estimator implements IncrementalEstimator,
       delta = m_Values[i] - data;
       zLower = (delta - (m_Precision / 2)) / m_StandardDev;
       zUpper = (delta + (m_Precision / 2)) / m_StandardDev;
-      currentProb = (Statistics.normalProbability(zUpper) - Statistics
-          .normalProbability(zLower));
+      currentProb = (Statistics.normalProbability(zUpper) - Statistics.normalProbability(zLower));
       sum += currentProb * m_Weights[i];
       weightSum += m_Weights[i];
       if (currentProb * (m_SumOfWeights - weightSum) < sum * MAX_ERROR) {
         break;
       }
     }
-    return sum / m_SumOfWeights;
+    return sum / (m_SumOfWeights * m_Precision);
   }
 
-  /** Display a representation of this estimator */
+  /**
+   * Display a representation of this estimator
+   */
   @Override
   public String toString() {
 
     String result = m_NumValues + " Normal Kernels. \nStandardDev = "
-        + Utils.doubleToString(m_StandardDev, 6, 4) + " Precision = "
-        + m_Precision;
+            + Utils.doubleToString(m_StandardDev, 6, 4) + " Precision = "
+            + m_Precision;
     if (m_NumValues == 0) {
       result += "  \nMean = 0";
     } else {
@@ -264,7 +286,7 @@ public class KernelEstimator extends Estimator implements IncrementalEstimator,
 
   /**
    * Return the number of kernels in this kernel estimator
-   * 
+   *
    * @return the number of kernels
    */
   public int getNumKernels() {
@@ -273,7 +295,7 @@ public class KernelEstimator extends Estimator implements IncrementalEstimator,
 
   /**
    * Return the means of the kernels.
-   * 
+   *
    * @return the means of the kernels
    */
   public double[] getMeans() {
@@ -282,7 +304,7 @@ public class KernelEstimator extends Estimator implements IncrementalEstimator,
 
   /**
    * Return the weights of the kernels.
-   * 
+   *
    * @return the weights of the kernels
    */
   public double[] getWeights() {
@@ -291,7 +313,7 @@ public class KernelEstimator extends Estimator implements IncrementalEstimator,
 
   /**
    * Return the precision of this kernel estimator.
-   * 
+   *
    * @return the precision
    */
   public double getPrecision() {
@@ -300,7 +322,7 @@ public class KernelEstimator extends Estimator implements IncrementalEstimator,
 
   /**
    * Return the standard deviation of this kernel estimator.
-   * 
+   *
    * @return the standard deviation
    */
   public double getStdDev() {
@@ -309,7 +331,7 @@ public class KernelEstimator extends Estimator implements IncrementalEstimator,
 
   /**
    * Returns default capabilities of the classifier.
-   * 
+   *
    * @return the capabilities of this classifier
    */
   @Override
@@ -331,7 +353,7 @@ public class KernelEstimator extends Estimator implements IncrementalEstimator,
 
   /**
    * Returns the revision string.
-   * 
+   *
    * @return the revision
    */
   @Override
@@ -341,7 +363,7 @@ public class KernelEstimator extends Estimator implements IncrementalEstimator,
 
   @Override
   public KernelEstimator aggregate(KernelEstimator toAggregate)
-      throws Exception {
+          throws Exception {
 
     for (int i = 0; i < toAggregate.m_NumValues; i++) {
       addValue(toAggregate.m_Values[i], toAggregate.m_Weights[i]);
@@ -397,7 +419,7 @@ public class KernelEstimator extends Estimator implements IncrementalEstimator,
 
   /**
    * Main method for testing this class.
-   * 
+   *
    * @param argv should contain a sequence of numeric values
    */
   public static void main(String[] argv) {
@@ -410,7 +432,7 @@ public class KernelEstimator extends Estimator implements IncrementalEstimator,
       KernelEstimator newEst = new KernelEstimator(0.01);
       for (int i = 0; i < argv.length - 3; i += 2) {
         newEst.addValue(Double.valueOf(argv[i]).doubleValue(),
-            Double.valueOf(argv[i + 1]).doubleValue());
+                Double.valueOf(argv[i + 1]).doubleValue());
       }
       System.out.println(newEst);
 
@@ -418,7 +440,7 @@ public class KernelEstimator extends Estimator implements IncrementalEstimator,
       double finish = Double.valueOf(argv[argv.length - 1]).doubleValue();
       for (double current = start; current < finish; current += (finish - start) / 50) {
         System.out.println("Data: " + current + " "
-            + newEst.getProbability(current));
+                + newEst.getProbability(current));
       }
 
       KernelEstimator.testAggregation();

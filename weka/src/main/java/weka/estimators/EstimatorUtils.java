@@ -41,7 +41,8 @@ import weka.core.RevisionUtils;
 public class EstimatorUtils implements RevisionHandler {
 
   /**
-   * Find the minimum distance between values
+   * Find the minimum distance between values. Data is assumed to be sorted based on the given attribute.
+   * Missing values are skipped if they are at the beginning or the end of the data.
    * 
    * @param inst sorted instances, sorted
    * @param attrIndex index of the attribute, they are sorted after
@@ -79,7 +80,7 @@ public class EstimatorUtils implements RevisionHandler {
 
   /**
    * Find the minimum and the maximum of the attribute and return it in the last
-   * parameter..
+   * parameter.
    * 
    * @param inst instances used to build the estimator
    * @param attrIndex index of the attribute
@@ -94,7 +95,7 @@ public class EstimatorUtils implements RevisionHandler {
     Instance instance = null;
     int numNotMissing = 0;
     if ((minMax == null) || (minMax.length < 2)) {
-      throw new Exception("Error in Program, privat method getMinMax");
+      throw new Exception("Error in Program, public method getMinMax");
     }
 
     Enumeration<Instance> enumInst = inst.enumerateInstances();
@@ -154,14 +155,13 @@ public class EstimatorUtils implements RevisionHandler {
       }
     }
 
-    Double alphaFactor = new Double((double) numClassValue / (double) num);
     dataPlusInfo.add(workData);
-    dataPlusInfo.add(alphaFactor);
+    dataPlusInfo.add((double) numClassValue / (double) num);
     return dataPlusInfo;
   }
 
   /**
-   * Returns a dataset that contains of all instances of a certain class value.
+   * Returns a dataset that contains of all instances of a certain class value. Missing values are not dealt with.
    * 
    * @param data dataset to select the instances from
    * @param classIndex index of the class attribute
@@ -277,7 +277,7 @@ public class EstimatorUtils implements RevisionHandler {
 
   /**
    * Returns a dataset that contains of all instances of a certain value for the
-   * given attribute.
+   * given attribute. Does not deal with missing values.
    * 
    * @param data dataset to select the instances from
    * @param index the index of the attribute
@@ -296,7 +296,7 @@ public class EstimatorUtils implements RevisionHandler {
   }
 
   /**
-   * Returns a string representing the cutpoints
+   * Returns a string representing the cutpoints.
    */
   public static String cutpointsToString(double[] cutPoints,
     boolean[] cutAndLeft) {

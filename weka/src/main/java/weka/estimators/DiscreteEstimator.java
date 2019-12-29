@@ -36,23 +36,38 @@ import weka.core.Utils;
 public class DiscreteEstimator extends Estimator implements
     IncrementalEstimator, Aggregateable<DiscreteEstimator> {
 
-  /** for serialization */
+  /**
+   * for serialization
+   */
   private static final long serialVersionUID = -5526486742612434779L;
 
-  /** Hold the counts */
+  /**
+   * Hold the counts
+   */
   private final double[] m_Counts;
 
-  /** Hold the sum of counts */
+  /**
+   * Hold the sum of counts
+   */
   private double m_SumOfCounts;
 
-  /** Initialization for counts */
+  /**
+   * Initialization for counts
+   */
   private double m_FPrior;
 
   /**
+   * No-arg constructor needed to make WEKA's forName() work. Uses one symbol and Laplace value of 1.
+   */
+  public DiscreteEstimator() {
+    this(1, 1);
+  }
+
+  /**
    * Constructor
-   * 
+   *
    * @param numSymbols the number of possible symbols (remember to include 0)
-   * @param laplace if true, counts will be initialised to 1
+   * @param laplace    if true, counts will be initialised to 1
    */
   public DiscreteEstimator(int numSymbols, boolean laplace) {
 
@@ -69,9 +84,9 @@ public class DiscreteEstimator extends Estimator implements
 
   /**
    * Constructor
-   * 
+   *
    * @param nSymbols the number of possible symbols (remember to include 0)
-   * @param fPrior value with which counts will be initialised
+   * @param fPrior   value with which counts will be initialised
    */
   public DiscreteEstimator(int nSymbols, double fPrior) {
 
@@ -85,8 +100,8 @@ public class DiscreteEstimator extends Estimator implements
 
   /**
    * Add a new data value to the current estimator.
-   * 
-   * @param data the new data value
+   *
+   * @param data   the new data value
    * @param weight the weight assigned to the data value
    */
   @Override
@@ -98,7 +113,7 @@ public class DiscreteEstimator extends Estimator implements
 
   /**
    * Get a probability estimate for a value
-   * 
+   *
    * @param data the value to estimate the probability of
    * @return the estimated probability of the supplied value
    */
@@ -113,7 +128,7 @@ public class DiscreteEstimator extends Estimator implements
 
   /**
    * Gets the number of symbols this estimator operates with
-   * 
+   *
    * @return the number of estimator symbols
    */
   public int getNumSymbols() {
@@ -123,7 +138,7 @@ public class DiscreteEstimator extends Estimator implements
 
   /**
    * Get the count for a value
-   * 
+   *
    * @param data the value to get the count of
    * @return the count of the supplied value
    */
@@ -137,7 +152,7 @@ public class DiscreteEstimator extends Estimator implements
 
   /**
    * Get the sum of all the counts
-   * 
+   *
    * @return the total sum of counts
    */
   public double getSumOfCounts() {
@@ -157,7 +172,7 @@ public class DiscreteEstimator extends Estimator implements
         result.append(" ").append(Utils.doubleToString(m_Counts[i], 2));
       }
       result.append("  (Total = ").append(
-          Utils.doubleToString(m_SumOfCounts, 2));
+              Utils.doubleToString(m_SumOfCounts, 2));
       result.append(")\n");
     } else {
       for (int i = 0; i < m_Counts.length; i++) {
@@ -170,7 +185,7 @@ public class DiscreteEstimator extends Estimator implements
 
   /**
    * Returns default capabilities of the classifier.
-   * 
+   *
    * @return the capabilities of this classifier
    */
   @Override
@@ -193,7 +208,7 @@ public class DiscreteEstimator extends Estimator implements
 
   /**
    * Returns the revision string.
-   * 
+   *
    * @return the revision
    */
   @Override
@@ -203,11 +218,11 @@ public class DiscreteEstimator extends Estimator implements
 
   @Override
   public DiscreteEstimator aggregate(DiscreteEstimator toAggregate)
-      throws Exception {
+          throws Exception {
 
     if (toAggregate.m_Counts.length != m_Counts.length) {
       throw new Exception("DiscreteEstimator to aggregate has a different "
-          + "number of symbols");
+              + "number of symbols");
     }
 
     m_SumOfCounts += toAggregate.m_SumOfCounts;
@@ -266,9 +281,9 @@ public class DiscreteEstimator extends Estimator implements
 
   /**
    * Main method for testing this class.
-   * 
+   *
    * @param argv should contain a sequence of integers which will be treated as
-   *          symbolic.
+   *             symbolic.
    */
   public static void main(String[] argv) {
 
@@ -290,7 +305,7 @@ public class DiscreteEstimator extends Estimator implements
         current = Integer.parseInt(argv[i]);
         System.out.println(newEst);
         System.out.println("Prediction for " + current + " = "
-            + newEst.getProbability(current));
+                + newEst.getProbability(current));
         newEst.addValue(current, 1);
       }
 
