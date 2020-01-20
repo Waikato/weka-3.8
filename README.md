@@ -11,7 +11,7 @@ https://svn.cms.waikato.ac.nz/svn/weka/branches/stable-3-8/
 ## Contributions/Bug fixes
 
 Contributions and bug fixes an be contributed as patch file and posted to the
-[WEKA mailing list](https://list.waikato.ac.nz/mailman/listinfo/wekalist).
+[WEKA mailing list](https://list.waikato.ac.nz/postorius/lists/wekalist.list.waikato.ac.nz/).
 
 ## Links
 
