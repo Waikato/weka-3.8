@@ -107,9 +107,10 @@ public class ConverterUtils implements Serializable, RevisionHandler {
       super();
 
       // file or URL?
-      if (location.startsWith("http://") || location.startsWith("https://")
-        || location.startsWith("ftp://") || location.startsWith("file://")) {
+      if (location.startsWith("http://") || location.startsWith("https://") || location.startsWith("ftp://")) {
         m_URL = new URL(location);
+      } else if (location.startsWith("file:")) {
+        m_File = new File(new URL(location).getPath());
       } else {
         m_File = new File(location);
       }
