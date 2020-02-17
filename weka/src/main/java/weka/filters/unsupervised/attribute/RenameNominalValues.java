@@ -21,12 +21,7 @@
 
 package weka.filters.unsupervised.attribute;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 import weka.core.*;
 import weka.core.Capabilities.Capability;
@@ -100,7 +95,7 @@ public class RenameNominalValues extends Filter implements UnsupervisedFilter,
   protected int[] m_selectedAttributes;
 
   /** The map of nominal values and their replacements */
-  protected Map<String, String> m_renameMap = new HashMap<String, String>();
+  protected Map<String, String> m_renameMap;
 
   /**
    * Global help info
@@ -128,6 +123,7 @@ public class RenameNominalValues extends Filter implements UnsupervisedFilter,
     int classIndex = instanceInfo.classIndex();
 
     // setup the map
+    m_renameMap =  new HashMap<String, String>();
     if (m_renameVals != null && m_renameVals.length() > 0) {
       String[] vals = m_renameVals.split(",");
 
@@ -188,33 +184,37 @@ public class RenameNominalValues extends Filter implements UnsupervisedFilter,
 
     ArrayList<Attribute> attributes = new ArrayList<Attribute>();
     for (int i = 0; i < instanceInfo.numAttributes(); i++) {
+      Attribute currentAttribute = instanceInfo.attribute(i);
       if (m_selectedCols.isInRange(i)) {
-        if (instanceInfo.attribute(i).isNominal()) {
+        if (currentAttribute.isNominal()) {
           List<String> valsForAtt = new ArrayList<String>();
-          for (int j = 0; j < instanceInfo.attribute(i).numValues(); j++) {
-            String origV = instanceInfo.attribute(i).value(j);
+          HashSet<String> valsForAttSet = new HashSet<>();
+          for (int j = 0; j < currentAttribute.numValues(); j++) {
+            String origV = currentAttribute.value(j);
 
             String replace = m_ignoreCase ? m_renameMap
               .get(origV.toLowerCase()) : m_renameMap.get(origV);
             if (replace != null) {
-              if (!valsForAtt.contains(replace)) {
+              if (!valsForAttSet.contains(replace)) {
                 valsForAtt.add(replace);
+                valsForAttSet.add(replace);
               }
             } else {
-              valsForAtt.add(origV);
+              if (!valsForAttSet.contains(origV)) {
+                valsForAtt.add(origV);
+                valsForAttSet.add(origV);
+              }
             }
           }
-          Attribute newAtt = new Attribute(instanceInfo.attribute(i).name(), valsForAtt);
-          newAtt.setWeight(instanceInfo.attribute(i).weight());
+          Attribute newAtt = new Attribute(currentAttribute.name(), valsForAtt);
+          newAtt.setWeight(currentAttribute.weight());
           attributes.add(newAtt);
         } else {
           // ignore any selected attributes that are not nominal
-          Attribute att = (Attribute) instanceInfo.attribute(i).copy();
-          attributes.add(att);
+          attributes.add((Attribute)currentAttribute.copy());
         }
       } else {
-        Attribute att = (Attribute) instanceInfo.attribute(i).copy();
-        attributes.add(att);
+        attributes.add((Attribute)currentAttribute.copy());
       }
     }
 
@@ -246,14 +246,14 @@ public class RenameNominalValues extends Filter implements UnsupervisedFilter,
       m_NewBatch = false;
     }
 
-    if (getOutputFormat().numAttributes() == 0) {
+    if (outputFormatPeek().numAttributes() == 0) {
       return false;
     }
 
     if (m_selectedAttributes.length == 0) {
       push(instance);
     } else {
-      double vals[] = new double[getOutputFormat().numAttributes()];
+      double vals[] = new double[outputFormatPeek().numAttributes()];
       for (int i = 0; i < instance.numAttributes(); i++) {
         double currentV = instance.value(i);
 
@@ -267,9 +267,9 @@ public class RenameNominalValues extends Filter implements UnsupervisedFilter,
             String replace = m_ignoreCase ? m_renameMap.get(currentS
               .toLowerCase()) : m_renameMap.get(currentS);
             if (replace == null) {
-              vals[i] = currentV;
+              vals[i] = outputFormatPeek().attribute(i).indexOfValue(currentS);;
             } else {
-              vals[i] = getOutputFormat().attribute(i).indexOfValue(replace);
+              vals[i] = outputFormatPeek().attribute(i).indexOfValue(replace);
             }
           }
         }
