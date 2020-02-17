@@ -185,8 +185,7 @@ public class RenameNominalValues extends Filter implements UnsupervisedFilter,
     ArrayList<Attribute> attributes = new ArrayList<Attribute>();
     for (int i = 0; i < instanceInfo.numAttributes(); i++) {
       Attribute currentAttribute = instanceInfo.attribute(i);
-      if (m_selectedCols.isInRange(i)) {
-        if (currentAttribute.isNominal()) {
+      if (m_selectedCols.isInRange(i) && currentAttribute.isNominal()) {
           List<String> valsForAtt = new ArrayList<String>();
           HashSet<String> valsForAttSet = new HashSet<>();
           for (int j = 0; j < currentAttribute.numValues(); j++) {
@@ -209,12 +208,8 @@ public class RenameNominalValues extends Filter implements UnsupervisedFilter,
           Attribute newAtt = new Attribute(currentAttribute.name(), valsForAtt);
           newAtt.setWeight(currentAttribute.weight());
           attributes.add(newAtt);
-        } else {
-          // ignore any selected attributes that are not nominal
-          attributes.add((Attribute)currentAttribute.copy());
-        }
       } else {
-        attributes.add((Attribute)currentAttribute.copy());
+        attributes.add((Attribute) currentAttribute.copy());
       }
     }
 
@@ -255,23 +250,19 @@ public class RenameNominalValues extends Filter implements UnsupervisedFilter,
     } else {
       double vals[] = new double[outputFormatPeek().numAttributes()];
       for (int i = 0; i < instance.numAttributes(); i++) {
+        Attribute outputAttribute = outputFormatPeek().attribute(i);
         double currentV = instance.value(i);
-
-        if (!m_selectedCols.isInRange(i)) {
-          vals[i] = currentV;
-        } else {
-          if (currentV == Utils.missingValue()) {
-            vals[i] = currentV;
-          } else {
+        if (m_selectedCols.isInRange(i) && outputAttribute.isNominal() && !Utils.isMissingValue(currentV)) {
             String currentS = instance.attribute(i).value((int) currentV);
             String replace = m_ignoreCase ? m_renameMap.get(currentS
               .toLowerCase()) : m_renameMap.get(currentS);
             if (replace == null) {
-              vals[i] = outputFormatPeek().attribute(i).indexOfValue(currentS);;
+              vals[i] = outputAttribute.indexOfValue(currentS);;
             } else {
-              vals[i] = outputFormatPeek().attribute(i).indexOfValue(replace);
+              vals[i] = outputAttribute.indexOfValue(replace);
             }
-          }
+        } else {
+          vals[i] = currentV;
         }
       }
 
