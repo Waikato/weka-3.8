@@ -427,7 +427,7 @@ public class Logistic extends AbstractClassifier implements OptionHandler,
    * @return tip text for this property suitable for displaying in the
    *         explorer/experimenter gui
    */
-  public String DoNotStandardizeAttributesTipText() {
+  public String doNotStandardizeAttributesTipText() {
     return "Do not standardize the attributes in the data.";
   }
 
