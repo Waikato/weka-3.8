@@ -367,7 +367,7 @@ public abstract class Optimization implements TechnicalInformationHandler,
     DynamicIntArray wsBdsIndx) throws Exception {
     
     if (m_Debug) {
-      System.err.print("Machine precision is " + m_Epsilon
+      System.err.println("Machine precision is " + m_Epsilon
         + " and zero set to " + m_Zero);
     }
   
@@ -647,6 +647,11 @@ public abstract class Optimization implements TechnicalInformationHandler,
             m_f = objectiveFunction(x);
             if (Double.isNaN(m_f)) {
               throw new Exception("Objective function value is NaN!");
+            }
+
+            // Do not continue with the test for the beta condition if the alpha condition is no longer satisfied.
+            if (m_f > fold + m_ALF * alam * m_Slope) {
+              continue;
             }
 
             newGrad = evaluateGradient(x);

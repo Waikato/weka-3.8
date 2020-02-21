@@ -119,7 +119,12 @@ import weka.filters.unsupervised.attribute.ReplaceMissingValues;
  * -D
  *  Turn on debugging output.
  * </pre>
- * 
+ *
+ * <pre>
+ * -S
+ *  Do not standardize the attributes in the input data.
+ * </pre>
+ *
  * <pre>
  * -R &lt;ridge&gt;
  *  Set the ridge in the log-likelihood.
@@ -175,9 +180,13 @@ public class Logistic extends AbstractClassifier implements OptionHandler,
   /** The maximum number of iterations. */
   private int m_MaxIts = -1;
 
-  /** Wether to use conjugate gradient descent rather than BFGS updates. */
+  /** Whether to use conjugate gradient descent rather than BFGS updates. */
   private boolean m_useConjugateGradientDescent = false;
 
+  /** Whether to turn of standardization of attributes. */
+  private boolean m_doNotStandardizeAttributes = false;
+
+  /** The header information in the training data. */
   private Instances m_structure;
 
   /**
@@ -261,6 +270,9 @@ public class Logistic extends AbstractClassifier implements OptionHandler,
     newVector.addElement(new Option(
       "\tUse conjugate gradient descent rather than BFGS updates.", "C", 0,
       "-C"));
+    newVector.addElement(new Option(
+            "\tDo not standardize the attributes.", "S", 0,
+            "-S"));
     newVector.addElement(new Option("\tSet the ridge in the log-likelihood.",
       "R", 1, "-R <ridge>"));
     newVector.addElement(new Option("\tSet the maximum number of iterations"
@@ -282,7 +294,12 @@ public class Logistic extends AbstractClassifier implements OptionHandler,
    * -D
    *  Turn on debugging output.
    * </pre>
-   * 
+   *
+   * <pre>
+   * -S
+   *  Do not standardize the attributes in the input data.
+   * </pre>
+   *
    * <pre>
    * -R &lt;ridge&gt;
    *  Set the ridge in the log-likelihood.
@@ -302,7 +319,7 @@ public class Logistic extends AbstractClassifier implements OptionHandler,
   public void setOptions(String[] options) throws Exception {
 
     setUseConjugateGradientDescent(Utils.getFlag('C', options));
-
+    setDoNotStandardizeAttributes(Utils.getFlag('S', options));
     String ridgeString = Utils.getOption('R', options);
     if (ridgeString.length() != 0) {
       m_Ridge = Double.parseDouble(ridgeString);
@@ -333,11 +350,13 @@ public class Logistic extends AbstractClassifier implements OptionHandler,
     if (getUseConjugateGradientDescent()) {
       options.add("-C");
     }
+    if (getDoNotStandardizeAttributes()) {
+      options.add("-S");
+    }
     options.add("-R");
     options.add("" + m_Ridge);
     options.add("-M");
     options.add("" + m_MaxIts);
-
     Collections.addAll(options, super.getOptions());
 
     return options.toArray(new String[0]);
@@ -400,6 +419,34 @@ public class Logistic extends AbstractClassifier implements OptionHandler,
    */
   public boolean getUseConjugateGradientDescent() {
     return m_useConjugateGradientDescent;
+  }
+
+  /**
+   * Returns the tip text for this property
+   *
+   * @return tip text for this property suitable for displaying in the
+   *         explorer/experimenter gui
+   */
+  public String DoNotStandardizeAttributesTipText() {
+    return "Do not standardize the attributes in the data.";
+  }
+
+  /**
+   * Sets whether not to standardize attributes
+   *
+   * @param DoNotStandardizeAttributes true if attributes are not to be standardize
+   */
+  public void setDoNotStandardizeAttributes(boolean DoNotStandardizeAttributes) {
+    m_doNotStandardizeAttributes = DoNotStandardizeAttributes;
+  }
+
+  /**
+   * Gets whether not to standardize attributes.
+   *
+   * @return true if attributes are not being standardized
+   */
+  public boolean getDoNotStandardizeAttributes() {
+    return m_doNotStandardizeAttributes;
   }
 
   /**
@@ -764,7 +811,7 @@ public class Logistic extends AbstractClassifier implements OptionHandler,
 
     if ((totWeights <= 1) && (nC > 1)) {
       throw new Exception(
-        "Sum of weights of instances less than 1, please reweight!");
+              "Sum of weights of instances less than 1, please reweight!");
     }
 
     xMean[0] = 0;
@@ -773,7 +820,7 @@ public class Logistic extends AbstractClassifier implements OptionHandler,
       xMean[j] = xMean[j] / totWeights;
       if (totWeights > 1) {
         xSD[j] = Math.sqrt(Math.abs(xSD[j] - totWeights * xMean[j] * xMean[j])
-          / (totWeights - 1));
+                / (totWeights - 1));
       } else {
         xSD[j] = 0;
       }
@@ -788,16 +835,18 @@ public class Logistic extends AbstractClassifier implements OptionHandler,
       System.out.println("\n Variable     Avg       SD    ");
       for (int j = 1; j <= nR; j++) {
         System.out.println(Utils.doubleToString(j, 8, 4)
-          + Utils.doubleToString(xMean[j], 10, 4)
-          + Utils.doubleToString(xSD[j], 10, 4));
+                + Utils.doubleToString(xMean[j], 10, 4)
+                + Utils.doubleToString(xSD[j], 10, 4));
       }
     }
 
-    // Normalise input data
-    for (int i = 0; i < nC; i++) {
-      for (int j = 0; j <= nR; j++) {
-        if (xSD[j] != 0) {
-          m_Data[i][j] = (m_Data[i][j] - xMean[j]) / xSD[j];
+    if (!getDoNotStandardizeAttributes()) {
+      // Normalise input data
+      for (int i = 0; i < nC; i++) {
+        for (int j = 0; j <= nR; j++) {
+          if (xSD[j] != 0) {
+            m_Data[i][j] = (m_Data[i][j] - xMean[j]) / xSD[j];
+          }
         }
       }
     }
@@ -859,14 +908,16 @@ public class Logistic extends AbstractClassifier implements OptionHandler,
     // Don't need data matrix anymore
     m_Data = null;
 
-    // Convert coefficients back to non-normalized attribute units
     for (int i = 0; i < nK; i++) {
       m_Par[0][i] = x[i * (nR + 1)];
       for (int j = 1; j <= nR; j++) {
         m_Par[j][i] = x[i * (nR + 1) + j];
-        if (xSD[j] != 0) {
-          m_Par[j][i] /= xSD[j];
-          m_Par[0][i] -= m_Par[j][i] * xMean[j];
+        if (!getDoNotStandardizeAttributes()) {
+          // Convert coefficients back to non-normalized attribute units
+          if (xSD[j] != 0) {
+            m_Par[j][i] /= xSD[j];
+            m_Par[0][i] -= m_Par[j][i] * xMean[j];
+          }
         }
       }
     }
