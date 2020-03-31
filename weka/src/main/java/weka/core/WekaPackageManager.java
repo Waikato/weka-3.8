@@ -2964,6 +2964,10 @@ public class WekaPackageManager {
 
   public static Exception startupCheck(boolean force, PrintStream... progress) {
 
+    if (m_offline) {
+      return null;
+    }
+
     Exception problem = null;
     BufferedReader br = null;
     PrintWriter pw = null;
