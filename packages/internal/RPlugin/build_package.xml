@@ -5,7 +5,7 @@
 
    Type ant -projecthelp for targets and descriptions.
 
-   $Revision: 14972 $
+   $Revision: 15546 $
   ===========================================================================
 -->
 
@@ -65,7 +65,7 @@
       optimize="${optimization}"
       debug="${debug}"
       deprecation="${deprecation}"
-      source="1.6" target="1.6">
+      source="1.8" target="1.8">
       <classpath refid="project.class.path" /> 
     </javac>
 
@@ -100,7 +100,7 @@
     <copy file="${libExt}/jna-4.5.2.jar" toDir="${lib}" />
     <copy file="${libExt}/jna-platform-4.5.2.jar" toDir="${lib}" />
     <copy file="${libExt}/xmlpull-1.1.3.1.jar" toDir="${lib}" />
-    <copy file="${libExt}/xstream-1.4.10.jar" toDir="${lib}" />
+    <copy file="${libExt}/xstream-1.4.11.1.jar" toDir="${lib}" />
     <copy file="${libExt}/kxml2-min-2.3.0.jar" toDir="${lib}" />
     <copy file="${libExt}/xpp3_min-1.1.4c.jar" toDir="${lib}" />
     <javac srcdir="${src}"

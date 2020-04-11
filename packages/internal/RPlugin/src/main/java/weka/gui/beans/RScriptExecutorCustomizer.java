@@ -64,7 +64,7 @@ import weka.gui.visualize.VisualizeUtils;
  * Customizer for the RScriptExecutor
  * 
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
- * @version $Revision: 11976 $
+ * @version $Revision: 15546 $
  */
 public class RScriptExecutorCustomizer extends JPanel implements
   BeanCustomizer, EnvironmentHandler, CustomizerCloseRequester {
@@ -174,7 +174,7 @@ public class RScriptExecutorCustomizer extends JPanel implements
           + "you have the R_HOME environment variable set, R is in your"
           + " path and that java.library.path property points to the "
           + "JRI native library. Information on settup for different "
-          + "OS can be found at http://www.rforge.net/JRI";
+          + "OS can be found at https://www.rforge.net/JRI";
         m_scriptEditor.getDocument().insertString(0, message, null);
       }
     } catch (BadLocationException e) {

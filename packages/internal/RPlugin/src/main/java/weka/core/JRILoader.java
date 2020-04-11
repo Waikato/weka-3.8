@@ -45,7 +45,7 @@ import static com.sun.jna.platform.win32.WinReg.HKEY_CURRENT_USER;
  * 
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
  * @author Eibe Frank
- * @version $Revision: 14978 $
+ * @version $Revision: 15547 $
  */
 public class JRILoader {
 
@@ -75,53 +75,6 @@ public class JRILoader {
       System.err.println("Found variable " + name + " with value " + value + " in Java cache of environment.");
     }
     return value;
-  }
-
-  /**
-   * Mac-specific method to try to fix up location of libjvm.dylib in rJava.so.
-   */
-  private static void fixUprJavaLibraryOnOSX() throws Exception {
-
-    String osType = System.getProperty("os.name");
-    if ((osType != null) && (osType.contains("Mac OS X"))) {
-
-      // Get name embedded in rJava.so
-      String[] cmd = { // Need to use string array solution to make piping work
-              "/bin/sh",
-              "-c",
-              "/usr/bin/otool -L " + System.getProperty("r.libs.user") + "/rJava/libs/rJava.so | /usr/bin/grep libjvm.dylib | " +
-                      "/usr/bin/sed 's/^[[:space:]]*//g' | /usr/bin/sed 's/ (.*//g'"
-      };
-      Process p = Runtime.getRuntime().exec(cmd);
-      int execResult = p.waitFor();
-      if (execResult != 0) {
-        BufferedReader bf = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-        String line;
-        while ((line = bf.readLine()) != null) {
-          System.err.println(line);
-        }
-      } else {
-        String javaHome = System.getProperty("java.home");
-        BufferedReader bf = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String firstLine = bf.readLine();
-        if (firstLine.equals(javaHome + "/lib/server/libjvm.dylib")) {
-          System.err.println("Location embedded in rJava.so seems to be correct!");
-        } else {
-          System.err.println("Trying to use /usr/bin/install_name_tool to fix up location of libjvm.dylib in rJava.so.");
-          p = Runtime.getRuntime().exec("/usr/bin/install_name_tool -change " + firstLine + " " +
-                  javaHome + "/lib/server/libjvm.dylib " +
-                  System.getProperty("r.libs.user") + "/rJava/libs/rJava.so");
-          execResult = p.waitFor();
-          if (execResult != 0) {
-            bf = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-            String line;
-            while ((line = bf.readLine()) != null) {
-              System.err.println(line);
-            }
-          }
-        }
-      }
-    }
   }
 
   /**
@@ -341,60 +294,60 @@ public class JRILoader {
       }
       System.setProperty("r.libs.user", rLibsUser);
 
-      // Check whether rJava is installed and try to install it if necessary
-      File rJavaF = new File(rLibsUser + File.separator + "rJava");
-      if (rJavaF.exists()) {
-        System.err.println("Found rJava installed in " + rJavaF.getPath());
+      if (!installLibraryViaRuntime(rScriptExeString, rLibsUser, "rJava")) {
+        return false;
+      }
 
-        try {
-          fixUprJavaLibraryOnOSX();
-        } catch (Exception ex) {
-          System.err.println("Failed to fix up rJava.so.");
-          s_rHome = null;
-          return false;
-        }
-      } else {
-        System.err.println("Did not find rJava installed in " + rJavaF.getPath() + " -- trying to install.");
-        try {
-          String[] cmd = new String[]{s_rHome + File.separator + "bin" + File.separator + rScriptExeString, "-e",
-                  "local(options(install.packages.compile.from.source='never'));" + // No spaces!
-                          "local({r=getOption('repos');" + // Need to use = instead of <- for Windows!
-                          "r['CRAN']='http://cloud.r-project.org';" + // Need to use = instead of <- for Windows!
-                          "options(repos=r)});" +
-                          "install.packages('rJava')"}; // Single quotes everywhere for Windows!
-          Process p = Runtime.getRuntime().exec(cmd);
-          int execResult = p.waitFor();
-          if (execResult != 0) {
-            BufferedReader bf = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-            String line;
-            while ((line = bf.readLine()) != null) {
-              System.err.println(line);
-            }
-            throw new Exception("Rscript returned non-zero value.");
-          } else {
-            BufferedReader bf = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line;
-            while ((line = bf.readLine()) != null) {
-              System.err.println(line);
-            }
-          }
-        } catch (Exception ex) {
-          System.err.println("Failed to install rJava.");
-          ex.printStackTrace();
-          s_rHome = null;
-          return false;
-        }
-
-        try {
-          fixUprJavaLibraryOnOSX();
-        } catch (Exception ex) {
-          System.err.println("Failed to fix up rJava.so.");
-          s_rHome = null;
-          return false;
-        }
+      // Install JavaGD here to avoid failure of subsequent R library installations on Windows?
+      if (!installLibraryViaRuntime(rScriptExeString, rLibsUser, "JavaGD")) {
+        return false;
       }
     }
     return true; // We have established a potentially valid R_HOME and R_LIBS_USER.
+  }
+
+  /**
+   * Installs the given R library by invoking R using the runtime environment if the library directory
+   * cannot be found in rLibsUser.
+   */
+  private static boolean installLibraryViaRuntime(String rScriptExeString, String rLibsUser, String libraryName) {
+
+    File libraryF = new File(rLibsUser + File.separator + libraryName);
+    if (libraryF.exists()) {
+      System.err.println("Found " + libraryName + " installed in " + libraryF.getPath());
+    } else {
+      System.err.println("Did not find " + libraryName + " installed in " + libraryF.getPath() + " -- trying to install.");
+      try {
+        String[] cmd = new String[]{s_rHome + File.separator + "bin" + File.separator + rScriptExeString, "-e",
+                "local(options(install.packages.compile.from.source='never'));" + // No spaces!
+                        "local({r=getOption('repos');" + // Need to use = instead of <- for Windows!
+                        "r['CRAN']='https://cloud.r-project.org';" + // Need to use = instead of <- for Windows!
+                        "options(repos=r)});" +
+                        "install.packages('" + libraryName +"')"}; // Single quotes everywhere for Windows!
+        Process p = Runtime.getRuntime().exec(cmd);
+        int execResult = p.waitFor();
+        if (execResult != 0) {
+          BufferedReader bf = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+          String line;
+          while ((line = bf.readLine()) != null) {
+            System.err.println(line);
+          }
+          throw new Exception("Rscript returned non-zero value.");
+        } else {
+          BufferedReader bf = new BufferedReader(new InputStreamReader(p.getInputStream()));
+          String line;
+          while ((line = bf.readLine()) != null) {
+            System.err.println(line);
+          }
+        }
+      } catch (Exception ex) {
+        System.err.println("Failed to install " + libraryName + ".");
+        ex.printStackTrace();
+        s_rHome = null;
+        return false;
+      }
+    }
+    return true;
   }
 
   /**

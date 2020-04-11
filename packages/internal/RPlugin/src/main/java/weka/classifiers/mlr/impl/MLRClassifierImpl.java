@@ -66,7 +66,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Implementation class for a wrapper classifier for the MLR R library:<br>
  * <br>
  * 
- * http://cran.r-project.org/web/packages/mlr/
+ * https://cran.r-project.org/web/packages/mlr/
  * 
  * <p>
  * The class will attempt to install and load the MLR library if it is not
@@ -82,7 +82,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
  * @author Eibe Frank
- * @version $Revision: 14966 $
+ * @version $Revision: 15547 $
  */
 public class MLRClassifierImpl implements BatchPredictor, OptionHandler,
   CapabilitiesHandler, RevisionHandler, Serializable {
@@ -176,7 +176,7 @@ public class MLRClassifierImpl implements BatchPredictor, OptionHandler,
       + "and making predictions with various R classifiers and regression methods. Check\n\n"
       + "  https://mlr-org.github.io/mlr/articles/tutorial/integrated_learners.html\n\n"
       + "for the list of algorithms in MLR, and\n\n"
-      + "  http://http://cran.r-project.org/web/packages/mlr\n\n"
+      + "  https://cran.r-project.org/web/packages/mlr\n\n"
       + "for further information on the package and its algorithms.\n\n"
       + "Note that a classifier/regressor will be installed in R when it is selected as the "
       + "learner parameter for MLRClassifier and has not been installed before in R. This may take a little while"
@@ -354,16 +354,10 @@ public class MLRClassifierImpl implements BatchPredictor, OptionHandler,
       return;
     }
     eng.setLog(this, m_logger);
-    if (!eng.loadLibrary(this, "XML")) {
-
-      // try installing
-      if (!eng.installLibrary(this, "XML")) {
-        return;
-      }
-    }
 
     if (!eng.loadLibrary(this, "mlr")) {
       if (!eng.installLibrary(this, "mlr")) {
+        RSession.releaseSession(this);
         return;
       }
     }
@@ -1421,6 +1415,6 @@ public class MLRClassifierImpl implements BatchPredictor, OptionHandler,
    */
   @Override
   public String getRevision() {
-    return RevisionUtils.extract("$Revision: 14966 $");
+    return RevisionUtils.extract("$Revision: 15547 $");
   }
 }

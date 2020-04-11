@@ -141,7 +141,7 @@ public class RScriptExecutorStepEditorDialog extends GOEStepEditorDialog {
           + "you have the R_HOME environment variable set, R is in your"
           + " path and that java.library.path property points to the "
           + "JRI native library. Information on settup for different "
-          + "OS can be found at http://www.rforge.net/JRI";
+          + "OS can be found at https://www.rforge.net/JRI";
         m_scriptEditor.getDocument().insertString(0, message, null);
       }
     } catch (BadLocationException e) {

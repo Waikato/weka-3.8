@@ -44,10 +44,10 @@ import org.rosuda.REngine.REngineException;
  * 
  * Many thanks to the snappy-java guys for their clear and well documented code
  * demonstrating this approach (hacky though it may be).
- * http://code.google.com/p/snappy-java/.
+ * https://code.google.com/p/snappy-java/.
  * 
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
- * @version $Revision: 14958 $
+ * @version $Revision: 15546 $
  */
 public class RSession {
 

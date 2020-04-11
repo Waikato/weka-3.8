@@ -94,7 +94,7 @@ import weka.gui.visualize.VisualizeUtils;
  * evaluating R commands.
  * 
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
- * @version $Revision: 14682 $
+ * @version $Revision: 15546 $
  */
 public class JavaGDConsolePanel extends JPanel implements JavaGDListener {
 
@@ -107,7 +107,7 @@ public class JavaGDConsolePanel extends JPanel implements JavaGDListener {
    * Implements a logger for status messages only.
    * 
    * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
-   * @version $Revision: 14682 $
+   * @version $Revision: 15546 $
    */
   private class StatusOnlyLogger extends JPanel implements Logger {
 
@@ -149,7 +149,7 @@ public class JavaGDConsolePanel extends JPanel implements JavaGDListener {
    * Inner class for displaying a BufferedImage.
    * 
    * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
-   * @version $Revision: 14682 $
+   * @version $Revision: 15546 $
    */
   private class ImageDisplayer extends JPanel {
 
@@ -233,7 +233,7 @@ public class JavaGDConsolePanel extends JPanel implements JavaGDListener {
    * is beyond the prompt position
    * 
    * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
-   * @version $Revision: 14682 $
+   * @version $Revision: 15546 $
    */
   private class Filter extends DocumentFilter {
     @Override
@@ -425,7 +425,7 @@ public class JavaGDConsolePanel extends JPanel implements JavaGDListener {
           + "you have the R_HOME environment variable set, R is in your"
           + " path and that java.library.path property points to the "
           + "JRI native library. Information on settup for different "
-          + "OS can be found at http://www.rforge.net/JRI\n\n";
+          + "OS can be found at https://www.rforge.net/JRI\n\n";
         m_rConsole.getDocument().insertString(0, message, null);
       }
     } catch (BadLocationException e) {
