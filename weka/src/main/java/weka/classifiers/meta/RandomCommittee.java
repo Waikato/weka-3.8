@@ -155,7 +155,7 @@ public class RandomCommittee
     Random random = m_data.getRandomNumberGenerator(m_Seed);
 
     // Resample data based on weights if base learner can't handle weights
-    if (!(m_Classifier instanceof WeightedInstancesHandler)) {
+    if (!(m_Classifier instanceof WeightedInstancesHandler) && !m_data.allInstanceWeightsIdentical()) {
       m_data = m_data.resampleWithWeights(random);
     }
 
