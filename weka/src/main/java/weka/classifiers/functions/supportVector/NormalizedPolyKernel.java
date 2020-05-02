@@ -63,13 +63,14 @@ public class NormalizedPolyKernel
   /** for serialization */
   static final long serialVersionUID = 1248574185532130851L;
 
+  /** A cache for the diagonal of the dot product kernel */
+  protected double[] m_diagDotproducts = null;
+
   /**
    * default constructor - does nothing
    */
   public NormalizedPolyKernel() {
     super();
-
-    setExponent(2.0);
   }
   
   /**
@@ -86,7 +87,32 @@ public class NormalizedPolyKernel
 	
     super(dataset, cacheSize, exponent, lowerOrder);
   }
-  
+
+  /**
+   * builds the kernel with the given data. Initializes the kernel cache. The
+   * actual size of the cache in bytes is (64 * cacheSize).
+   *
+   * @param data the data to base the kernel on
+   * @throws Exception if something goes wrong
+   */
+  @Override
+  public void buildKernel(Instances data) throws Exception {
+
+    super.buildKernel(data);
+    m_diagDotproducts = new double[data.numInstances()];
+    for (int i = 0; i < data.numInstances(); i++) {
+      m_diagDotproducts[i] = dotProd(m_data.instance(i), m_data.instance(i));
+    }
+  }
+
+  /**
+   * Frees the cache used by the kernel.
+   */
+  @Override
+  public void clean() {
+    super.clean();
+    m_diagDotproducts = null;
+  }
   /**
    * Returns a string describing the kernel
    * 
@@ -98,42 +124,55 @@ public class NormalizedPolyKernel
         "The normalized polynomial kernel.\n"
       + "K(x,y) = <x,y>/sqrt(<x,x><y,y>) where <x,y> = PolyKernel(x,y)";
   }
-   
+
   /**
-   * Computes the result of the kernel function for two instances.
-   * If id1 == -1, eval use inst1 instead of an instance in the dataset.
-   * Redefines the eval function of PolyKernel.
    *
-   * @param id1 the index of the first instance in the dataset
-   * @param id2 the index of the second instance in the dataset
-   * @param inst1 the instance corresponding to id1 (used if id1 == -1)
-   * @return the result of the kernel function
+   * @param id1 the index of instance 1
+   * @param id2 the index of instance 2
+   * @param inst1 the instance 1 object
+   * @return the dot product
    * @throws Exception if something goes wrong
    */
-  public double eval(int id1, int id2, Instance inst1) 
-    throws Exception {
+  @Override
+  protected double evaluate(int id1, int id2, Instance inst1) throws Exception {
 
-    double div = Math.sqrt(super.eval(id1, id1, inst1) * ((m_keys != null)
-                           ? super.eval(id2, id2, m_data.instance(id2))
-                           : super.eval(-1, -1, m_data.instance(id2))));
-
-    if(div != 0){      
-      return super.eval(id1, id2, inst1) / div;
+    double result;
+    if (id1 == id2) {
+      return 1.0;
     } else {
-      return 0;
+      double numerator = dotProd(inst1, m_data.instance(id2));
+
+      double denom1, denom2;
+      if (m_diagDotproducts != null) {
+        denom2 = m_diagDotproducts[id2];
+        if (id1 < 0) {
+          denom1 = dotProd(inst1, inst1);
+        } else {
+          denom1 = m_diagDotproducts[id1];
+        }
+      } else {
+        denom1 = dotProd(inst1, inst1);
+        denom2 = dotProd(m_data.instance(id2), m_data.instance(id2));
+      }
+
+      // Use lower order terms?
+      if (m_lowerOrder) {
+        numerator += 1.0;
+        denom1 += 1.0;
+        denom2 += 1.0;
+      }
+      double denominatorSquared = denom1 * denom2;
+      if (denominatorSquared <= 0) {
+        result = 0;
+      } else {
+        result = numerator / Math.sqrt(denominatorSquared);
+      }
     }
-  }    
-  
-  /**
-   * Sets the exponent value (must be different from 1.0).
-   * 
-   * @param value	the exponent value
-   */
-  public void setExponent(double value) {
-    if (value != 1.0)
-      super.setExponent(value);
-    else
-      System.out.println("A linear kernel, i.e., Exponent=1, is not possible!");
+
+    if (m_exponent != 1.0) {
+      result = Math.pow(result, m_exponent);
+    }
+    return result;
   }
   
   /**

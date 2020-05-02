@@ -24,6 +24,7 @@ package weka.classifiers.functions;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.supportVector.Kernel;
+import weka.classifiers.functions.supportVector.NormalizedPolyKernel;
 import weka.classifiers.functions.supportVector.PolyKernel;
 import weka.classifiers.functions.supportVector.SMOset;
 import weka.core.Attribute;
@@ -919,15 +920,17 @@ public class SMO
      */
     protected boolean takeStep(int i1, int i2, double F2) throws Exception {
 
-      double alph1, alph2, y1, y2, F1, s, L, H, k11, k12, k22, eta,
-              a1, a2, f1, f2, v1, v2, Lobj, Hobj;
-      double C1 = m_C * m_data.instance(i1).weight();
-      double C2 = m_C * m_data.instance(i2).weight();
-
       // Don't do anything if the two instances are the same
       if (i1 == i2) {
         return false;
       }
+
+      double alph1, alph2, y1, y2, F1, s, L, H, k11, k12, k22, eta,
+              a1, a2, f1, f2, v1, v2, Lobj, Hobj;
+      Instance inst1 = m_data.instance(i1);
+      Instance inst2 = m_data.instance(i2);
+      double C1 = m_C * inst1.weight();
+      double C2 = m_C * inst2.weight();
 
       // Initialize variables
       alph1 = m_alpha[i1];
@@ -950,9 +953,9 @@ public class SMO
       }
 
       // Compute second derivative of objective function
-      k11 = m_kernel.eval(i1, i1, m_data.instance(i1));
-      k12 = m_kernel.eval(i1, i2, m_data.instance(i1));
-      k22 = m_kernel.eval(i2, i2, m_data.instance(i2));
+      k11 = m_kernel.eval(i1, i1, inst1);
+      k12 = m_kernel.eval(i1, i2, inst1);
+      k22 = m_kernel.eval(i2, i2, inst2);
       eta = 2 * k12 - k11 - k22;
 
       // Check if second derivative is negative
@@ -970,8 +973,8 @@ public class SMO
       } else {
 
         // Look at endpoints of diagonal
-        f1 = SVMOutput(i1, m_data.instance(i1));
-        f2 = SVMOutput(i2, m_data.instance(i2));
+        f1 = SVMOutput(i1, inst1);
+        f2 = SVMOutput(i2, inst2);
         v1 = f1 + m_b - y1 * alph1 * k11 - y2 * alph2 * k12;
         v2 = f2 + m_b - y1 * alph1 * k12 - y2 * alph2 * k22;
         double gamma = alph1 + s * alph2;
@@ -1072,36 +1075,30 @@ public class SMO
         m_I4.delete(i2);
       }
 
+      // Store multipliers used for adjustment
+      double mult1 = y1 * (a1 - alph1);
+      double mult2 = y2 * (a2 - alph2);
+
       // Update weight vector to reflect change a1 and a2, if linear SVM
       if (m_KernelIsLinear) {
-        Instance inst1 = m_data.instance(i1);
-        for (int p1 = 0; p1 < inst1.numValues(); p1++) {
-          if (inst1.index(p1) != m_data.classIndex()) {
-            m_weights[inst1.index(p1)] +=
-                    y1 * (a1 - alph1) * inst1.valueSparse(p1);
-          }
+        for (int p1 = 0; p1 < inst1.numValues(); p1++) { // Don't need to check for class: weight will not be used
+            m_weights[inst1.index(p1)] += mult1 * inst1.valueSparse(p1);
         }
-        Instance inst2 = m_data.instance(i2);
-        for (int p2 = 0; p2 < inst2.numValues(); p2++) {
-          if (inst2.index(p2) != m_data.classIndex()) {
-            m_weights[inst2.index(p2)] +=
-                    y2 * (a2 - alph2) * inst2.valueSparse(p2);
-          }
+        for (int p2 = 0; p2 < inst2.numValues(); p2++) { // Don't need to check for class: weight will not be used
+            m_weights[inst2.index(p2)] += mult2 * inst2.valueSparse(p2);
         }
       }
 
       // Update error cache using new Lagrange multipliers
       for (int j = m_I0.getNext(-1); j != -1; j = m_I0.getNext(j)) {
         if ((j != i1) && (j != i2)) {
-          m_errors[j] +=
-                  y1 * (a1 - alph1) * m_kernel.eval(i1, j, m_data.instance(i1)) +
-                          y2 * (a2 - alph2) * m_kernel.eval(i2, j, m_data.instance(i2));
+          m_errors[j] += mult1 * m_kernel.eval(i1, j, inst1) + mult2 * m_kernel.eval(i2, j, inst2);
         }
       }
 
       // Update error cache for i1 and i2
-      m_errors[i1] += y1 * (a1 - alph1) * k11 + y2 * (a2 - alph2) * k12;
-      m_errors[i2] += y1 * (a1 - alph1) * k12 + y2 * (a2 - alph2) * k22;
+      m_errors[i1] += mult1 * k11 + mult2 * k12;
+      m_errors[i2] += mult1 * k12 + mult2 * k22;
 
       // Update array with Lagrange multipliers
       m_alpha[i1] = a1;
@@ -1394,7 +1391,8 @@ public class SMO
 
     m_classIndex = insts.classIndex();
     m_classAttribute = insts.classAttribute();
-    m_KernelIsLinear = (m_kernel instanceof PolyKernel) && (((PolyKernel) m_kernel).getExponent() == 1.0);
+    m_KernelIsLinear = (m_kernel instanceof PolyKernel) && (((PolyKernel) m_kernel).getExponent() == 1.0) &&
+            !(((PolyKernel) m_kernel).getUseLowerOrder()) && !(m_kernel instanceof NormalizedPolyKernel);
 
     // Generate subsets representing each class
     Instances[] subsets = new Instances[insts.numClasses()];
