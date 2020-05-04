@@ -469,7 +469,60 @@ public class Option implements RevisionHandler {
                   Object elementObject = null;
                   if (elementType.isAssignableFrom(File.class)) {
                     elementObject = new File(optionValues.get(i));
+                  } else if (elementType.isAssignableFrom(Enum.class)) {
+                    elementObject = EnumHelper.valueFromString(elementType, optionValues.get(i));
+                  } else if (elementType.isAssignableFrom(Number.class)) {
+                    try {
+                      if (elementType.isAssignableFrom(Integer.class)) {
+                        elementObject = new Integer(optionValues.get(i));
+                      } else if (elementType.isAssignableFrom(Long.class)) {
+                        elementObject = new Long(optionValues.get(i));
+                      } else if (elementType.isAssignableFrom(Double.class)) {
+                        elementObject = new Double(optionValues.get(i));
+                      } else if (elementType.isAssignableFrom(Float.class)) {
+                        elementObject = new Float(optionValues.get(i));
+                      }
+                    } catch (NumberFormatException e) {
+                      throw new Exception("Option: '"
+                        + parameterDescription.commandLineParamName()
+                        + "' requires elements of " + value.getClass().getCanonicalName());
+                    }
+                  } else if (elementType.isAssignableFrom(SelectedTag.class)) {
+                    SelectedTag reference = (SelectedTag)((Object[]) value)[0];
+                    Tag[] legalTags = reference.getTags();
+                    int tagIndex = Integer.MAX_VALUE;
+                    // first try and parse as an integer
+                    try {
+                      int specifiedID = Integer.parseInt(optionValues.get(i));
+                      for (int z = 0; z < legalTags.length; z++) {
+                        if (legalTags[z].getID() == specifiedID) {
+                          tagIndex = z;
+                          break;
+                        }
+                      }
+                    } catch (NumberFormatException e) {
+                      // try to match tag strings
+                      for (int z = 0; z < legalTags.length; z++) {
+                        if (legalTags[z].getReadable().equals(optionValues.get(i).trim())) {
+                          tagIndex = z;
+                          break;
+                        }
+                      }
+                    }
+                    if (tagIndex != Integer.MAX_VALUE) {
+                      elementObject = new SelectedTag(tagIndex, legalTags);
+                    } else {
+                      throw new Exception("Unable to set option: '"
+                        + parameterDescription.commandLineParamName()
+                        + "'. This option takes a SelectedTag argument, and "
+                        + "the supplied value of '" + optionValues.get(i) + "' "
+                        + "does not match any of the legal IDs or strings "
+                        + "for it.");
+                    }
+                  } else if (elementType.isAssignableFrom(String.class)) {
+                    elementObject = optionValues.get(i);
                   } else {
+                    // assume option handler spec
                     elementObject =
                       constructOptionHandlerValue(optionValues.get(i));
                   }
