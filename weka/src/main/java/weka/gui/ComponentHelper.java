@@ -122,7 +122,7 @@ public class ComponentHelper {
   
   /**
    * displays a message box with the given title, message, buttons and icon
-   * ant the dimension.
+   * ant the dimension. This method uses JOptionPane.showConfirmDialog().
    * it returns the pressed button.
    * @param parent         the parent component 
    * @param title          the title of the message box
@@ -155,7 +155,41 @@ public class ComponentHelper {
     
     return JOptionPane.showConfirmDialog(parent, msg, title, buttons, messageType, getImageIcon(icon));
   }
-  
+
+  /**
+   * displays a message box with the given title, message, buttons and icon
+   * ant the dimension. This method uses JOptionPane.showMessageDialog().
+   *
+   * @param parent         the parent component
+   * @param title          the title of the message box
+   * @param msg            the text to display
+   * @param messageType    the type of message like defined in <code>JOptionPane</code> (the icon is determined on this basis)
+   * @see JOptionPane
+   */
+  public static void showInformationBox(Component parent, String title, String msg, int messageType) {
+    String        icon;
+
+    switch (messageType) {
+      case JOptionPane.ERROR_MESSAGE:
+        icon = "weka/gui/images/error.gif";
+        break;
+      case JOptionPane.INFORMATION_MESSAGE:
+        icon = "weka/gui/images/information.gif";
+        break;
+      case JOptionPane.WARNING_MESSAGE:
+        icon = "weka/gui/images/information.gif";
+        break;
+      case JOptionPane.QUESTION_MESSAGE:
+        icon = "weka/gui/images/question.gif";
+        break;
+      default:
+        icon = "weka/gui/images/information.gif";
+        break;
+    }
+
+    JOptionPane.showMessageDialog(parent, msg, title, messageType, getImageIcon(icon));
+  }
+
   /**
    * pops up an input dialog
    * 

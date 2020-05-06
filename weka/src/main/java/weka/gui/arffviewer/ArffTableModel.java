@@ -32,7 +32,6 @@ import weka.core.converters.ConverterUtils;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Reorder;
 import weka.gui.ComponentHelper;
-import weka.gui.PropertyDialog;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
@@ -231,9 +230,8 @@ public class ArffTableModel extends DefaultTableModel implements Undoable {
         loader.setFile(new File(filename));
         setInstances(loader.getDataSet());
       } catch (Exception e) {
-        ComponentHelper
-          .showMessageBox(null, "Error loading file...", e.toString(),
-            JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+        ComponentHelper.showInformationBox(null, "Error loading file...", e.toString(),
+            JOptionPane.ERROR_MESSAGE);
         System.out.println(e);
         setInstances(null);
       }
@@ -409,7 +407,14 @@ public class ArffTableModel extends DefaultTableModel implements Undoable {
   public void renameAttributeAt(int columnIndex, String newName) {
     if (isAttribute(columnIndex)) {
       addUndoPoint();
-      m_Data.renameAttribute(getAttributeIndex(columnIndex), newName);
+      try {
+        m_Data.renameAttribute(getAttributeIndex(columnIndex), newName);
+      } catch (Exception e) {
+        ComponentHelper.showInformationBox(null, "Error renaming attribute... ", e.toString(),
+                JOptionPane.ERROR_MESSAGE);
+        System.out.println(e);
+        undo();
+      }
       notifyListener(new TableModelEvent(this, TableModelEvent.HEADER_ROW));
     }
   }
@@ -481,7 +486,9 @@ public class ArffTableModel extends DefaultTableModel implements Undoable {
         // set class index
         m_Data.setClassIndex(m_Data.numAttributes() - 1);
       } catch (Exception e) {
-        e.printStackTrace();
+        ComponentHelper.showInformationBox(null, "Error setting class attribute... ", e.toString(),
+                JOptionPane.ERROR_MESSAGE);
+        System.out.println(e);
         undo();
       }
 
@@ -875,7 +882,7 @@ public class ArffTableModel extends DefaultTableModel implements Undoable {
   }
 
   /**
-   * returns the value for the cell at columnindex and rowIndex
+   * returns the value for the cell at columnIndex and rowIndex
    * 
    * @param rowIndex the row index
    * @param columnIndex the column index
@@ -1014,7 +1021,7 @@ public class ArffTableModel extends DefaultTableModel implements Undoable {
           return;
         }
       } catch (Exception e) {
-        // ignore
+        // Ignore
       }
       if (notify) {
         notifyListener(new TableModelEvent(this, rowIndex, columnIndex));
@@ -1040,13 +1047,15 @@ public class ArffTableModel extends DefaultTableModel implements Undoable {
           att.parseDate(tmp);
           inst.setValue(index, att.parseDate(tmp));
         } catch (Exception e) {
-          // ignore
+          // Ignore
         }
         break;
 
       case Attribute.NOMINAL:
         if (att.indexOfValue(tmp) > -1) {
           inst.setValue(index, att.indexOfValue(tmp));
+        } else {
+          // Ignore
         }
         break;
 
@@ -1059,16 +1068,15 @@ public class ArffTableModel extends DefaultTableModel implements Undoable {
           Double.parseDouble(tmp);
           inst.setValue(index, Double.parseDouble(tmp));
         } catch (Exception e) {
-          // ignore
+          // Ignore
         }
         break;
 
       case Attribute.RELATIONAL:
         try {
-          inst.setValue(index,
-            inst.attribute(index).addRelation((Instances) aValue));
+          inst.setValue(index, inst.attribute(index).addRelation((Instances) aValue));
         } catch (Exception e) {
-          // ignore
+          // Ignore
         }
         break;
 
@@ -1171,7 +1179,9 @@ public class ArffTableModel extends DefaultTableModel implements Undoable {
         notifyListener(new TableModelEvent(this, TableModelEvent.HEADER_ROW));
         notifyListener(new TableModelEvent(this));
       } catch (Exception e) {
-        e.printStackTrace();
+        ComponentHelper.showInformationBox(null, "Error undoing... ", e.toString(),
+                JOptionPane.ERROR_MESSAGE);
+        System.out.println(e);
       }
       tempFile.delete();
 
@@ -1213,7 +1223,9 @@ public class ArffTableModel extends DefaultTableModel implements Undoable {
         // add to undo list
         m_UndoList.add(tempFile);
       } catch (Exception e) {
-        e.printStackTrace();
+        ComponentHelper.showInformationBox(null, "Error setting undo point... ", e.toString(),
+                JOptionPane.ERROR_MESSAGE);
+        System.out.println(e);
       }
     }
   }
