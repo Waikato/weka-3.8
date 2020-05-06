@@ -544,10 +544,10 @@ RevisionHandler {
   public void deleteAttributeAt(int position) {
 
     if ((position < 0) || (position >= m_Attributes.size())) {
-      throw new IllegalArgumentException("Index out of range");
+      throw new IllegalArgumentException("Cannot delete attribute: index out of range");
     }
     if (position == m_ClassIndex) {
-      throw new IllegalArgumentException("Can't delete class attribute");
+      throw new IllegalArgumentException("Cannot delete class attribute");
     }
 
     ArrayList<Attribute> newList = new ArrayList<Attribute>(m_Attributes.size() - 1);
@@ -757,11 +757,12 @@ RevisionHandler {
   public void insertAttributeAt(/* @non_null@ */Attribute att, int position) {
 
     if ((position < 0) || (position > m_Attributes.size())) {
-      throw new IllegalArgumentException("Index out of range");
+      throw new IllegalArgumentException("Cannot insert attribute: index out of range");
     }
-    if (attribute(att.name()) != null) {
-      throw new IllegalArgumentException("Attribute name '" + att.name()
-        + "' already in use at position #" + attribute(att.name()).index());
+    Attribute existingAttribute = attribute(att.name());
+    if (existingAttribute != null) {
+      throw new IllegalArgumentException("Cannot insert attribute: name '" + att.name() + "' already in use in the " +
+              Utils.indexToOrdinal(existingAttribute.index()) + " attribute " + existingAttribute);
     }
     att = (Attribute) att.copy();
     att.setIndex(position);
@@ -1073,19 +1074,17 @@ RevisionHandler {
   // @ requires position <= numAttributes();
   public void replaceAttributeAt(/* @non_null@ */Attribute att, int position) {
 
-    if ((position < 0) || (position > m_Attributes.size())) {
-      throw new IllegalArgumentException("Index out of range");
+    if ((position < 0) || (position >= m_Attributes.size())) {
+      throw new IllegalArgumentException("Cannot replace attribute: index out of range");
     }
-
-    // Does the new attribute have a different name?
+    // Does the new attribute have a different name than the attribute it replaces?
     if (!att.name().equals(m_Attributes.get(position).name())) {
 
-      // Need to check if attribute name already exists
+      // Need to check if attribute name already exists at a different position
       Attribute candidate = attribute(att.name());
-      if ((candidate != null) && (position != candidate.index())) {
-        throw new IllegalArgumentException("Attribute name '" + att.name()
-          + "' already in use at position #" + 
-          attribute(att.name()).index());
+      if (candidate != null) {
+        throw new IllegalArgumentException("Cannot replace attribute: name '" + att.name() + "' already in use in the "
+                + Utils.indexToOrdinal(candidate.index()) + " attribute " + candidate);
       }
     }
     att = (Attribute) att.copy();
@@ -1148,13 +1147,16 @@ RevisionHandler {
    */
   public void renameAttribute(int att, String name) {
 
+    if ((att < 0) || (att >= m_Attributes.size())) {
+      throw new IllegalArgumentException("Cannot rename attribute: index out of range");
+    }
     Attribute existingAtt = attribute(name);
     if (existingAtt != null) {
       if (att == existingAtt.index()) {
-        return; // Old name is equal to new name
+        return; // Old name is equal to new name so that is fine
       } else {
-        throw new IllegalArgumentException("Attribute name '" + name
-          + "' already present at position #" + existingAtt.index());
+        throw new IllegalArgumentException("Cannot rename attribute: name '" + name + "' already in use in the " +
+                Utils.indexToOrdinal(existingAtt.index()) + " attribute " + existingAtt);
       }
     }
 
