@@ -1,4 +1,4 @@
-@relation 'FilterTest-weka.filters.unsupervised.attribute.FixedDictionaryStringToWordVector-Ifalse-Tfalse-R1,4-dictionary-- set me ---stemmerweka.core.stemmers.NullStemmer-stopwords-handlerweka.core.stopwords.Null-tokenizerweka.core.tokenizers.WordTokenizer -delimiters \" \\r\\n\\t.,;:\\\'\\\"()?!\"'
+@relation 'FilterTest-weka.filters.unsupervised.attribute.FixedDictionaryStringToWordVector-R1,4-dictionary-- set me ---stemmerweka.core.stemmers.NullStemmer-stopwords-handlerweka.core.stopwords.Null-tokenizerweka.core.tokenizers.WordTokenizer -delimiters \" \\r\\n\\t.,;:\\\'\\\"()?!\"'
 
 @attribute NominalAtt1 {r,g,b}
 @attribute NumericAtt1 numeric

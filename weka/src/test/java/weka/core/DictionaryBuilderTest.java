@@ -398,7 +398,7 @@ public class DictionaryBuilderTest extends TestCase {
     StringWriter sw = new StringWriter();
     builder.saveDictionary(sw);
     String dictText = sw.toString();
-    assertTrue(dictText.startsWith("@@@3.39036"));
+    assertTrue(dictText.contains("@@@3.39036"));
 
     StringReader sr = new StringReader(dictText);
     DictionaryBuilder builder2 = new DictionaryBuilder();
