@@ -183,6 +183,11 @@ public class Sorter extends BaseStep {
     m_stringAttIndexes = new HashMap<String, Integer>();
     m_bufferFiles = new ArrayList<File>();
     m_streamingData = new Data(StepManager.CON_INSTANCE);
+
+    if (m_sortDetails == null || m_sortDetails.length() == 0) {
+      throw new WekaException("Need at least one rule defined by which to sort "
+        + "the data!");
+    }
   }
 
   /**
@@ -274,6 +279,9 @@ public class Sorter extends BaseStep {
       String buffSize = environmentSubstitute(m_bufferSize);
       m_bufferSizeI = Integer.parseInt(buffSize);
       m_incrementalBuffer = new ArrayList<InstanceHolder>(m_bufferSizeI);
+      getStepManager().logBasic(
+        "Starting streaming sort. Using streaming " + "buffer size: "
+          + m_bufferSizeI);
     }
   }
 
@@ -291,9 +299,6 @@ public class Sorter extends BaseStep {
         Instance inst = data.getPrimaryPayload();
         structure = new Instances(inst.dataset(), 0);
         m_streaming = true;
-        getStepManager().logBasic(
-          "Starting streaming sort. Using streaming " + "buffer size: "
-            + m_bufferSizeI);
         m_isReset = false;
       } else {
         structure = data.getPrimaryPayload();
