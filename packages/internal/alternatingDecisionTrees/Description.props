@@ -6,10 +6,10 @@
 PackageName=alternatingDecisionTrees
 
 # Version (required)
-Version=1.0.6
+Version=1.0.7
 
 #Date
-Date=2014-06-18
+Date=2020-06-04
 
 # Title (required)
 Title=Binary-class alternating decision trees and multi-class alternating decision trees.
@@ -28,10 +28,10 @@ License=GPL 3.0
 # Description (required)
 Description=Binary- and multi-class alternating decision trees. For more information see: <br/><br/>Freund, Y., Mason, L.: The alternating decision tree learning algorithm. In: Proceeding of the Sixteenth International Conference on Machine Learning, Bled, Slovenia, 124-133, 1999.<br/><br/>Geoffrey Holmes, Bernhard Pfahringer, Richard Kirkby, Eibe Frank, Mark Hall: Multiclass alternating decision trees. In: ECML, 161-172, 2001.
 
-Changes=Now compatible with modified IterativeClassifier interface. Now both implement IterativeClassifier and can be used with IterativeClassifierOptimizer.
+Changes=Updated for changes to IterativeClssifier and to support resumable training.
 
 # Package URL for obtaining the package archive (required)
-PackageURL=http://prdownloads.sourceforge.net/weka/alternatingDecisionTrees1.0.6.zip?download
+PackageURL=http://prdownloads.sourceforge.net/weka/alternatingDecisionTrees1.0.7.zip?download
 
 # URL for further information
 URL=http://weka.sourceforge.net/doc.packages/alternatingDecisionTrees
