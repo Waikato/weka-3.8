@@ -6,10 +6,10 @@
 PackageName=alternatingModelTrees
 
 # Version (required)
-Version=1.0.0
+Version=1.0.1
 
 #Date
-Date=2015-01-19
+Date=2020-06-04
 
 # Title (required)
 Title=Alternating Model Trees
@@ -28,10 +28,10 @@ License=GPL 3.0
 # Description (required)
 Description=Grows an alternating model tree by minimising squared error. For more information see "Eibe Frank, Michael Mayo, Stefan Kramer: Alternating Model Trees. In: Proceedings of the ACM Symposium on Applied Computing, Data Mining Track, 2015."
 
-#Changes=Initial import.
+Changes=Updated for changes to IterativeClssifier and to support resumable training.
 
 # Package URL for obtaining the package archive (required)
-PackageURL=http://prdownloads.sourceforge.net/weka/alternatingModelTrees1.0.0.zip?download
+PackageURL=http://prdownloads.sourceforge.net/weka/alternatingModelTrees1.0.1.zip?download
 
 # URL for further information
 URL=http://weka.sourceforge.net/doc.packages/alternatingModelTrees
