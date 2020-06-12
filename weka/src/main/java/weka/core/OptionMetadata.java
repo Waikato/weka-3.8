@@ -25,8 +25,8 @@ import java.lang.annotation.*;
 
 /**
  * Method annotation that can be used with scheme parameters to provide a nice
- * display-ready name for the parameter, help information and, if applicable,
- * command line option details
+ * display-ready name for the parameter, help information and command-line
+ * option details.
  *
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
  * @version $Revision$
@@ -69,8 +69,9 @@ public @interface OptionMetadata {
 
   /**
    * The name of the command line version of this parameter (without leading -).
-   * If this parameter is not a command line one, then just leave at the default
-   * empty string.
+   * Note that this must be provided if this object will be edited by Weka's
+   * standard GenericObjectEditor (as configurations are copied via command-line
+   * options in order to avoid deep copying objects).
    *
    * @return the name of the command line version of this parameter
    */
@@ -86,8 +87,9 @@ public @interface OptionMetadata {
 
   /**
    * The synopsis to display on in the command line help for this parameter
-   * (e.g. -Z <integer>). If this parameter is not a command line one, then just
-   * leave at the default empty string.
+   * (e.g. -Z <integer>). Note that this must be provided if this object will be
+   * edited by Weka's standard GenericObjectEditor (as configurations are
+   * copied via command-line * options in order to avoid deep copying objects).
    *
    * @return the command line synopsis for this parameter
    */
