@@ -803,7 +803,11 @@ public class DefaultPackageManager extends PackageManager {
        * destDir.getAbsolutePath());
        */
 
-      // hopefully failure is because the directory already exists
+      // hopefully failure is because the directory already exists, lets try
+      // cleaning it
+      uninstallPackage(packageName, progress);
+      // try and create directory again
+      destDir.mkdir();
     }
 
     InputStream input = null;
