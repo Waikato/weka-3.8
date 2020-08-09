@@ -177,7 +177,16 @@ public class WorkbenchApp extends AbstractGUIApplication {
 
     try {
       if (System.getProperty("os.name").contains("Mac")) {
-        System.setProperty("apple.laf.useScreenMenuBar", "true");
+        Settings forLookAndFeelOnly = new Settings("weka", WorkbenchDefaults.APP_ID);
+        String laf =
+          forLookAndFeelOnly.getSetting(WorkbenchDefaults.APP_ID, WorkbenchDefaults.APP_ID
+              + ".lookAndFeel", WorkbenchDefaults.LAF,
+            Environment.getSystemWide());
+
+        if (laf != null && laf.length() > 0
+          && (laf.contains("Aqua") || laf.contains("platform default"))) {
+          System.setProperty("apple.laf.useScreenMenuBar", "true");
+        }
       }
       m_workbench = new WorkbenchApp();
       final javax.swing.JFrame jf =

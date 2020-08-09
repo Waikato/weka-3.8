@@ -266,7 +266,17 @@ public class KnowledgeFlowApp extends AbstractGUIApplication {
 
     try {
       if (System.getProperty("os.name").contains("Mac")) {
-        System.setProperty("apple.laf.useScreenMenuBar", "true");
+        Settings forLookAndFeelOnly = new Settings("weka", KFDefaults.APP_ID);
+
+        String laf =
+          forLookAndFeelOnly.getSetting(KFDefaults.APP_ID, KFDefaults.APP_ID
+              + ".lookAndFeel", KFDefaults.LAF,
+            Environment.getSystemWide());
+
+        if (laf != null && laf.length() > 0
+          && (laf.contains("Aqua") || laf.contains("platform default"))) {
+          System.setProperty("apple.laf.useScreenMenuBar", "true");
+        }
       }
       m_kfApp = new KnowledgeFlowApp();
 
