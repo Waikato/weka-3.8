@@ -21,7 +21,6 @@
 
 package weka.knowledgeflow;
 
-import com.sun.tools.doclint.Env;
 import weka.core.CommandlineRunnable;
 import weka.core.Environment;
 import weka.core.PluginManager;
