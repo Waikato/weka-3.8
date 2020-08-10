@@ -45,7 +45,7 @@ import static com.sun.jna.platform.win32.WinReg.HKEY_CURRENT_USER;
  * 
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
  * @author Eibe Frank
- * @version $Revision: 15547 $
+ * @version $Revision: 15612 $
  */
 public class JRILoader {
 
@@ -168,36 +168,19 @@ public class JRILoader {
                           registryGetStringValue(HKEY_LOCAL_MACHINE, "Software\\Wow6432Node\\R-core\\R", "InstallPath");
                 }
               } catch (Exception ex) {
-                System.err.println("Could not find system-wide install location for R in Registry.");
-                if (System.getenv("ProgramFiles(x86)") != null) {
-                  s_rHome = Advapi32Util.
-                          registryGetStringValue(HKEY_CURRENT_USER, "Software\\R-core\\R64", "InstallPath");
-                } else {
-                  s_rHome = Advapi32Util.
-                          registryGetStringValue(HKEY_CURRENT_USER, "Software\\Wow6432Node\\R-core\\R", "InstallPath");
-                }
-              }
-
-              // Check if appropriate folder in R_HOME is in path
-              try {
-                Process p = Runtime.getRuntime().exec("Rterm"); // Use this because it is in x64/i386, not just bin
-              } catch (Exception ex) {
-
-                // Could not run process, so let's add the x64/i386 folder to the path
-                String PATH = getenv("PATH");
-                System.err.println("Adding appropriate folder in R's home to PATH.");
-                String subFolderName = "i386";
-                if (System.getenv("ProgramFiles(x86)") != null) {
-                  subFolderName = "x64";
-                }
-                if (SetEnvironmentVariables.INSTANCE.setenv("PATH", s_rHome + File.separator +
-                        "bin" + File.separator + subFolderName +
-                        File.pathSeparator + PATH, 0) != 0) {
-                  System.err.println("Could not add " + subFolderName + " folder in R's home to PATH.");
-                  s_rHome = null;
+                System.err.println("Could not find system-wide install location for R in registry.");
+                try {
+                  if (System.getenv("ProgramFiles(x86)") != null) {
+                    s_rHome = Advapi32Util.
+                            registryGetStringValue(HKEY_CURRENT_USER, "Software\\R-core\\R64", "InstallPath");
+                  } else {
+                    s_rHome = Advapi32Util.
+                            registryGetStringValue(HKEY_CURRENT_USER, "Software\\Wow6432Node\\R-core\\R", "InstallPath");
+                  }
+                } catch (Exception ex2) {
+                  System.err.println("Could not find user-specific install location for R in registry either.");
                   return false;
                 }
-                System.err.println(SetEnvironmentVariables.INSTANCE.getenv("PATH")); // Debugging output.
               }
             } else { // Assuming linux (or a Unix-derivative that has the same default install location for R).
               s_rHome = "/usr/lib/R";
@@ -222,6 +205,30 @@ public class JRILoader {
         return false;
       }
       System.setProperty("r.home", s_rHome);
+
+      // On Windows, check if appropriate folder in R_HOME is in path and add it if it isn't
+      if ((osType != null) && (osType.contains("Windows"))) {
+        try {
+          Process p = Runtime.getRuntime().exec("Rterm"); // Use this because it is in x64/i386, not just bin
+        } catch (Exception ex) {
+
+          // Could not run process, so let's add the x64/i386 folder to the path
+          String PATH = getenv("PATH");
+          System.err.println("Adding appropriate folder in R's home to PATH.");
+          String subFolderName = "i386";
+          if (System.getenv("ProgramFiles(x86)") != null) {
+            subFolderName = "x64";
+          }
+          if (SetEnvironmentVariables.INSTANCE.setenv("PATH", s_rHome + File.separator +
+                  "bin" + File.separator + subFolderName +
+                  File.pathSeparator + PATH, 0) != 0) {
+            System.err.println("Could not add " + subFolderName + " folder in R's home to PATH.");
+            s_rHome = null;
+            return false;
+          }
+          System.err.println(SetEnvironmentVariables.INSTANCE.getenv("PATH")); // Debugging output.
+        }
+      }
 
       // Now deal with R_LIBS_USER and r.libs.user
       String rLibsUser = getenv("R_LIBS_USER");
