@@ -21,8 +21,8 @@ An overview of the libraries used in Weka (or some of its packages) during compi
   Version: java-cup-bin-11b-20160615
   URL: http://www2.cs.tum.edu/projects/cup/
   
-- jflex-full-1.7.0.jar
-  Version: 1.7.0
+- jflex-full-1.8.2.jar
+  Version: 1.8.2
   URL: http://jflex.de/
 
 - commons-compress-1.19.jar
