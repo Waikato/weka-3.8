@@ -5,7 +5,7 @@ NOTE: Any filename changes must be reflected in build.xml as well!
 
 An overview of the libraries used in Weka (or some of its packages) during compile time and/or run time:
 
-- junit-4.13-rc-1.jar
+- junit-4.13.jar
   Version: 4.13
   URL: http://junit.org/
   
@@ -25,8 +25,8 @@ An overview of the libraries used in Weka (or some of its packages) during compi
   Version: 1.8.2
   URL: http://jflex.de/
 
-- commons-compress-1.19.jar
-  Version: 1.19
+- commons-compress-1.20.jar
+  Version: 1.20
   URL: https://commons.apache.org/proper/commons-compress/
 
 - bounce.jar (contains just the authentication dialog from the bounce project)
@@ -54,20 +54,20 @@ An overview of the libraries used in Weka (or some of its packages) during compi
   Version: 0.1.2
   URL: https://github.com/fracpete/jclipboardhelper
 
-- jakarta.xml.bind-api-2.3.2.jar
-  Version: 2.3.2
+- jakarta.xml.bind-api-2.3.3.jar
+  Version: 2.3.3
   URL: https://github.com/eclipse-ee4j/jaxb-api
 
-- jaxb-runtime-2.3.2.jar
-  Version: 2.3.2
+- jaxb-runtime-2.3.3.jar
+  Version: 2.3.3
   URL: https://github.com/eclipse-ee4j/jaxb-ri
 
-- istack-commons-runtime-3.0.8.jar
-  Version: 3.0.8
+- istack-commons-runtime-3.0.11.jar
+  Version: 3.0.11
   URL: https://github.com/eclipse-ee4j/jaxb-istack-commons
 
-- jakarta.activation-api-1.2.1.jar
-  Version: 1.2.1
+- jakarta.activation-api-1.2.2.jar
+  Version: 1.2.2
   URL: https://github.com/eclipse-ee4j/jaf
 
 Version: $Revision$

@@ -33,7 +33,7 @@
 
   <!-- properties used when compiling/making packages -->
   <property name="wekaexejar" value="../../../weka/dist/weka.jar"/>
-  <property name="junitjar" value="../../../weka/lib/junit-4.13-rc-1.jar"/>
+  <property name="junitjar" value="../../../weka/lib/junit-4.13.jar"/>
   <property name="hamcrestjar" value="../../../weka/lib/hamcrest-core-1.3.jar"/>
   <property name="wekaclasses" value="../../../weka/build/classes"/>
   <property name="wekalib" value="../../../weka/lib/*"/>
@@ -674,7 +674,7 @@
         <include name="org/**/*"/>
       </patternset>
     </unzip>
-    <unzip src="${lib}/commons-compress-1.19.jar" dest="${build}/classes">
+    <unzip src="${lib}/commons-compress-1.20.jar" dest="${build}/classes">
       <patternset>
         <include name="org/**/*"/>
       </patternset>
@@ -689,22 +689,22 @@
         <include name="com/**/*"/>
       </patternset>
     </unzip>
-    <unzip src="${lib}/istack-commons-runtime-3.0.8.jar" dest="${build}/classes">
+    <unzip src="${lib}/istack-commons-runtime-3.0.11.jar" dest="${build}/classes">
       <patternset>
         <include name="com/**/*"/>
       </patternset>
     </unzip>
-    <unzip src="${lib}/jaxb-runtime-2.3.2.jar" dest="${build}/classes">
+    <unzip src="${lib}/jaxb-runtime-2.3.3.jar" dest="${build}/classes">
       <patternset>
         <include name="com/**/*"/>
       </patternset>
     </unzip>
-    <unzip src="${lib}/jakarta.xml.bind-api-2.3.2.jar" dest="${build}/classes">
+    <unzip src="${lib}/jakarta.xml.bind-api-2.3.3.jar" dest="${build}/classes">
       <patternset>
         <include name="javax/**/*"/>
       </patternset>
     </unzip>
-    <unzip src="${lib}/jakarta.activation-api-1.2.1.jar" dest="${build}/classes">
+    <unzip src="${lib}/jakarta.activation-api-1.2.2.jar" dest="${build}/classes">
       <patternset>
         <include name="javax/**/*"/>
       </patternset>
@@ -801,7 +801,7 @@
 
   <!-- Run the test cases for the core via junit's testrunner class.
    This is a faster, simpler option than running the junit task -->
-  <target name="run_tests_core" depends="compile_tests" 
+  <target name="run_tests_core" depends="clean, compile_tests" 
    description="Execute unit tests (fast)">
 <!--    <echo message="pacakge classpath ${pack.cp}"/> -->
      <java fork="yes" dir="."
