@@ -94,7 +94,7 @@ import weka.gui.visualize.VisualizeUtils;
  * evaluating R commands.
  * 
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
- * @version $Revision: 15546 $
+ * @version $Revision: 15631 $
  */
 public class JavaGDConsolePanel extends JPanel implements JavaGDListener {
 
@@ -107,7 +107,7 @@ public class JavaGDConsolePanel extends JPanel implements JavaGDListener {
    * Implements a logger for status messages only.
    * 
    * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
-   * @version $Revision: 15546 $
+   * @version $Revision: 15631 $
    */
   private class StatusOnlyLogger extends JPanel implements Logger {
 
@@ -149,7 +149,7 @@ public class JavaGDConsolePanel extends JPanel implements JavaGDListener {
    * Inner class for displaying a BufferedImage.
    * 
    * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
-   * @version $Revision: 15546 $
+   * @version $Revision: 15631 $
    */
   private class ImageDisplayer extends JPanel {
 
@@ -233,7 +233,7 @@ public class JavaGDConsolePanel extends JPanel implements JavaGDListener {
    * is beyond the prompt position
    * 
    * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
-   * @version $Revision: 15546 $
+   * @version $Revision: 15631 $
    */
   private class Filter extends DocumentFilter {
     @Override
@@ -532,15 +532,15 @@ public class JavaGDConsolePanel extends JPanel implements JavaGDListener {
 
                   RSession eng = null;
                   try {
-                    if (lastTyped.matches(".*;[ ]*q\\(.*") || lastTyped.matches("[ ]*q\\(.*")) {
+                    if (lastTyped.matches("(?s).*;( )*q\\(.*") || lastTyped.matches("(?s)( )*q\\(.*")) { System.err.println("HERE");
                       m_rConsole.getDocument().insertString(
                               m_rConsole.getText().length(), "q() is not supported. R "
                                       + "will exit when Weka quits.\n", null);
-                    } else if (lastTyped.matches(".*;[ ]*quit\\(.*") || lastTyped.matches("[ ]*quit\\(.*")) {
+                    } else if (lastTyped.matches("(?s).*;( )*quit\\(.*") || lastTyped.matches("(?s)( )*quit\\(.*")) {
                       m_rConsole.getDocument().insertString(
-                              m_rConsole.getText().length(), "q() is not supported. R "
+                              m_rConsole.getText().length(), "quit() is not supported. R "
                                       + "will exit when Weka quits.\n", null);
-                    } else if (lastTyped.matches(".*;[ ]*readline\\(.*") || lastTyped.matches("[ ]*readline\\(.*")) {
+                    } else if (lastTyped.matches("(?s).*;( )*readline\\(.*") || lastTyped.matches("(?s)( )*readline\\(.*")) {
                       m_rConsole.getDocument().insertString(
                               m_rConsole.getText().length(), "readline() is not supported.\n", null);
                     } else {
