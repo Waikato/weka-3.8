@@ -5,8 +5,8 @@ NOTE: Any filename changes must be reflected in build.xml as well!
 
 An overview of the libraries used in Weka (or some of its packages) during compile time and/or run time:
 
-- junit-4.13.jar
-  Version: 4.13
+- junit-4.13.1.jar
+  Version: 4.13.1
   URL: http://junit.org/
   
 - hamcrest-core-1.3.jar
