@@ -121,7 +121,7 @@ Provides a time series forecasting environment for Weka. Includes a wrapper for 
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.5</version>
+      <version>4.13.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
