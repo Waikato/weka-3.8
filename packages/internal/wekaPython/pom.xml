@@ -138,7 +138,7 @@ Integration with CPython for Weka. Python version 2.7.x or higher is required. A
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.2</version>
+      <version>4.13.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

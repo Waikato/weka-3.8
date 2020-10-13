@@ -109,7 +109,7 @@ Description=Provides a set of filters for time series. Currently contains PAA an
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.2</version>
+      <version>4.13.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
