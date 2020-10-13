@@ -157,7 +157,7 @@ This package provides Spark wrappers for the classes in distributedWekaBase. Inc
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.5</version>
+      <version>4.13.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

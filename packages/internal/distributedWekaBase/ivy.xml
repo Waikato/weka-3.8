@@ -24,7 +24,7 @@
 <!--    <dependency org="com.clearspring.analytics" name="stream" rev="2.7.0" /> -->
     <dependency org="com.tdunning" name="t-digest" rev="3.1" />
 
-    <dependency org="junit" name="junit" rev="4.5" conf="test->default" />
+    <dependency org="junit" name="junit" rev="4.13.1" conf="test->default" />
 
 <!--        <dependency org="commons-logging" name="commons-logging" rev="1.1" transitive="false"/> -->
     </dependencies>
