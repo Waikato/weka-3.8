@@ -181,7 +181,7 @@ public abstract class BaseSparkJobConfig extends DistributedJobConfig {
   // Attempt to locate the weka.jar in the classpath and set a
   // the default path to it
   static {
-    /*
+
     try {
       ClassLoader cl = ClassloaderUtil.class.getClassLoader();
       if (cl instanceof URLClassLoader) {
@@ -198,13 +198,12 @@ public abstract class BaseSparkJobConfig extends DistributedJobConfig {
     } catch (Exception ex) {
 
     }
-    */
 
-    WekaPackageClassLoaderManager manager = WekaPackageClassLoaderManager.getWekaPackageClassLoaderManager();
+    /* WekaPackageClassLoaderManager manager = WekaPackageClassLoaderManager.getWekaPackageClassLoaderManager();
     String wekaPath = manager.getPathToWekaJarFile().toString();
     if (!wekaPath.equals(DEFAULT_WEKA_JAR_PATH)) {
       DEFAULT_WEKA_JAR_PATH = wekaPath;
-    }
+    } */
   }
 
   public void addAdditionalJobLibrary(String library) {

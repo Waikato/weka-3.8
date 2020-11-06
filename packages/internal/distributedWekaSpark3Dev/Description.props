@@ -5,10 +5,10 @@
 PackageName=distributedWekaSpark3Dev
 
 # Version (required)
-Version=1.0.0
+Version=1.0.1
 
 #Date (year-month-day)
-Date=2020-08-14
+Date=2020-11-06
 
 # Title (required)
 Title=Spark 3.x wrappers for Weka
@@ -29,10 +29,10 @@ License=GPL 3
 Description=Development continuation of distributedWekaSpark that is compatible with Spark 3.x libraries. For Spark 1.6 comaptibility use distributedWekaSparkDev instead. Adds access to source files (CSV, Parquet and Avro) via Spark DataFrames, and adds support for both desktop and distributed execution of MLlib algorithms. Provides Spark wrappers for the classes in distributedWekaBase. Includes generic Spark 1.4.0 libraries - To run against Hadoop/HDFS, it is necessary to delete all the libraries, except those listed in the wekaSpark.props file, in ${user.home}/wekafiles/distributedWekaSpark2Dev/lib and copy in the libraries from the 'jars' directory of your Spark 3.x distribution.
 
 # Changes in this release
-Changes=Fixed a bug in the conversion of sparse instances to sparse Vectors.
+Changes=Fixed a bug in the code that attempts to automatically locate the main weka jar file in the classpath.
 
 # Package URL for obtaining the package archive (required)
-PackageURL=http://downloads.sourceforge.net/weka/weka-packages/distributedWekaSpark3Dev1.0.0.zip
+PackageURL=http://downloads.sourceforge.net/weka/weka-packages/distributedWekaSpark3Dev1.0.1.zip
 
 # URL for further information
 URL=http://markahall.blogspot.co.nz/2017/07/integrating-spark-mllib-into-weka.html
