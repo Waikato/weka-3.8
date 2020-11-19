@@ -12,7 +12,7 @@
 jdbcDriver=org.gjt.mm.mysql.Driver
 
 # database URL
-jdbcURL=jdbc:mysql://server_name:3306/database_name
+jdbcURL=jdbc:mysql://server_name:3306/database_name?nullDatabaseMeansCurrent=true
 
 # specific data types
 # string, getString() = 0;    --> nominal
