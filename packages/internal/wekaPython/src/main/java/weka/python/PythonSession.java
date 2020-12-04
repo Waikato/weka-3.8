@@ -23,15 +23,19 @@ package weka.python;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 
+import weka.core.Environment;
 import weka.core.Instances;
 import weka.core.WekaException;
 import weka.core.WekaPackageManager;
@@ -50,17 +54,30 @@ public class PythonSession {
     DataFrame, Image, String, Unknown;
   }
 
-  /** The command used to start python */
-  private String m_pythonCommand;
-
-  /** The session singleton */
+  /** The session singleton (for backward compatibility) */
   private static PythonSession s_sessionSingleton;
-
-  /** the current session holder */
-  private static Object s_sessionHolder;
 
   /** The results of the python check script */
   private static String s_pythonEnvCheckResults = "";
+
+  /**
+   * Static map of initialized servers. A "default" entry will be used for
+   * backward compatibility
+   */
+  private static Map<String, PythonSession> m_pythonServers =
+    Collections.synchronizedMap(new HashMap<String, PythonSession>());
+
+  private static Map<String, String> m_pythonEnvCheckResults =
+    Collections.synchronizedMap(new HashMap<String, String>());
+
+  /** The command used to start python for this session */
+  private String m_pythonCommand;
+
+  /** The unique key for this session/server */
+  private String m_sessionKey;
+
+  /** the current session holder */
+  private Object m_sessionHolder;
 
   /** For locking */
   protected SessionMutex m_mutex = new SessionMutex();
@@ -90,20 +107,48 @@ public class PythonSession {
   protected Logger m_log;
 
   /**
-   * Acquire the session for the requester
+   * Acquire the default session for the requester
    *
    * @param requester the object requesting the session
-   * @return the session singleton
+   * @return the default session singleton
    * @throws WekaException if python is not available
    */
   public static PythonSession acquireSession(Object requester)
     throws WekaException {
+
+    if (s_sessionSingleton == null) {
+      throw new WekaException("Python not available!");
+    }
+
     return s_sessionSingleton.getSession(requester);
   }
 
   /**
-   * Release the session so that other clients can obtain it. This method does
-   * nothing if the requester is not the current session holder
+   * @param pythonCommand command (either fully qualified path or that which is
+   *          in the PATH). This, plus the optional ownerID is used to lookup
+   *          and return a session/server.
+   * @param ownerID an optional ownerID string for acquiring the session. This
+   *          can be used to restrict the session/server to one (or more)
+   *          clients (i.e. those with the ID "ownerID").
+   * @param requester the object requesting the session/server
+   * @return a session
+   * @throws WekaException if the requested session/server is not available (or
+   *           does not exist).
+   */
+  public static PythonSession acquireSession(String pythonCommand,
+    String ownerID, Object requester) throws WekaException {
+    String key =
+      pythonCommand + (ownerID != null && ownerID.length() > 0 ? ownerID : "");
+    if (!m_pythonServers.containsKey(key)) {
+      throw new WekaException(
+        "Python session " + key + " does not seem to exist!");
+    }
+    return m_pythonServers.get(key).getSession(requester);
+  }
+
+  /**
+   * Release the default session so that other clients can obtain it. This
+   * method does nothing if the requester is not the current session holder
    *
    * @param requester the session holder
    */
@@ -112,12 +157,117 @@ public class PythonSession {
   }
 
   /**
-   * Returns true if the python environment/server is available
+   * Release the user-specified python session.
    *
-   * @return true if the python environment/server is available
+   * @param pythonCommand command (either fully qualified path or that which is
+   *          in the PATH). This, plus the optional ownerID is used to lookup a
+   *          session/server.
+   * @param ownerID an optional ownerID string for identifying the session. This
+   *          can be used to restrict the session/server to one (or more)
+   *          clients (i.e. those with the ID "ownerID").
+   * @param requester the object requesting the session/server
+   * @throws WekaException if the requested session/server is not available (or
+   *           does not exist).
    */
-  public static boolean pythonAvailable() {
+  public static void releaseSession(String pythonCommand, String ownerID,
+    Object requester) throws WekaException {
+    String key =
+      pythonCommand + (ownerID != null && ownerID.length() > 0 ? ownerID : "");
+    if (!m_pythonServers.containsKey(key)) {
+      throw new WekaException(
+        "Python session " + key + " does not seem to exist!");
+    }
+    m_pythonServers.get(key).dropSession(requester);
+  }
+
+  /**
+   * Returns true if (at least) the default python environment/server is
+   * available
+   *
+   * @return true if the default python environment/server is available
+   */
+  public static synchronized boolean pythonAvailable() {
     return s_sessionSingleton != null;
+  }
+
+  /**
+   * Returns true if the user-specified python environment/server (as specified
+   * by pythonCommand (and optional ownerID) is available.
+   * 
+   * @param pythonCommand command (either fully qualified path or that which is
+   *          in the PATH). This, plus the optional ownerID is used to lookup a
+   *          session/server.
+   * @param ownerID an optional ownerID string for identifying the session. This
+   *          can be used to restrict the session/server to one (or more)
+   *          clients (i.e. those with the ID "ownerID").
+   */
+  public static synchronized boolean pythonAvailable(String pythonCommand,
+    String ownerID) {
+    String key =
+      pythonCommand + (ownerID != null && ownerID.length() > 0 ? ownerID : "");
+    return m_pythonServers.containsKey(key);
+  }
+
+  /**
+   * Private constructor
+   *
+   * @param pythonCommand the command used to start python
+   * @param ownerID the (optional) owner ID of this server/session
+   * @param pathEntries optional additional entries that need to be in the PATH
+   *          in order for the python environment to work correctly
+   * @param debug true for debugging output
+   * @param defaultServer true if the default (i.e. python in the system PATH)
+   *          server is to be used
+   * @throws IOException if a problem occurs
+   */
+  private PythonSession(String pythonCommand, String ownerID,
+    String pathEntries, boolean debug, boolean defaultServer)
+    throws IOException {
+    m_debug = debug;
+
+    m_pythonCommand = pythonCommand;
+    String key =
+      pythonCommand + (ownerID != null && ownerID.length() > 0 ? ownerID : "");
+    m_sessionKey = key;
+    if (PythonSession.m_pythonServers.containsKey(m_sessionKey)) {
+      throw new IOException(
+        "A server session for " + m_sessionKey + " Already exists!");
+    }
+
+    if (!defaultServer && pathEntries != null && pathEntries.length() > 0) {
+      // use a shell/batch script to launch the server (so that we can
+      // set the path so that the python server works correctly)
+      String envCheckResults = writeAndLaunchPyCheck(pathEntries);
+      m_pythonEnvCheckResults.put(m_sessionKey, envCheckResults);
+      if (envCheckResults.length() < 5) {
+        // launch server
+        launchServerScript(pathEntries);
+        m_pythonServers.put(m_sessionKey, this);
+      }
+    } else {
+      String tester = WekaPackageManager.PACKAGES_DIR.getAbsolutePath()
+        + File.separator + "wekaPython" + File.separator + "resources"
+        + File.separator + "py" + File.separator + "pyCheck.py";
+
+      ProcessBuilder builder = new ProcessBuilder(pythonCommand, tester);
+      Process pyProcess = builder.start();
+      StringWriter writer = new StringWriter();
+      IOUtils.copy(pyProcess.getInputStream(), writer);
+      String envCheckResults = writer.toString();
+      m_shutdown = false;
+
+      m_pythonEnvCheckResults.put(m_sessionKey, envCheckResults);
+      if (envCheckResults.length() < 5) {
+        // launch server
+        launchServer(true);
+        m_pythonServers.put(m_sessionKey, this);
+
+        if (s_sessionSingleton == null && defaultServer) {
+          s_sessionSingleton = this;
+          s_pythonEnvCheckResults = envCheckResults;
+        }
+      }
+    }
   }
 
   /**
@@ -127,27 +277,9 @@ public class PythonSession {
    * @param debug true for debugging output
    * @throws IOException if a problem occurs
    */
-  private PythonSession(String pythonCommand, boolean debug) throws IOException {
-    m_debug = debug;
-    m_pythonCommand = pythonCommand;
-    s_sessionSingleton = null;
-    s_pythonEnvCheckResults = "";
-    String tester =
-      WekaPackageManager.PACKAGES_DIR.getAbsolutePath() + File.separator
-        + "wekaPython" + File.separator + "resources" + File.separator + "py"
-        + File.separator + "pyCheck.py";
-    ProcessBuilder builder = new ProcessBuilder(pythonCommand, tester);
-    Process pyProcess = builder.start();
-    StringWriter writer = new StringWriter();
-    IOUtils.copy(pyProcess.getInputStream(), writer);
-    s_pythonEnvCheckResults = writer.toString();
-    m_shutdown = false;
-
-    // launch the server socket and python server
-    if (s_pythonEnvCheckResults.length() < 5) {
-      launchServer(true);
-      s_sessionSingleton = this;
-    }
+  private PythonSession(String pythonCommand, boolean debug)
+    throws IOException {
+    this(pythonCommand, null, null, debug, true);
   }
 
   /**
@@ -159,16 +291,13 @@ public class PythonSession {
    */
   private synchronized PythonSession getSession(Object requester)
     throws WekaException {
-    if (s_sessionSingleton == null) {
-      throw new WekaException("Python not available!");
-    }
 
-    if (s_sessionHolder == requester) {
+    if (m_sessionHolder == requester) {
       return this;
     }
 
     m_mutex.safeLock();
-    s_sessionHolder = requester;
+    m_sessionHolder = requester;
     return this;
   }
 
@@ -178,32 +307,114 @@ public class PythonSession {
    * @param requester the requesting object
    */
   private void dropSession(Object requester) {
-    if (requester == s_sessionHolder) {
-      s_sessionHolder = null;
+    if (requester == m_sessionHolder) {
+      m_sessionHolder = null;
       m_mutex.unlock();
     }
   }
 
   /**
-   * Launches the python server. Performs some basic requirements checks for the
-   * python environment - e.g. python needs to have numpy, pandas and sklearn
-   * installed.
+   * Executes the python environment check script via a wrapping shell/batch script.
    *
-   * @param startPython true if the server is to actually be started. False is
-   *          really just for debugging/development where the server can be
-   *          manually started in a separate terminal
+   * @param pathEntries additional entries for the PATH that are required in order for
+   *                    python to execute correctly
+   * @return the result of executing the python environment check
    * @throws IOException if a problem occurs
    */
-  private void launchServer(boolean startPython) throws IOException {
+  private String writeAndLaunchPyCheck(String pathEntries) throws IOException {
+
+    String osType = System.getProperty("os.name");
+    boolean windows =
+      osType != null && osType.toLowerCase().contains("windows");
+
+    String script = getLaunchScript(pathEntries, "pyCheck.py", windows);
+
+    // System.err.println("**** Executing shell script: \n\n" + script);
+
+    String scriptPath =
+      File.createTempFile("nixtester_", windows ? ".bat" : ".sh").toString();
+    // System.err.println("Script path: " + scriptPath);
+
+    FileWriter fwriter = new FileWriter(scriptPath);
+    fwriter.write(script);
+    fwriter.flush();
+    fwriter.close();
+
+    if (!windows) {
+      Runtime.getRuntime().exec("chmod u+x " + scriptPath);
+    }
+    ProcessBuilder builder = new ProcessBuilder(scriptPath);
+    Process pyProcess = builder.start();
+    StringWriter writer = new StringWriter();
+    IOUtils.copy(pyProcess.getInputStream(), writer);
+
+    return writer.toString();
+  }
+
+  /**
+   * Generates a script (shell or batch) by which to execute a given python script.
+   *
+   * @param pathEntries additional PATH entries needed for python to execute correctly
+   * @param pyScriptName the name of the script (in wekaPython/resources/py) to execute
+   * @param windows true if we are running under Windows
+   * @param scriptArgs optional arguments for the python script
+   * @return the generated sh/bat script
+   */
+  private String getLaunchScript(String pathEntries, String pyScriptName,
+    boolean windows, Object... scriptArgs) {
+    String script = WekaPackageManager.PACKAGES_DIR.getAbsolutePath()
+      + File.separator + "wekaPython" + File.separator + "resources"
+      + File.separator + "py" + File.separator + pyScriptName;
+
+    String pathOriginal =
+      Environment.getSystemWide().getVariableValue(windows ? "Path" : "PATH");
+    if (pathOriginal == null) {
+      pathOriginal = "";
+    }
+
+    File pythFile = new File(m_pythonCommand);
+    String exeDir =
+      pythFile.getParent() != null ? pythFile.getParent().toString() : "";
+
+    String finalPath = pathEntries != null && pathEntries.length() > 0
+      ? pathEntries + File.pathSeparator + pathOriginal
+      : pathOriginal;
+
+    finalPath = exeDir.length() > 0 ? exeDir + File.pathSeparator + finalPath
+      : "" + finalPath;
+
+    StringBuilder sbuilder = new StringBuilder();
+    if (windows) {
+      sbuilder.append("@echo off").append("\n\n");
+      sbuilder.append("PATH=" + finalPath).append("\n\n");
+      sbuilder.append("python " + script);
+    } else {
+      sbuilder.append("#!/bin/sh").append("\n\n");
+      sbuilder.append("export PATH=" + finalPath).append("\n\n");
+      sbuilder.append("python " + script);
+    }
+
+    for (Object arg : scriptArgs) {
+      sbuilder.append(" ").append(arg.toString());
+    }
+    sbuilder.append("\n");
+
+    return sbuilder.toString();
+  }
+
+  /**
+   * Starts the server socket.
+   *
+   * @return the Thread that the server socket is waiting for a connection on.
+   * @throws IOException if a problem occurs
+   */
+  private Thread startServerSocket() throws IOException {
     if (m_debug) {
       System.err.println("Launching server socket...");
     }
     m_serverSocket = new ServerSocket(0);
-    m_serverSocket.setSoTimeout(10000);
-    int localPort = m_serverSocket.getLocalPort();
-    if (m_debug) {
-      System.err.println("Local port: " + localPort);
-    }
+    m_serverSocket.setSoTimeout(12000);
+
     Thread acceptThread = new Thread() {
       @Override
       public void run() {
@@ -216,21 +427,17 @@ public class PythonSession {
     };
     acceptThread.start();
 
-    if (startPython) {
-      String serverScript =
-        WekaPackageManager.PACKAGES_DIR.getAbsolutePath() + File.separator
-          + "wekaPython" + File.separator + "resources" + File.separator + "py"
-          + File.separator + "pyServer.py";
-      ProcessBuilder processBuilder =
-        new ProcessBuilder(m_pythonCommand, serverScript, "" + localPort,
-          m_debug ? "debug" : "");
-      m_serverProcess = processBuilder.start();
-    }
-    try {
-      acceptThread.join();
-    } catch (InterruptedException e) {
-    }
+    return acceptThread;
+  }
 
+  /**
+   * If the local socket could not be created, this method shuts down the
+   * server. Otherwise, a shutdown hook is added to bring the server down when
+   * the JVM exits.
+   * 
+   * @throws IOException if a problem occurs
+   */
+  private void checkLocalSocketAndCreateShutdownHook() throws IOException {
     if (m_localSocket == null) {
       shutdown();
       throw new IOException("Was unable to start python server");
@@ -246,6 +453,78 @@ public class PythonSession {
       };
       Runtime.getRuntime().addShutdownHook(m_shutdownHook);
     }
+  }
+
+  /**
+   * Launches the python server. Performs some basic requirements checks for the
+   * python environment - e.g. python needs to have numpy, pandas and sklearn
+   * installed.
+   *
+   * @param startPython true if the server is to actually be started. False is
+   *          really just for debugging/development where the server can be
+   *          manually started in a separate terminal
+   * @throws IOException if a problem occurs
+   */
+  private void launchServer(boolean startPython) throws IOException {
+    Thread acceptThread = startServerSocket();
+    int localPort = m_serverSocket.getLocalPort();
+
+    if (startPython) {
+      String serverScript = WekaPackageManager.PACKAGES_DIR.getAbsolutePath()
+        + File.separator + "wekaPython" + File.separator + "resources"
+        + File.separator + "py" + File.separator + "pyServer.py";
+      ProcessBuilder processBuilder = new ProcessBuilder(m_pythonCommand,
+        serverScript, "" + localPort, m_debug ? "debug" : "");
+      m_serverProcess = processBuilder.start();
+    }
+    try {
+      acceptThread.join();
+    } catch (InterruptedException e) {
+    }
+
+    checkLocalSocketAndCreateShutdownHook();
+  }
+
+  /**
+   * Launches the server using a shell/batch script generated on the fly. Used
+   * when the user supplies a path to a python executable and additional entries
+   * are needed in the PATH.
+   *
+   * @param pathEntries entries to prepend to the PATH
+   * @throws IOException if a problem occurs when launching the server
+   */
+  private void launchServerScript(String pathEntries) throws IOException {
+    String osType = System.getProperty("os.name");
+    boolean windows =
+      osType != null && osType.toLowerCase().contains("windows");
+
+    Thread acceptThread = startServerSocket();
+    String script = getLaunchScript(pathEntries, "pyServer.py", windows,
+      m_serverSocket.getLocalPort(), m_debug ? "debug" : "");
+    if (m_debug) {
+      System.err.println("Executing server launch script:\n\n" + script);
+    }
+
+    String scriptPath =
+      File.createTempFile("pyserver_", windows ? ".bat" : ".sh").toString();
+
+    FileWriter fwriter = new FileWriter(scriptPath);
+    fwriter.write(script);
+    fwriter.flush();
+    fwriter.close();
+
+    if (!windows) {
+      Runtime.getRuntime().exec("chmod u+x " + scriptPath);
+    }
+
+    ProcessBuilder processBuilder = new ProcessBuilder(scriptPath);
+    m_serverProcess = processBuilder.start();
+    try {
+      acceptThread.join();
+    } catch (InterruptedException e) {
+    }
+
+    checkLocalSocketAndCreateShutdownHook();
   }
 
   /**
@@ -269,8 +548,8 @@ public class PythonSession {
    *         retrieved in string form.
    * @throws WekaException if a problem occurs
    */
-  public PythonVariableType
-    getPythonVariableType(String varName, boolean debug) throws WekaException {
+  public PythonVariableType getPythonVariableType(String varName, boolean debug)
+    throws WekaException {
 
     try {
       return ServerUtils.getPythonVariableType(varName,
@@ -548,12 +827,12 @@ public class PythonSession {
               ServerUtils.receiveDebugBuffer(m_localSocket.getOutputStream(),
                 m_localSocket.getInputStream(), m_log, m_debug);
             if (outAndErr.get(0).length() > 0) {
-              System.err.println("Python debug std out:\n" + outAndErr.get(0)
-                + "\n");
+              System.err
+                .println("Python debug std out:\n" + outAndErr.get(0) + "\n");
             }
             if (outAndErr.get(1).length() > 0) {
-              System.err.println("Python debug std err:\n" + outAndErr.get(1)
-                + "\n");
+              System.err
+                .println("Python debug std err:\n" + outAndErr.get(1) + "\n");
             }
           }
           ServerUtils.sendServerShutdown(m_localSocket.getOutputStream());
@@ -567,6 +846,8 @@ public class PythonSession {
           m_serverSocket.close();
         }
         s_sessionSingleton = null;
+        m_pythonServers.remove(m_sessionKey);
+        m_pythonEnvCheckResults.remove(m_sessionKey);
       } catch (Exception ex) {
         ex.printStackTrace();
       }
@@ -574,8 +855,8 @@ public class PythonSession {
   }
 
   /**
-   * Initialize the session. This needs to be called exactly once in order to
-   * run checks and launch the server. Creates a session singleton.
+   * Initialize the default session. This needs to be called exactly once in
+   * order to run checks and launch the server. Creates a session singleton.
    *
    * @param pythonCommand the python command
    * @param debug true for debugging output
@@ -583,19 +864,51 @@ public class PythonSession {
    * @throws WekaException if there was a problem - missing packages in python,
    *           or python could not be started for some reason
    */
-  public static boolean initSession(String pythonCommand, boolean debug)
-    throws WekaException {
-    if (s_sessionSingleton != null) {
-      throw new WekaException("The python environment is already available!");
-    }
+  public static synchronized boolean initSession(String pythonCommand,
+    boolean debug) throws WekaException {
 
-    try {
-      new PythonSession(pythonCommand, debug);
-    } catch (IOException ex) {
-      throw new WekaException(ex);
+    if (s_sessionSingleton == null) {
+      try {
+        new PythonSession(pythonCommand, debug);
+      } catch (IOException ex) {
+        throw new WekaException(ex);
+      }
     }
 
     return s_pythonEnvCheckResults.length() < 5;
+  }
+
+  /**
+   * Initialize a server/session for a user-supplied python path and (optional)
+   * ownerID.
+   *
+   * @param pythonCommand command (either fully qualified path or that which is
+   *          in the PATH). This, plus the optional ownerID is used to lookup
+   *          and return a session/server.
+   * @param ownerID an optional ownerID string for acquiring the session. This
+   *          can be used to restrict the session/server to one (or more)
+   *          clients (i.e. those with the ID "ownerID").
+   * @param pathEntries optional entries that need to be in the PATH in order
+   *          for the python environment to work correctly
+   * @param debug true for debugging info
+   * @return true if the server launched successfully
+   * @throws WekaException if the requested session/server is not available (or
+   *           does not exist).
+   */
+  public static synchronized boolean initSession(String pythonCommand,
+    String ownerID, String pathEntries, boolean debug) throws WekaException {
+    String key =
+      pythonCommand + (ownerID != null && ownerID.length() > 0 ? ownerID : "");
+
+    if (!m_pythonServers.containsKey(key)) {
+      try {
+        new PythonSession(pythonCommand, ownerID, pathEntries, debug, false);
+      } catch (IOException ex) {
+        throw new WekaException(ex);
+      }
+    }
+
+    return m_pythonEnvCheckResults.get(key).length() < 5;
   }
 
   /**
@@ -608,23 +921,61 @@ public class PythonSession {
   }
 
   /**
+   * Gets the result of running the checks in python for the given python path +
+   * optional ownerID.
+   *
+   * @param pythonCommand command (either fully qualified path or that which is
+   *          in the PATH). This, plus the optional ownerID is used to lookup
+   *          and return a session/server.
+   * @param ownerID an optional ownerID string for acquiring the session. This
+   *          can be used to restrict the session/server to one (or more)
+   *          clients (i.e. those with the ID "ownerID").
+   * @return a string containing the possible errors
+   * @throws WekaException if the requested server does not exist
+   */
+  public static String getPythonEnvCheckResults(String pythonCommand,
+    String ownerID) throws WekaException {
+    String key =
+      pythonCommand + (ownerID != null && ownerID.length() > 0 ? ownerID : "");
+
+    if (!m_pythonEnvCheckResults.containsKey(key)) {
+      throw new WekaException("The specified server/environment (" + key
+        + ") does not seem to exist!");
+    }
+
+    return m_pythonEnvCheckResults.get(key);
+  }
+
+  /**
    * Some quick tests...
    *
    * @param args
    */
   public static void main(String[] args) {
+    String pythonCommand = "python"; // default - use the python in the PATH
+    String pathEntries = null;
+    if (args.length > 0) {
+      pythonCommand = args[0];
+    }
+    if (args.length > 1) {
+      pathEntries = args[1];
+    }
     try {
-      if (!PythonSession.initSession("python", true)) {
+      String temp = "myTempOwnerID";
+      if (!PythonSession.initSession(pythonCommand,
+        args.length > 0 ? temp : null, pathEntries, true)) {
         System.err.println("Initialization failed!");
         System.exit(1);
       }
 
-      String temp = "";
-      PythonSession session = PythonSession.acquireSession(temp);
+      PythonSession session = PythonSession.acquireSession(pythonCommand,
+        args.length > 0 ? temp : null, temp); // temp is requester too
       // String script =
-      // "import matplotlib.pyplot as plt\nfig, ax = plt.subplots( nrows=1, ncols=1 )\n"
+      // "import matplotlib.pyplot as plt\nfig, ax = plt.subplots( nrows=1,
+      // ncols=1 )\n"
       // + "ax.plot([0,1,2], [10,20,3])\n";
       // String script = "my_var = 'hello'\n";
+
       String script =
         "from sklearn import datasets\nfrom pandas import DataFrame\ndiabetes = "
           + "datasets.load_diabetes()\ndd = DataFrame(diabetes.data)\n";
@@ -633,14 +984,17 @@ public class PythonSession {
       script = "def foo():\n\treturn 100\n\nx = foo()\n";
       session.executeScript(script, true);
 
+      script = "import sklearn\nv=sklearn.__version__\n";
+      session.executeScript(script, true);
+
       // BufferedImage img = session.getImageFromPython("fig", true);
       List<String[]> vars = session.getVariableListFromPython(true);
       for (String[] v : vars) {
         System.err.println(v[0] + ":" + v[1]);
       }
-      
-      Object result = session.getVariableValueFromPythonAsJson("x", true);
-      System.err.println("Value of x: " + result.toString());
+
+      Object result = session.getVariableValueFromPythonAsJson("v", true);
+      System.err.println("Value of v: " + result.toString());
     } catch (Exception ex) {
       ex.printStackTrace();
     }

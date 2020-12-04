@@ -59,7 +59,7 @@
       optimize="${optimization}"
       debug="${debug}"
       deprecation="${deprecation}"
-      source="1.6" target="1.6">
+      source="1.8" target="1.8">
 
       <compilerarg value="${compilerarg}"/>
       <classpath refid="project.class.path" /> 
@@ -123,7 +123,7 @@
             optimize="${optimization}"
             debug="${debug}"
             deprecation="${deprecation}"
-            source="1.6" target="1.6">
+            source="1.8" target="1.8">
        <classpath refid="project.class.path" /> 
      </javac>
      <copy todir="${build}/testcases" >
@@ -178,8 +178,6 @@
     <copy file="Description.props"
           todir="${dist}/${package}"/>
     <copy file="GenericPropertiesCreator.props"
-          todir="${dist}/${package}"/>
-    <copy file="Beans.props"
           todir="${dist}/${package}"/>
     <copy file="Explorer.props"
           todir="${dist}/${package}"/>

@@ -45,6 +45,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -52,6 +53,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
@@ -96,6 +98,12 @@ public class PythonPanel extends JPanel {
 
   /** Checkbox to turn on debugging output */
   protected JCheckBox m_debug = new JCheckBox("Output debug info to log");
+
+  /** Text box for specifying path to a specific python executable */
+  protected JTextField m_pythonCommand = new JTextField(20);
+
+  /** Text box for specifying (optional) path entries that might be required for the python environment to execute correctly */
+  protected JTextField m_pyPathEntries = new JTextField(20);
 
   /**
    * Button for getting the value of a python variable (dataframe) as a set of
@@ -312,7 +320,24 @@ public class PythonPanel extends JPanel {
     JPanel butHolder1 = new JPanel();
     butHolder1.add(m_executeScriptBut);
     butHolder1.add(m_debug);
-    scriptHolder.add(butHolder1, BorderLayout.SOUTH);
+    JPanel pythonComHolder = new JPanel();
+    JLabel pyC = new JLabel("Python command");
+    pyC.setToolTipText("The path to the python exe (leave blank to use python in PATH)");
+    pythonComHolder.add(pyC);
+    pythonComHolder.add(m_pythonCommand);
+    JPanel pyPathHolder = new JPanel();
+    JLabel pyPathL = new JLabel("Python path");
+    pyPathL.setToolTipText("(Optional) path entries needed for python");
+    pyPathHolder.add(pyPathL);
+    pyPathHolder.add(m_pyPathEntries);
+    JPanel comAndPathHolder = new JPanel(new BorderLayout());
+    comAndPathHolder.add(pythonComHolder, BorderLayout.NORTH);
+    comAndPathHolder.add(pyPathHolder, BorderLayout.SOUTH);
+
+    JPanel southPan = new JPanel(new BorderLayout());
+    southPan.add(butHolder1, BorderLayout.SOUTH);
+    southPan.add(comAndPathHolder, BorderLayout.NORTH);
+    scriptHolder.add(southPan, BorderLayout.SOUTH);
     m_scriptEditor.setContentType("text/python");
     JPanel varHolder = new JPanel(new BorderLayout());
     varHolder.setBorder(BorderFactory.createTitledBorder("Python variables"));
@@ -440,7 +465,7 @@ public class PythonPanel extends JPanel {
    * @param displayLogger true if a log panel is to be displayed at the bottom
    *          of this panel. Not needed in the Explorer as we get passed the
    *          Explorer's global log
-   * @param explorer holds the Explorer instance (will be null if we're not
+   * @param explorer holds the Explorer instance (will be null if we'm_re not
    *          being used in the Explorer)
    */
   public PythonPanel(boolean displayLogger, Explorer explorer) {
@@ -521,10 +546,11 @@ public class PythonPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
           Runnable newT = new Runnable() {
-            public void run() {
-              PythonSession session;
+            @Override public void run() {
+              PythonSession session = null;
+              String pyCommand = m_pythonCommand.getText();
               try {
-                session = PythonSession.acquireSession(PythonPanel.this);
+                session = getSession(pyCommand);
                 List<String> outAndErr =
                   session.executeScript(m_scriptEditor.getText(),
                     m_debug.isSelected());
@@ -542,7 +568,7 @@ public class PythonPanel extends JPanel {
                 logMessage(null, ex);
                 m_logPanel.statusMessage("An error occurred. See log.");
               } finally {
-                PythonSession.releaseSession(PythonPanel.this);
+                releaseSession(pyCommand);
                 m_executeScriptBut.setEnabled(true);
                 revalidate();
               }
@@ -558,11 +584,13 @@ public class PythonPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
           PythonSession session;
+          String pyCommand = m_pythonCommand.getText();
           try {
-            session = PythonSession.acquireSession(PythonPanel.this);
-            if (m_logPanel != null) {
+            session = getSession(pyCommand);
+            // session = PythonSession.acquireSession(PythonPanel.this);
+            /* if (m_logPanel != null) {
               session.setLog(m_logPanel);
-            }
+            } */
             String varToGet = m_pyVarList.getSelectedValue();
             varToGet = varToGet.split(":")[0].trim();
             if (varToGet.length() > 0) {
@@ -575,7 +603,8 @@ public class PythonPanel extends JPanel {
             ex.printStackTrace();
             logMessage(null, ex);
           } finally {
-            PythonSession.releaseSession(PythonPanel.this);
+            releaseSession(pyCommand);
+            // PythonSession.releaseSession(PythonPanel.this);
           }
         }
       });
@@ -584,11 +613,13 @@ public class PythonPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
           PythonSession session;
+          String pyCommand = m_pythonCommand.getText();
           try {
-            session = PythonSession.acquireSession(PythonPanel.this);
-            if (m_logPanel != null) {
+            // session = PythonSession.acquireSession(PythonPanel.this);
+            session = getSession(pyCommand);
+            /* if (m_logPanel != null) {
               session.setLog(m_logPanel);
-            }
+            } */
             String varToGet = m_pyVarList.getSelectedValue();
             varToGet = varToGet.split(":")[0].trim();
             if (varToGet.length() > 0) {
@@ -620,7 +651,8 @@ public class PythonPanel extends JPanel {
             ex.printStackTrace();
             logMessage(null, ex);
           } finally {
-            PythonSession.releaseSession(PythonPanel.this);
+            releaseSession(pyCommand);
+            // PythonSession.releaseSession(PythonPanel.this);
           }
         }
       });
@@ -629,11 +661,13 @@ public class PythonPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
           PythonSession session;
+          String pyCommand = m_pythonCommand.getText();
           try {
-            session = PythonSession.acquireSession(PythonPanel.this);
-            if (m_logPanel != null) {
+            // session = PythonSession.acquireSession(PythonPanel.this);
+            session = getSession(pyCommand);
+            /* if (m_logPanel != null) {
               session.setLog(m_logPanel);
-            }
+            } */
             String varToGet = m_pyVarList.getSelectedValue();
             varToGet = varToGet.split(":")[0].trim();
             if (varToGet.length() > 0) {
@@ -663,7 +697,8 @@ public class PythonPanel extends JPanel {
             ex.printStackTrace();
             logMessage(null, ex);
           } finally {
-            PythonSession.releaseSession(PythonPanel.this);
+            releaseSession(pyCommand);
+            // PythonSession.releaseSession(PythonPanel.this);
           }
         }
       });
@@ -683,6 +718,62 @@ public class PythonPanel extends JPanel {
       textArea.setText(b.toString());
       m_outputTabs.addTab("Python not available", new JScrollPane(textArea));
       m_textOutputBuffers.add(textArea);
+    }
+  }
+
+  /**
+   * Get a PythonSession to use
+   *
+   * @param pyCommand either null (use python in PATH) or a user supplied path to a python executable
+   * @return a PythonSession, or null if the session/server could not be created.
+   * @throws WekaException if a problem occurs
+   */
+  protected PythonSession getSession(String pyCommand) throws WekaException {
+    PythonSession session = null;
+
+    if (pyCommand == null || pyCommand.length() == 0) {
+      session = PythonSession.acquireSession(PythonPanel.this);
+      logMessage("Using default python in PATH", null);
+    } else {
+      // first check availability
+      if (!PythonSession.pythonAvailable(pyCommand, null)) {
+        String pathEntries = m_pyPathEntries.getText() == null || m_pyPathEntries.getText().length() == 0
+          ? null : m_pyPathEntries.getText();
+        // try to create this environment/server
+        if (!PythonSession.initSession(pyCommand, null, pathEntries, m_debug.isSelected())) {
+          String envEvalResults = PythonSession.getPythonEnvCheckResults();
+          logMessage(envEvalResults, null);
+          return null;
+        }
+      }
+      session = PythonSession.acquireSession(pyCommand, null, PythonPanel.this);
+      logMessage("Using python: " + pyCommand, null);
+      if (m_logPanel != null) {
+        session.setLog(m_logPanel);
+      }
+    }
+    return session;
+  }
+
+  /**
+   * Release a python session
+   *
+   * @param pyCommand either null (the python in PATH) or a user supplied path to a python executable
+   */
+  protected void releaseSession(String pyCommand) {
+    if (pyCommand != null && pyCommand.length() > 0) {
+      try {
+        if (PythonSession.pythonAvailable(pyCommand, null)) {
+          PythonSession.releaseSession(pyCommand, null, PythonPanel.this);
+        }
+      } catch (WekaException wekaException) {
+        wekaException.printStackTrace();
+        logMessage(null, wekaException);
+      }
+    } else {
+      if (PythonSession.pythonAvailable()) {
+        PythonSession.releaseSession(PythonPanel.this);
+      }
     }
   }
 
@@ -769,12 +860,14 @@ public class PythonPanel extends JPanel {
    */
   public void sendInstancesToPython(Instances instances) throws WekaException {
     if (m_pyAvailable) {
-      PythonSession session;
+      PythonSession session = null;
+      String pyCommand = m_pythonCommand.getText();
       try {
-        session = PythonSession.acquireSession(this);
-        if (m_logPanel != null) {
+        // session = PythonSession.acquireSession(this);
+        session = getSession(pyCommand);
+        /* if (m_logPanel != null) {
           session.setLog(m_logPanel);
-        }
+        } */
         session.instancesToPython(instances, "py_data", m_debug.isSelected());
         if (m_logPanel != null) {
           m_logPanel.statusMessage("Transferred " + instances.relationName()
@@ -788,7 +881,8 @@ public class PythonPanel extends JPanel {
         ex.printStackTrace();
         logMessage(null, ex);
       } finally {
-        PythonSession.releaseSession(this);
+        releaseSession(pyCommand);
+        // PythonSession.releaseSession(this);
       }
     }
   }
@@ -838,8 +932,10 @@ public class PythonPanel extends JPanel {
    */
   protected void refreshVarList(PythonSession session) throws WekaException {
     boolean sessionSupplied = session != null;
+    String pyCommand = m_pythonCommand.getText();
     if (session == null) {
-      session = PythonSession.acquireSession(this);
+      // session = PythonSession.acquireSession(this);
+      session = getSession(pyCommand);
     }
 
     try {
@@ -856,7 +952,8 @@ public class PythonPanel extends JPanel {
       }
     } finally {
       if (!sessionSupplied) {
-        PythonSession.releaseSession(this);
+        // PythonSession.releaseSession(this);
+        releaseSession(pyCommand);
       }
     }
   }

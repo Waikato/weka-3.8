@@ -49,8 +49,8 @@ import weka.python.PythonSession;
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
  * @version $Revision: $
  */
-public class ScikitLearnClassifier extends AbstractClassifier implements
-  BatchPredictor, CapabilitiesHandler {
+public class ScikitLearnClassifier extends AbstractClassifier
+  implements BatchPredictor, CapabilitiesHandler {
 
   protected static final String TRAINING_DATA_ID = "scikit_classifier_training";
   protected static final String TEST_DATA_ID = "scikit_classifier_test";
@@ -80,12 +80,7 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
       "\tn_components=None, priors=None, shrinkage=None, solver='svd',\n"
         + "\tstore_covariance=False, tol=0.0001"),
     QDA("qda", true, false, true, false, "\tpriors=None, reg_param=0.0"),
-    LogisticRegression(
-      "linear_model",
-      true,
-      false,
-      true,
-      false,
+    LogisticRegression("linear_model", true, false, true, false,
       "\tC=1.0, class_weight=None, dual=False, fit_intercept=True,\n"
         + "\tintercept_scaling=1, max_iter=100, multi_class='ovr',\n"
         + "\tpenalty='l2', random_state=None, solver='liblinear', tol=0.0001,\n"
@@ -97,12 +92,7 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
         + "\tscoring=None, solver='lbfgs', tol=0.0001, verbose=0"),
     LinearRegression("linear_model", false, true, false, false,
       "\tcopy_X=True, fit_intercept=True, n_jobs=1, normalize=False"),
-    ARDRegression(
-      "linear_model",
-      false,
-      true,
-      false,
-      false,
+    ARDRegression("linear_model", false, true, false, false,
       "\talpha_1=1e-06, alpha_2=1e-06, compute_score=False, copy_X=True,\n"
         + "\tfit_intercept=True, lambda_1=1e-06, lambda_2=1e-06, n_iter=300,\n"
         + "\tnormalize=False, threshold_lambda=10000.0, tol=0.001, verbose=False"),
@@ -110,21 +100,11 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
       "\talpha_1=1e-06, alpha_2=1e-06, compute_score=False, copy_X=True,\n"
         + "\tfit_intercept=True, lambda_1=1e-06, lambda_2=1e-06, n_iter=300,\n"
         + "\tnormalize=False, tol=0.001, verbose=False"),
-    ElasticNet(
-      "linear_model",
-      false,
-      true,
-      false,
-      false,
+    ElasticNet("linear_model", false, true, false, false,
       "\talpha=1.0, copy_X=True, fit_intercept=True, l1_ratio=0.5,\n"
         + "\tmax_iter=1000, normalize=False, positive=False, precompute=False,\n"
         + "\trandom_state=None, selection='cyclic', tol=0.0001, warm_start=False"),
-    Lars(
-      "linear_model",
-      false,
-      true,
-      false,
-      false,
+    Lars("linear_model", false, true, false, false,
       "\tcopy_X=True, eps=2.2204460492503131e-16, fit_intercept=True,\n"
         + "\tfit_path=True, n_nonzero_coefs=500, normalize=True, precompute='auto',\n"
         + "\tverbose=False"),
@@ -132,31 +112,16 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
       "\tcopy_X=True, cv=None, eps=2.2204460492503131e-16, fit_intercept=True,\n"
         + "\tmax_iter=500, max_n_alphas=1000, n_jobs=1, normalize=True,\n"
         + "\tprecompute='auto', verbose=False"),
-    Lasso(
-      "linear_model",
-      false,
-      true,
-      false,
-      false,
+    Lasso("linear_model", false, true, false, false,
       "\talpha=1.0, copy_X=True, fit_intercept=True, max_iter=1000,\n"
         + "\tnormalize=False, positive=False, precompute=False, random_state=None,\n"
         + "\tselection='cyclic', tol=0.0001, warm_start=False"),
-    LassoCV(
-      "linear_model",
-      false,
-      true,
-      false,
-      false,
+    LassoCV("linear_model", false, true, false, false,
       "\talphas=None, copy_X=True, cv=None, eps=0.001, fit_intercept=True,\n"
         + "\tmax_iter=1000, n_alphas=100, n_jobs=1, normalize=False, positive=False,\n"
         + "\tprecompute='auto', random_state=None, selection='cyclic', tol=0.0001,\n"
         + "\tverbose=False"),
-    LassoLars(
-      "linear_model",
-      false,
-      true,
-      false,
-      false,
+    LassoLars("linear_model", false, true, false, false,
       "\talpha=1.0, copy_X=True, eps=2.2204460492503131e-16,\n"
         + "\tfit_intercept=True, fit_path=True, max_iter=500, normalize=True,\n"
         + "\tprecompute='auto', verbose=False"),
@@ -164,12 +129,7 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
       "\tcopy_X=True, cv=None, eps=2.2204460492503131e-16,\n"
         + "\tfit_intercept=True, max_iter=500, max_n_alphas=1000, n_jobs=1,\n"
         + "\tnormalize=True, precompute='auto', verbose=False"),
-    LassoLarsIC(
-      "linear_model",
-      false,
-      true,
-      false,
-      false,
+    LassoLarsIC("linear_model", false, true, false, false,
       "\tcopy_X=True, criterion='aic', eps=2.2204460492503131e-16,\n"
         + "\tfit_intercept=True, max_iter=500, normalize=True, precompute='auto',\n"
         + "\tverbose=False"),
@@ -207,12 +167,7 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
       "\talpha=0.0001, class_weight=None, " + "eta0=1.0, fit_intercept=True,\n"
         + "\tn_iter=5, n_jobs=1, penalty=None, random_state=0, shuffle=True,\n"
         + "\tverbose=0, warm_start=False"),
-    RANSACRegressor(
-      "linear_model",
-      false,
-      true,
-      false,
-      false,
+    RANSACRegressor("linear_model", false, true, false, false,
       "\tbase_estimator=None, is_data_valid=None, is_model_valid=None,\n"
         + "\tmax_trials=100, min_samples=None, random_state=None,\n"
         + "\tresidual_metric=None, residual_threshold=None, stop_n_inliers=inf,\n"
@@ -226,12 +181,7 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
     RidgeClassifierCV("linear_model", true, false, false, false,
       "alphas=array([  0.1,   1. ,  10. ]), class_weight=None,\n"
         + "\tcv=None, fit_intercept=True, normalize=False, scoring=None"),
-    RidgeCV(
-      "linear_model",
-      false,
-      true,
-      false,
-      false,
+    RidgeCV("linear_model", false, true, false, false,
       "alphas=array([  0.1,   1. ,  10. ]), cv=None, fit_intercept=True,\n"
         + "\tgcv_mode=None, normalize=False, scoring=None, store_cv_values=False"),
     SGDClassifier("linear_model", true, false, false, false,
@@ -254,12 +204,7 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
       "\tcopy_X=True, fit_intercept=True, max_iter=300,\n"
         + "\tmax_subpopulation=10000, n_jobs=1, n_subsamples=None,\n"
         + "\trandom_state=None, tol=0.001, verbose=False"),
-    GaussianProcess(
-      "gaussian_process",
-      false,
-      true,
-      false,
-      false,
+    GaussianProcess("gaussian_process", false, true, false, false,
       "\tregr='constant', corr='squared_exponential',\n"
         + "\tbeta0=None, storage_mode='full', verbose=False, theta0=0.1,\n "
         + "\tthetaL=None, thetaU=None, optimizer='fmin_cobyla', random_start=1,\n "
@@ -278,12 +223,7 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
       "algorithm='auto', leaf_size=30, metric='minkowski',\n"
         + "\tmetric_params=None, n_neighbors=5, p=2, weights='uniform'"),
     RadiusNeighborsRegressor("neighbors", false, true, false, false, ""),
-    SVC(
-      "svm",
-      true,
-      false,
-      false,
-      false,
+    SVC("svm", true, false, false, false,
       "\tC=1.0, cache_size=200, class_weight=None, coef0=0.0, degree=3, gamma=0.0,\n"
         + "\tkernel='rbf', max_iter=-1, probability=False, random_state=None,\n"
         + "\tshrinking=True, tol=0.001, verbose=False"),
@@ -296,12 +236,7 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
       "\tcache_size=200, coef0=0.0, degree=3, gamma=0.0, kernel='rbf',\n"
         + "\tmax_iter=-1, nu=0.5, probability=False, random_state=None,\n"
         + "\tshrinking=True, tol=0.001, verbose=False"),
-    SVR(
-      "svm",
-      false,
-      true,
-      false,
-      false,
+    SVR("svm", false, true, false, false,
       "\tC=1.0, cache_size=200, coef0=0.0, degree=3, epsilon=0.1, gamma=0.0,\n"
         + "\tkernel='rbf', max_iter=-1, shrinking=True, tol=0.001, verbose=False"),
     NuSVR("svm", false, true, false, false,
@@ -312,32 +247,35 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
         + "\tlearning_rate=1.0, n_estimators=50, random_state=None"),
     AdaBoostRegressor("ensemble", false, true, false, false,
       "\tbase_estimator=None, learning_rate=1.0, loss='linear',\n"
-        + "\tn_estimators=50, random_state=None"), BaggingClassifier(
-      "ensemble", true, false, true, false,
+        + "\tn_estimators=50, random_state=None"),
+    BaggingClassifier("ensemble", true, false, true, false,
       "\tbase_estimator=None, bootstrap=True,\n"
         + "\tbootstrap_features=False, max_features=1.0, max_samples=1.0,\n"
         + "\tn_estimators=10, n_jobs=1, oob_score=False, random_state=None,\n"
-        + "\tverbose=0"), BaggingRegressor("ensemble", false, true, false,
-      false, "\tbase_estimator=None, bootstrap=True,\n"
+        + "\tverbose=0"),
+    BaggingRegressor("ensemble", false, true, false, false,
+      "\tbase_estimator=None, bootstrap=True,\n"
         + "\tbootstrap_features=False, max_features=1.0, max_samples=1.0,\n"
         + "\tn_estimators=10, n_jobs=1, oob_score=False, random_state=None,\n"
-        + "\tverbose=0"), ExtraTreeClassifier("tree", true, false, true, false,
+        + "\tverbose=0"),
+    ExtraTreeClassifier("tree", true, false, true, false,
       "\tclass_weight=None, criterion='gini', max_depth=None,\n"
         + "\tmax_features='auto', max_leaf_nodes=None, min_samples_leaf=1,\n"
         + "\tmin_samples_split=2, min_weight_fraction_leaf=0.0,\n"
-        + "\trandom_state=None, splitter='random'"), ExtraTreeRegressor("tree",
-      false, true, false, false,
+        + "\trandom_state=None, splitter='random'"),
+    ExtraTreeRegressor("tree", false, true, false, false,
       "\tcriterion='mse', max_depth=None, max_features='auto',\n"
         + "\tmax_leaf_nodes=None, min_samples_leaf=1, min_samples_split=2,\n"
         + "\tmin_weight_fraction_leaf=0.0, random_state=None,\n"
-        + "\tsplitter='random'"), GradientBoostingClassifier("ensemble", true,
-      false, true, false, "\tinit=None, learning_rate=0.1, loss='deviance',\n"
+        + "\tsplitter='random'"),
+    GradientBoostingClassifier("ensemble", true, false, true, false,
+      "\tinit=None, learning_rate=0.1, loss='deviance',\n"
         + "\tmax_depth=3, max_features=None, max_leaf_nodes=None,\n"
         + "\tmin_samples_leaf=1, min_samples_split=2,\n"
         + "\tmin_weight_fraction_leaf=0.0, n_estimators=100,\n"
         + "\trandom_state=None, subsample=1.0, verbose=0,\n"
-        + "\twarm_start=False"), GradientBoostingRegressor("ensemble", false,
-      true, false, false,
+        + "\twarm_start=False"),
+    GradientBoostingRegressor("ensemble", false, true, false, false,
       "\talpha=0.9, init=None, learning_rate=0.1, loss='ls',\n"
         + "\tmax_depth=3, max_features=None, max_leaf_nodes=None,\n"
         + "\tmin_samples_leaf=1, min_samples_split=2,\n"
@@ -349,8 +287,9 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
         + "\tmin_samples_leaf=1, min_samples_split=2,\n"
         + "\tmin_weight_fraction_leaf=0.0, n_estimators=10, n_jobs=1,\n"
         + "\toob_score=False, random_state=None, verbose=0,\n"
-        + "\twarm_start=False"), RandomForestRegressor("ensemble", false, true,
-      false, false, "\tbootstrap=True, criterion='mse', max_depth=None,\n"
+        + "\twarm_start=False"),
+    RandomForestRegressor("ensemble", false, true, false, false,
+      "\tbootstrap=True, criterion='mse', max_depth=None,\n"
         + "\tmax_features='auto', max_leaf_nodes=None, min_samples_leaf=1,\n"
         + "\tmin_samples_split=2, min_weight_fraction_leaf=0.0,\n"
         + "\tn_estimators=10, n_jobs=1, oob_score=False, random_state=None,\n"
@@ -538,6 +477,20 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
   /** Class priors for use if there are numerical problems */
   protected double[] m_classPriors;
 
+  /** Default - use python in PATH */
+  protected String m_pyCommand = "default";
+
+  /** Default - use PATH as is for executing python */
+  protected String m_pyPath = "default";
+
+  /**
+   * Optional server name/ID by which to force a new server for this instance
+   * (or share amongst specific instances). The string "none" indicates no
+   * specific server name. Python command + server name uniquely identifies a
+   * server to use
+   */
+  protected String m_serverID = "none";
+
   /**
    * Global help info
    *
@@ -577,58 +530,88 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
   /**
    * Get the capabilities of this learner
    *
-   * @return the capabilities of this scheme
+   * @param doServerChecks true if the python server checks should be run
+   * @return the Capabilities of this learner
    */
-  @Override
-  public Capabilities getCapabilities() {
+  protected Capabilities getCapabilities(boolean doServerChecks) {
     Capabilities result = super.getCapabilities();
     result.disableAll();
 
-    boolean pythonAvailable = true;
-    if (!PythonSession.pythonAvailable()) {
-      // try initializing
+    if (doServerChecks) {
+      boolean pythonAvailable = true;
+      PythonSession session = null;
       try {
-        if (!PythonSession.initSession("python", getDebug())) {
-          pythonAvailable = false;
-        }
-      } catch (WekaException ex) {
+        session = getSession();
+      } catch (WekaException e) {
         pythonAvailable = false;
       }
-    }
 
-    if (pythonAvailable) {
+      if (pythonAvailable) {
+        if (m_scikitVersion < 0) {
+          // try and establish scikit-learn version
+          try {
+            // PythonSession session = PythonSession.acquireSession(this);
+            String script = "import sklearn\nskv = sklearn.__version__\n";
+            List<String> outAndErr = session.executeScript(script, getDebug());
 
-      if (m_scikitVersion < 0) {
-        // try and establish scikit-learn version
-        try {
-          PythonSession session = PythonSession.acquireSession(this);
-          String script = "import sklearn\nskv = sklearn.__version__\n";
-          List<String> outAndErr = session.executeScript(script, getDebug());
+            String versionNumber =
+              session.getVariableValueFromPythonAsPlainString("skv", getDebug());
+            if (versionNumber != null && versionNumber.length() > 0) {
+              // strip minor version
+              versionNumber = versionNumber.substring(0, versionNumber.lastIndexOf('.'));
+              m_scikitVersion = Double.parseDouble(versionNumber);
+            }
 
-          String versionNumber =
-            session.getVariableValueFromPythonAsPlainString("skv", getDebug());
-          if (versionNumber != null && versionNumber.length() > 0) {
-            // strip minor version
-            versionNumber =
-              versionNumber.substring(0, versionNumber.lastIndexOf('.'));
-            m_scikitVersion = Double.parseDouble(versionNumber);
-          }
-
-          // check for xgboost
-          m_xgboostInstalled = true;
-          script = "import xgboost\n";
-          outAndErr = session.executeScript(script, getDebug());
-          if (outAndErr.get(1).length() > 0) {
+            // check for xgboost
+            m_xgboostInstalled = true;
+            script = "import xgboost\n";
+            outAndErr = session.executeScript(script, getDebug());
+            if (outAndErr.get(1).length() > 0) {
+              m_xgboostInstalled = false;
+            }
+          } catch (WekaException e) {
             m_xgboostInstalled = false;
+            e.printStackTrace();
+          } finally {
+            // PythonSession.releaseSession(this);
+            try {
+              releaseSession();
+              session = null;
+            } catch (WekaException e) {
+              e.printStackTrace();
+            }
           }
+        }
+
+        result.enable(Capabilities.Capability.NUMERIC_ATTRIBUTES);
+        result.enable(Capabilities.Capability.NOMINAL_ATTRIBUTES);
+        result.enable(Capabilities.Capability.DATE_ATTRIBUTES);
+        result.enable(Capabilities.Capability.MISSING_VALUES);
+        result.enable(Capabilities.Capability.MISSING_CLASS_VALUES);
+        if (m_learner.isClassifier()) {
+          result.enable(Capabilities.Capability.BINARY_CLASS);
+          result.enable(Capabilities.Capability.NOMINAL_CLASS);
+        }
+        if (m_learner.isRegressor()) {
+          result.enable(Capabilities.Capability.NUMERIC_CLASS);
+        }
+        if (session != null) {
+          try {
+            releaseSession();
+          } catch (WekaException e) {
+            e.printStackTrace();
+          }
+        }
+      } else {
+        try {
+          System.err.println(
+            "The python environment is either not available or " + "is not configured correctly:\n\n"
+              + getPythonEnvCheckResults());
         } catch (WekaException e) {
-          m_xgboostInstalled = false;
           e.printStackTrace();
-        } finally {
-          PythonSession.releaseSession(this);
         }
       }
-
+    } else {
       result.enable(Capabilities.Capability.NUMERIC_ATTRIBUTES);
       result.enable(Capabilities.Capability.NOMINAL_ATTRIBUTES);
       result.enable(Capabilities.Capability.DATE_ATTRIBUTES);
@@ -641,13 +624,21 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
       if (m_learner.isRegressor()) {
         result.enable(Capabilities.Capability.NUMERIC_CLASS);
       }
-    } else {
-      System.err.println("The python environment is either not available or "
-        + "is not configured correctly:\n\n"
-        + PythonSession.getPythonEnvCheckResults());
     }
 
     return result;
+  }
+
+  /**
+   * Get the capabilities of this learner
+   *
+   * @return the capabilities of this scheme
+   */
+  @Override
+  public Capabilities getCapabilities() {
+    // note that we don't do the server checks from here because the GenericObjectEditor
+    // in the GUI calls this method for every character typed in a text field!
+    return getCapabilities(false);
   }
 
   /**
@@ -655,13 +646,11 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
    *
    * @return true if supervised nominal to binary is to be used
    */
-  @OptionMetadata(
-    displayName = "Use supervised nominal to binary conversion",
+  @OptionMetadata(displayName = "Use supervised nominal to binary conversion",
     description = "Use supervised nominal to binary conversion of nominal attributes.",
     commandLineParamName = "S", commandLineParamSynopsis = "-S",
     commandLineParamIsFlag = true, displayOrder = 3)
-  public
-    boolean getUseSupervisedNominalToBinary() {
+  public boolean getUseSupervisedNominalToBinary() {
     return m_useSupervisedNominalToBinary;
   }
 
@@ -671,8 +660,8 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
    * @param useSupervisedNominalToBinary true if supervised nominal to binary is
    *          to be used
    */
-  public void setUseSupervisedNominalToBinary(
-    boolean useSupervisedNominalToBinary) {
+  public void
+    setUseSupervisedNominalToBinary(boolean useSupervisedNominalToBinary) {
     m_useSupervisedNominalToBinary = useSupervisedNominalToBinary;
   }
 
@@ -681,8 +670,7 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
    *
    * @return the scikit-learn scheme to use
    */
-  @OptionMetadata(
-    displayName = "Scikit-learn learner",
+  @OptionMetadata(displayName = "Scikit-learn learner",
     description = "Scikit-learn learner to use.\nAvailable learners:\nDecisionTreeClassifier"
       + ", DecisionTreeRegressor, GaussianNB, MultinomialNB,"
       + "BernoulliNB, LDA, QDA, "
@@ -702,8 +690,7 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
       + "\n(default = DecisionTreeClassifier)",
     commandLineParamName = "learner",
     commandLineParamSynopsis = "-learner <learner name>", displayOrder = 1)
-  public
-    SelectedTag getLearner() {
+  public SelectedTag getLearner() {
     return new SelectedTag(m_learner.ordinal(), TAGS_LEARNER);
   }
 
@@ -727,14 +714,11 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
    *
    * @return the parameters to use
    */
-  @OptionMetadata(
-    displayName = "Learner parameters",
-    description = "learner parameters to use",
-    displayOrder = 2,
+  @OptionMetadata(displayName = "Learner parameters",
+    description = "learner parameters to use", displayOrder = 2,
     commandLineParamName = "parameters",
     commandLineParamSynopsis = "-parameters <comma-separated list of name=value pairs>")
-  public
-    String getLearnerOpts() {
+  public String getLearnerOpts() {
     return m_learnerOpts;
   }
 
@@ -752,16 +736,13 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
     m_batchPredictSize = size;
   }
 
-  @OptionMetadata(
-    displayName = "Batch size",
-    description = "The preferred "
-      + "number of instances to transfer into python for prediction\n(if operating"
-      + "in batch prediction mode). More or fewer instances than this will be "
-      + "accepted.", commandLineParamName = "batch",
+  @OptionMetadata(displayName = "Batch size", description = "The preferred "
+    + "number of instances to transfer into python for prediction\n(if operating"
+    + "in batch prediction mode). More or fewer instances than this will be "
+    + "accepted.", commandLineParamName = "batch",
     commandLineParamSynopsis = "-batch <batch size>", displayOrder = 4)
   @Override
-  public
-    String getBatchSize() {
+  public String getBatchSize() {
     return m_batchPredictSize;
   }
 
@@ -796,12 +777,11 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
   @OptionMetadata(
     displayName = "Try to continue after sys err output from script",
     description = "Try to continue after sys err output from script.\nSome schemes"
-      + " report warnings to the system error stream.", displayOrder = 5,
-    commandLineParamName = "continue-on-err",
+      + " report warnings to the system error stream.",
+    displayOrder = 5, commandLineParamName = "continue-on-err",
     commandLineParamSynopsis = "-continue-on-err",
     commandLineParamIsFlag = true)
-  public
-    boolean getContinueOnSysErr() {
+  public boolean getContinueOnSysErr() {
     return m_continueOnSysErr;
   }
 
@@ -832,12 +812,198 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
       + "cross-validation,\nbut prevents this classifier from being "
       + "used after deserialization.\nSome models in python (e.g. large "
       + "random forests) may exceed the maximum size for transfer\n("
-      + "currently Integer.MAX_VALUE bytes)", displayOrder = 6,
-    commandLineParamName = "dont-fetch-model",
+      + "currently Integer.MAX_VALUE bytes)",
+    displayOrder = 6, commandLineParamName = "dont-fetch-model",
     commandLineParamSynopsis = "-dont-fetch-model",
     commandLineParamIsFlag = true)
   public boolean getDontFetchModelFromPython() {
     return m_dontFetchModelFromPython;
+  }
+
+  /**
+   * Set the python command to use. Empty string or "default" indicate that the
+   * python present in the PATH should be used.
+   *
+   * @param pyCommand the path to the python executable (or empty
+   *          string/"default" to use python in the PATH)
+   */
+  public void setPythonCommand(String pyCommand) {
+    m_pyCommand = pyCommand;
+  }
+
+  /**
+   * Get the python command to use. Empty string or "default" indicate that the
+   * python present in the PATH should be used.
+   *
+   * @return the path to the python executable (or empty string/"default" to use
+   *         python in the PATH)
+   */
+  @OptionMetadata(displayName = "Python command ",
+    description = "Path to python executable ('default' to use python in the PATH)",
+    commandLineParamName = "py-command",
+    commandLineParamSynopsis = "-py-command <path to python executable>",
+    displayOrder = 7)
+  public String getPythonCommand() {
+    return m_pyCommand;
+  }
+
+  /**
+   * Set optional entries to prepend to the PATH so that python can execute
+   * correctly. Only applies when not using a default python.
+   *
+   * @param pythonPath additional entries to prepend to the PATH
+   */
+  public void setPythonPath(String pythonPath) {
+    m_pyPath = pythonPath;
+  }
+
+  /**
+   * Get optional entries to prepend to the PATH so that python can execute
+   * correctly. Only applies when not using a default python.
+   *
+   * @return additional entries to prepend to the PATH
+   */
+  @OptionMetadata(displayName = "Python path",
+    description = "Optional elements to prepend to the PATH so that python can "
+      + "execute correctly ('default' to use PATH as-is)",
+    commandLineParamName = "py-path",
+    commandLineParamSynopsis = "-py-path <path>", displayOrder = 8)
+  public String getPythonPath() {
+    return m_pyPath;
+  }
+
+  /**
+   * Set an optional server name by which to identify the python server to use.
+   * Can be used share a given server amongst selected instances or reserve a
+   * server specifically for this classifier. Python command + server name
+   * uniquely identifies the server to use.
+   *
+   * @param serverID the name of the server to use (or none for no specific
+   *          server name).
+   */
+  public void setServerID(String serverID) {
+    m_serverID = serverID;
+  }
+
+  /**
+   * Get an optional server name by which to identify the python server to use.
+   * Can be used share a given server amongst selected instances or reserve a
+   * server specifically for this classifier. Python command + server name
+   * uniquely identifies the server to use.
+   *
+   * @return the name of the server to use (or none) for no specific server
+   *         name.
+   */
+  @OptionMetadata(displayName = "Server name/ID",
+    description = "Optional name to identify this server, can be used to share "
+      + "a given server instance - default = 'none' (i.e. no server name)",
+    commandLineParamName = "server-name",
+    commandLineParamSynopsis = "-server-name <server name | none>",
+    displayOrder = 9)
+  public String getServerID() {
+    return m_serverID;
+  }
+
+  /**
+   * Gets a python session object to use for interacting with python
+   *
+   * @return a PythonSession object
+   * @throws WekaException if a problem occurs
+   */
+  protected PythonSession getSession() throws WekaException {
+    PythonSession session = null;
+    String pyCommand = m_pyCommand != null && m_pyCommand.length() > 0
+      && !m_pyCommand.equalsIgnoreCase("default") ? m_pyCommand : null;
+    String pyPath = m_pyPath != null && m_pyPath.length() > 0
+      && !m_pyPath.equalsIgnoreCase("default") ? m_pyPath : null;
+    String serverID = m_serverID != null && m_serverID.length() > 0
+      && !m_serverID.equalsIgnoreCase("none") ? m_serverID : null;
+    if (pyCommand != null) {
+      if (!PythonSession.pythonAvailable(pyCommand, serverID)) {
+        // try to create this environment/server
+        // System.err.println("Starting server: " + pyCommand + " " + serverID);
+        if (!PythonSession.initSession(pyCommand, serverID, pyPath, getDebug())) {
+          String envEvalResults =
+            PythonSession.getPythonEnvCheckResults(pyCommand, serverID);
+          throw new WekaException("Was unable to start python environment ("
+            + pyCommand + ")\n\n" + envEvalResults);
+        }
+      }
+      session = PythonSession.acquireSession(pyCommand, serverID, this);
+    } else {
+      if (!PythonSession.pythonAvailable()) {
+        // try initializing
+        if (!PythonSession.initSession("python", getDebug())) {
+          String envEvalResults = PythonSession.getPythonEnvCheckResults();
+          throw new WekaException(
+            "Was unable to start python environment:\n\n" + envEvalResults);
+        }
+      }
+      session = PythonSession.acquireSession(this);
+    }
+
+    return session;
+  }
+
+  /**
+   * Release the python session
+   *
+   * @throws WekaException if a problem occurs
+   */
+  protected void releaseSession() throws WekaException {
+    PythonSession session = null;
+    String pyCommand = m_pyCommand != null && m_pyCommand.length() > 0
+      && !m_pyCommand.equalsIgnoreCase("default") ? m_pyCommand : null;
+    String serverID = m_serverID != null && m_serverID.length() > 0
+      && !m_serverID.equalsIgnoreCase("none") ? m_serverID : null;
+    if (pyCommand != null) {
+      if (PythonSession.pythonAvailable(pyCommand, serverID)) {
+        PythonSession.releaseSession(pyCommand, serverID, this);
+      }
+    } else {
+      if (PythonSession.pythonAvailable()) {
+        PythonSession.releaseSession(this);
+      }
+    }
+  }
+
+  /**
+   * Get the results of executing the environment check in python
+   *
+   * @return the results of executing the environment check
+   * @throws WekaException if a problem occurs
+   */
+  protected String getPythonEnvCheckResults() throws WekaException {
+    String result = "";
+    String pyCommand = m_pyCommand != null && m_pyCommand.length() > 0
+      && !m_pyCommand.equalsIgnoreCase("default") ? m_pyCommand : null;
+    String serverID = m_serverID != null && m_serverID.length() > 0
+      && !m_serverID.equalsIgnoreCase("none") ? m_serverID : null;
+
+    if (pyCommand != null) {
+      result = PythonSession.getPythonEnvCheckResults(pyCommand, serverID);
+    } else {
+      result = PythonSession.getPythonEnvCheckResults();
+    }
+
+    return result;
+  }
+
+  /**
+   * Check to see if python is available for the user-specified environment.
+   *
+   * @return
+   */
+  protected boolean pythonAvailable() {
+    String pyCommand = m_pyCommand != null && m_pyCommand.length() > 0
+      && !m_pyCommand.equalsIgnoreCase("default") ? m_pyCommand : null;
+    String serverID = m_serverID != null && m_serverID.length() > 0
+      && !m_serverID.equalsIgnoreCase("none") ? m_serverID : null;
+
+    if (pyCommand != null) {
+      return PythonSession.pythonAvailable(pyCommand, serverID);
+    }
+    return PythonSession.pythonAvailable();
   }
 
   /**
@@ -849,16 +1015,10 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
   @Override
   public void buildClassifier(Instances data) throws Exception {
     m_pickledModel = null;
-    getCapabilities().testWithFail(data);
+    getCapabilities(true).testWithFail(data);
     m_zeroR = null;
-    if (!PythonSession.pythonAvailable()) {
-      // try initializing
-      if (!PythonSession.initSession("python", getDebug())) {
-        String envEvalResults = PythonSession.getPythonEnvCheckResults();
-        throw new Exception("Was unable to start python environment: "
-          + envEvalResults);
-      }
-    }
+
+    PythonSession session = getSession();
 
     if (m_learner == Learner.XGBClassifier && !m_xgboostInstalled) {
       throw new Exception(
@@ -874,9 +1034,9 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
     data.deleteWithMissingClass();
     m_zeroR = new ZeroR();
     m_zeroR.buildClassifier(data);
-    m_classPriors =
-      data.numInstances() > 0 ? m_zeroR.distributionForInstance(data
-        .instance(0)) : new double[data.classAttribute().numValues()];
+    m_classPriors = data.numInstances() > 0
+      ? m_zeroR.distributionForInstance(data.instance(0))
+      : new double[data.classAttribute().numValues()];
     if (data.numInstances() == 0 || data.numAttributes() == 1) {
       if (data.numInstances() == 0) {
         System.err
@@ -922,16 +1082,16 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
       if (learnerMethod.equalsIgnoreCase("MLPClassifier")
         || learnerMethod.equalsIgnoreCase("MLPRegressor")) {
         if (m_scikitVersion < 0.18) {
-          throw new Exception(learnerMethod
-            + " is not available in scikit-learn " + "version "
-            + m_scikitVersion + ". Version 0.18 or higher is " + "required.");
+          throw new Exception(
+            learnerMethod + " is not available in scikit-learn " + "version "
+              + m_scikitVersion + ". Version 0.18 or higher is " + "required.");
         }
       }
 
-      PythonSession session = PythonSession.acquireSession(this);
+      // PythonSession session = PythonSession.acquireSession(this);
       // transfer the data over to python
-      session
-        .instancesToPythonAsScikitLearn(data, TRAINING_DATA_ID, getDebug());
+      session.instancesToPythonAsScikitLearn(data, TRAINING_DATA_ID,
+        getDebug());
 
       StringBuilder learnScript = new StringBuilder();
       if (m_learner == Learner.XGBClassifier
@@ -951,14 +1111,14 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
       }
       if (m_learner == Learner.XGBClassifier
         || m_learner == Learner.XGBRegressor) {
-        learnScript.append(
-          MODEL_ID + m_modelHash + " = xgb." + learnerMethod + "("
-            + getLearnerOpts() + ")").append("\n");
+        learnScript.append(MODEL_ID + m_modelHash + " = xgb." + learnerMethod
+          + "(" + getLearnerOpts() + ")").append("\n");
       } else {
-        learnScript.append(
-          MODEL_ID + m_modelHash + " = " + learnerModule + "." + learnerMethod
-            + "(" + (getLearnerOpts().length() > 0 ? getLearnerOpts() : "")
-            + ")").append("\n");
+        learnScript
+          .append(MODEL_ID + m_modelHash + " = " + learnerModule + "."
+            + learnerMethod + "("
+            + (getLearnerOpts().length() > 0 ? getLearnerOpts() : "") + ")")
+          .append("\n");
       }
       learnScript.append(MODEL_ID + m_modelHash + ".fit(X,np.ravel(Y))")
         .append("\n");
@@ -973,15 +1133,13 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
         }
       }
 
-      m_learnerToString =
-        session.getVariableValueFromPythonAsPlainString(MODEL_ID + m_modelHash,
-          getDebug());
+      m_learnerToString = session.getVariableValueFromPythonAsPlainString(
+        MODEL_ID + m_modelHash, getDebug());
 
       if (!getDontFetchModelFromPython()) {
         // retrieve the model from python
-        m_pickledModel =
-          session.getVariableValueFromPythonAsPickledObject(MODEL_ID
-            + m_modelHash, getDebug());
+        m_pickledModel = session.getVariableValueFromPythonAsPickledObject(
+          MODEL_ID + m_modelHash, getDebug());
       }
 
       if (m_learner.removeModelFromPythonPostTrainPredict()) {
@@ -999,7 +1157,7 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
 
       // release session
     } finally {
-      PythonSession.releaseSession(this);
+      releaseSession();
     }
   }
 
@@ -1039,18 +1197,10 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
    */
   @Override
   @SuppressWarnings("unchecked")
-  public double[][] distributionsForInstances(Instances insts) throws Exception {
+  public double[][] distributionsForInstances(Instances insts)
+    throws Exception {
     if (m_zeroR != null) {
       return batchScoreWithZeroR(insts);
-    }
-
-    if (!PythonSession.pythonAvailable()) {
-      // try initializing
-      if (!PythonSession.initSession("python", getDebug())) {
-        String envEvalResults = PythonSession.getPythonEnvCheckResults();
-        throw new Exception("Was unable to start python environment: "
-          + envEvalResults);
-      }
     }
 
     insts = Filter.useFilter(insts, m_replaceMissing);
@@ -1064,8 +1214,9 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
     insts.setClassIndex(-1);
 
     double[][] results = null;
+    PythonSession session = null;
     try {
-      PythonSession session = PythonSession.acquireSession(this);
+      session = getSession();
       session.instancesToPythonAsScikitLearn(insts, TEST_DATA_ID, getDebug());
       StringBuilder predictScript = new StringBuilder();
 
@@ -1092,14 +1243,13 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
         || m_learner == Learner.XGBRegressor) {
         predictScript.append("import xgboost as xgb\n");
       } else {
-        predictScript.append(
-          "from sklearn." + learnerModule + " import " + learnerMethod).append(
-          "\n");
+        predictScript
+          .append("from sklearn." + learnerModule + " import " + learnerMethod)
+          .append("\n");
       }
-      predictScript.append(
-        "preds = " + MODEL_ID + m_modelHash + ".predict"
-          + (m_learner.producesProbabilities(m_learnerOpts) ? "_proba" : "")
-          + "(X)").append("\npreds = preds.tolist()\n");
+      predictScript.append("preds = " + MODEL_ID + m_modelHash + ".predict"
+        + (m_learner.producesProbabilities(m_learnerOpts) ? "_proba" : "")
+        + "(X)").append("\npreds = preds.tolist()\n");
       List<String> outAndErr =
         session.executeScript(predictScript.toString(), getDebug());
       if (outAndErr.size() == 2 && outAndErr.get(1).length() > 0) {
@@ -1110,9 +1260,8 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
         }
       }
 
-      List<Object> preds =
-        (List<Object>) session.getVariableValueFromPythonAsJson("preds",
-          getDebug());
+      List<Object> preds = (List<Object>) session
+        .getVariableValueFromPythonAsJson("preds", getDebug());
       if (preds == null) {
         throw new Exception("Was unable to retrieve predictions from python");
       }
@@ -1141,8 +1290,8 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
             Utils.normalize(newDist);
           } catch (IllegalArgumentException e) {
             newDist = m_classPriors;
-            System.err.println("WARNING: " + e.getMessage()
-              + ". Predicting using class priors");
+            System.err.println(
+              "WARNING: " + e.getMessage() + ". Predicting using class priors");
           }
           results[j++] = newDist;
         }
@@ -1189,7 +1338,10 @@ public class ScikitLearnClassifier extends AbstractClassifier implements
         }
       }
     } finally {
-      PythonSession.releaseSession(this);
+      if (session != null) {
+        releaseSession();
+      }
+      // PythonSession.releaseSession(this);
     }
 
     return results;

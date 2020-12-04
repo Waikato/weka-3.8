@@ -47,14 +47,30 @@ import java.util.List;
  * @version $Revision: $
  */
 @KFStep(name = "PythonScriptExecutor", category = "Scripting",
-  toolTipText = "CPython scripting step", iconPath = KFGUIConsts.BASE_ICON_PATH
-    + "PythonScriptExecutor.gif")
+  toolTipText = "CPython scripting step",
+  iconPath = KFGUIConsts.BASE_ICON_PATH + "PythonScriptExecutor.gif")
 public class PythonScriptExecutor extends BaseStep {
 
   private static final long serialVersionUID = -491300310357178468L;
 
   /** The script to execute */
   protected String m_pyScript = "";
+
+  /** Default - use python in PATH */
+  protected String m_pyCommand = "";
+
+  /**
+   * Optional path entries to include in PATH when using non-default python.
+   * E.g. Under Windows Anaconda [path to anaconda]/Library/bin is needed as
+   * well as path to python.exe
+   */
+  protected String m_pyPathEntries = "";
+
+  /**
+   * Optional server name/ID by which to force a new server for this instance
+   * (or share amongst specific instances).
+   */
+  protected String m_serverID = "";
 
   /** Script file overrides any encapsulated script */
   protected File m_scriptFile = new File("");
@@ -89,9 +105,9 @@ public class PythonScriptExecutor extends BaseStep {
   @OptionMetadata(
     displayName = "Try to continue after sys err output from script",
     description = "Try to continue after sys err output from script.\nSome schemes"
-      + " report warnings to the system error stream.", displayOrder = 5)
-  public
-    boolean getContinueOnSysErr() {
+      + " report warnings to the system error stream.",
+    displayOrder = 5)
+  public boolean getContinueOnSysErr() {
     return m_continueOnSysErr;
   }
 
@@ -114,6 +130,82 @@ public class PythonScriptExecutor extends BaseStep {
    */
   public boolean getDebug() {
     return m_debug;
+  }
+
+  /**
+   * Set the python command to use. Empty string or "default" indicate that the
+   * python present in the PATH should be used.
+   *
+   * @param pyCommand the path to the python executable (or empty
+   *          string/"default" to use python in the PATH)
+   */
+  @OptionMetadata(displayName = "Python command ",
+    description = "Path to python executable (empty string or 'default' to use python in the PATH)",
+    displayOrder = 1)
+  public void setPythonCommand(String pyCommand) {
+    m_pyCommand = pyCommand;
+  }
+
+  public String getPythonCommand() {
+    return m_pyCommand;
+  }
+
+  /**
+   * Set additional entries needed in the PATH for the specified python
+   * executable to work properly. Generally not needed for the default python
+   * (assuming python is in the PATH). E.g. Windows anaconda needs Library/bin
+   * to be in the path as well as the directory that contains the python.exe.
+   *
+   * @param pythonPathEntries additional PATH entries needed for python to
+   *          execute correctly
+   */
+  @OptionMetadata(displayName = "Python path",
+    description = "(Optional) path entries needed for python to execute correctly; "
+      + "only required when not using default python",
+    displayOrder = 2)
+  public void setPythonPathEntries(String pythonPathEntries) {
+    m_pyPathEntries = pythonPathEntries;
+  }
+
+  /**
+   * Get additional entries needed in the PATH for the specified python
+   * executable to work properly. Generally not needed for the default python
+   * (assuming python is in the PATH). E.g. Windows anaconda needs Library/bin
+   * to be in the path as well as the directory that contains the python.exe.
+   *
+   * @return additional PATH entries needed for python to execute correctly
+   */
+  public String getPythonPathEntries() {
+    return m_pyPathEntries;
+  }
+
+  /**
+   * Set an optional server name by which to identify the python server to use.
+   * Can be used share a given server amongst selected instances or reserve a
+   * server specifically for this classifier. Python command + server name
+   * uniquely identifies the server to use.
+   *
+   * @param serverID the name of the server to use (or leave blank for no
+   *          specific server name).
+   */
+  @OptionMetadata(displayName = "Server name/ID",
+    description = "Optional name to identify this server - can be used to share a given server instance",
+    displayOrder = 3)
+  public void setServerID(String serverID) {
+    m_serverID = serverID;
+  }
+
+  /**
+   * Get an optional server name by which to identify the python server to use.
+   * Can be used share a given server amongst selected instances or reserve a
+   * server specifically for this classifier. Python command + server name
+   * uniquely identifies the server to use.
+   *
+   * @return the name of the server to use (or leave blank for no specific
+   *         server name).
+   */
+  public String getServerID() {
+    return m_serverID;
   }
 
   /**
@@ -142,10 +234,10 @@ public class PythonScriptExecutor extends BaseStep {
    *
    * @param scriptFile the name of the script file to load at runtime
    */
-  @OptionMetadata(
-    displayName = "File to load script from",
+  @OptionMetadata(displayName = "File to load script from",
     description = "A file to load the python script from (if set takes precendence"
-      + "over any script from the editor", displayOrder = 1)
+      + "over any script from the editor",
+    displayOrder = 4)
   @FilePropertyMetadata(fileChooserDialogType = JFileChooser.OPEN_DIALOG,
     directoriesOnly = false)
   public void setScriptFile(File scriptFile) {
@@ -166,12 +258,10 @@ public class PythonScriptExecutor extends BaseStep {
    *
    * @param varsToGet a comma-separated list of variables to get from python
    */
-  @OptionMetadata(
-    displayName = "Variables to get from Python",
+  @OptionMetadata(displayName = "Variables to get from Python",
     description = "A comma-separated list of variables to retrieve from Python",
-    displayOrder = 2)
-  public
-    void setVariablesToGetFromPython(String varsToGet) {
+    displayOrder = 5)
+  public void setVariablesToGetFromPython(String varsToGet) {
     m_varsToGet = varsToGet;
   }
 
@@ -256,9 +346,11 @@ public class PythonScriptExecutor extends BaseStep {
           executeScript(session, script);
         }
       } finally {
-        if (PythonSession.pythonAvailable()) {
-          PythonSession.releaseSession(this);
-        }
+        releaseSession();
+        /*
+         * if (PythonSession.pythonAvailable()) {
+         * PythonSession.releaseSession(this); }
+         */
         getStepManager().finished();
       }
     }
@@ -326,20 +418,74 @@ public class PythonScriptExecutor extends BaseStep {
    * @throws WekaException if a problem occurs
    */
   protected PythonSession getSession() throws WekaException {
-    PythonSession session;
-    if (!PythonSession.pythonAvailable()) {
-      // try initializing
-      if (!PythonSession.initSession("python", getDebug())) {
-        String envEvalResults = PythonSession.getPythonEnvCheckResults();
-        throw new WekaException("Was unable to start python environment:\n\n"
-          + envEvalResults);
+    PythonSession session = null;
+    String pyCommand = m_pyCommand != null && m_pyCommand.length() > 0
+      && !m_pyCommand.equalsIgnoreCase("default")
+        ? getStepManager().environmentSubstitute(m_pyCommand)
+        : null;
+    String pathEntries = m_pyPathEntries != null && m_pyPathEntries.length() > 0
+      && !m_pyPathEntries.equalsIgnoreCase("none")
+        ? getStepManager().environmentSubstitute(m_pyPathEntries)
+        : null;
+    String serverID = m_serverID != null && m_serverID.length() > 0
+      && !m_serverID.equalsIgnoreCase("none")
+        ? getStepManager().environmentSubstitute(m_serverID)
+        : null;
+    if (pyCommand != null && pyCommand.length() > 0) {
+      if (!PythonSession.pythonAvailable(pyCommand, serverID)) {
+        // try to create this environment/server
+        if (!PythonSession.initSession(pyCommand, serverID, pathEntries,
+          m_debug)) {
+          String envEvalResults =
+            PythonSession.getPythonEnvCheckResults(pyCommand, serverID);
+          throw new WekaException("Was unable to start python environment ("
+            + pyCommand + ")\n\n" + envEvalResults);
+        }
       }
+      session = PythonSession.acquireSession(pyCommand, serverID, this);
+      getStepManager().logBasic("Using python: "
+        + (serverID != null ? serverID + ":" : "") + pyCommand);
+    } else {
+      if (!PythonSession.pythonAvailable()) {
+        // try initializing
+        if (!PythonSession.initSession("python", getDebug())) {
+          String envEvalResults = PythonSession.getPythonEnvCheckResults();
+          throw new WekaException(
+            "Was unable to start python environment:\n\n" + envEvalResults);
+        }
+      }
+      session = PythonSession.acquireSession(this);
     }
 
-    session = PythonSession.acquireSession(this);
     session.setLog(getStepManager().getLog());
 
     return session;
+  }
+
+  /**
+   * Release the python session
+   *
+   * @throws WekaException if a problem occurs
+   */
+  protected void releaseSession() throws WekaException {
+    PythonSession session = null;
+    String pyCommand = m_pyCommand != null && m_pyCommand.length() > 0
+      && !m_pyCommand.equalsIgnoreCase("default")
+        ? getStepManager().environmentSubstitute(m_pyCommand)
+        : null;
+    String serverID = m_serverID != null && m_serverID.length() > 0
+      && !m_serverID.equalsIgnoreCase("none")
+        ? getStepManager().environmentSubstitute(m_serverID)
+        : null;
+    if (pyCommand != null && pyCommand.length() > 0) {
+      if (PythonSession.pythonAvailable(pyCommand, serverID)) {
+        PythonSession.releaseSession(pyCommand, serverID, this);
+      }
+    } else {
+      if (PythonSession.pythonAvailable()) {
+        PythonSession.releaseSession(this);
+      }
+    }
   }
 
   /**
@@ -374,9 +520,8 @@ public class PythonScriptExecutor extends BaseStep {
         for (String v : vars) {
           if (!session.checkIfPythonVariableIsSet(v.trim(), getDebug())) {
             if (m_continueOnSysErr) {
-              getStepManager().logWarning(
-                "Requested output variable '" + v + "' does not seem "
-                  + "to be set in python");
+              getStepManager().logWarning("Requested output variable '" + v
+                + "' does not seem " + "to be set in python");
             } else {
               throw new WekaException("Requested output variable '" + v
                 + "' does not seem to be set in python");
@@ -390,15 +535,15 @@ public class PythonScriptExecutor extends BaseStep {
         for (i = 0; i < vars.length; i++) {
           if (ok[i]) {
             if (getDebug()) {
-              getStepManager().logDetailed(
-                "Retrieving variable '" + vars[i].trim()
+              getStepManager()
+                .logDetailed("Retrieving variable '" + vars[i].trim()
                   + "' from python. Type: " + types[i].toString());
             }
             if (types[i] == PythonSession.PythonVariableType.DataFrame) {
               // converting to instances takes precedence over textual form
               // if we have data set listeners
-              if (getStepManager().numOutgoingConnectionsOfType(
-                StepManager.CON_DATASET) > 0) {
+              if (getStepManager()
+                .numOutgoingConnectionsOfType(StepManager.CON_DATASET) > 0) {
                 Instances pyFrame =
                   session.getDataFrameAsInstances(vars[i].trim(), getDebug());
                 Data output = new Data(StepManager.CON_DATASET, pyFrame);
@@ -406,8 +551,8 @@ public class PythonScriptExecutor extends BaseStep {
                 output.setPayloadElement(StepManager.CON_AUX_DATA_MAX_SET_NUM,
                   1);
                 getStepManager().outputData(output);
-              } else if (getStepManager().numOutgoingConnectionsOfType(
-                StepManager.CON_TEXT) > 0) {
+              } else if (getStepManager()
+                .numOutgoingConnectionsOfType(StepManager.CON_TEXT) > 0) {
                 String textPyFrame =
                   session.getVariableValueFromPythonAsPlainString(
                     vars[i].trim(), getDebug());
@@ -417,8 +562,8 @@ public class PythonScriptExecutor extends BaseStep {
                 getStepManager().outputData(output);
               }
             } else if (types[i] == PythonSession.PythonVariableType.Image) {
-              if (getStepManager().numOutgoingConnectionsOfType(
-                StepManager.CON_IMAGE) > 0) {
+              if (getStepManager()
+                .numOutgoingConnectionsOfType(StepManager.CON_IMAGE) > 0) {
                 BufferedImage image =
                   session.getImageFromPython(vars[i].trim(), getDebug());
                 Data output = new Data(StepManager.CON_IMAGE, image);
@@ -428,8 +573,8 @@ public class PythonScriptExecutor extends BaseStep {
               }
             } else if (types[i] == PythonSession.PythonVariableType.String
               || types[i] == PythonSession.PythonVariableType.Unknown) {
-              if (getStepManager().numOutgoingConnectionsOfType(
-                StepManager.CON_TEXT) > 0) {
+              if (getStepManager()
+                .numOutgoingConnectionsOfType(StepManager.CON_TEXT) > 0) {
                 String varAsText =
                   session.getVariableValueFromPythonAsPlainString(
                     vars[i].trim(), getDebug());
@@ -447,16 +592,17 @@ public class PythonScriptExecutor extends BaseStep {
         if (session != null) {
           getStepManager().logBasic("Getting debug info....");
           List<String> outAndErr = session.getPythonDebugBuffer(getDebug());
-          getStepManager().logBasic(
-            "System output from python:\n" + outAndErr.get(0));
-          getStepManager().logBasic(
-            "System err from python:\n" + outAndErr.get(1));
+          getStepManager()
+            .logBasic("System output from python:\n" + outAndErr.get(0));
+          getStepManager()
+            .logBasic("System err from python:\n" + outAndErr.get(1));
         }
 
       }
       getStepManager().logBasic("Releasing python session");
     }
-    PythonSession.releaseSession(this);
+    // PythonSession.releaseSession(this);
+    releaseSession();
   }
 
   @Override
