@@ -366,12 +366,23 @@
     <delete dir="${temp}/nsis"/>
     <mkdir dir="${temp}/weka-${release}/jre"/>
     <untar src="${jre-linux}" dest="${temp}/weka-${release}/jre" compression="gzip"/>
+    <chmod dir="${temp}/weka-${release}/jre" perm="ugo+rx" includes="**/bin/*"/>
     <copy file="${weka}/src/main/scripts/weka.sh" tofile="${temp}/weka-${release}/weka.sh"/>
     <chmod file="${temp}/weka-${release}/weka.sh" perm="ugo+rx"/>
     <echo message="Making weka-${release}-${jvm-vendor}-linux.zip ..."/>
+    <script language="groovy">
+      jre = new java.io.File(project.getProperty('jre-linux'));
+      jreName = jre.getName();
+      jreName = jreName.replace(".tar.gz", "");
+      project.setProperty('jre-linux-name', jreName);
+    </script>
     <zip destfile="${dist}/weka-${release}-${jvm-vendor}-linux.zip" basedir="${temp}">
       <include name="**/*"/>
+      <!-- excludes are needed here so that these two don't get included twice in the zip file -->
+      <exclude name="weka-${release}/weka.sh"/>
+      <exclude name="weka-${release}/jre/${jre-linux-name}/bin/java"/>
       <zipfileset dir="${temp}/weka-${release}" includes="weka.sh" fullpath="weka-${release}/weka.sh" filemode="755"/>
+      <zipfileset dir="${temp}/weka-${release}/jre/${jre-linux-name}/bin" includes="java" fullpath="weka-${release}/jre/${jre-linux-name}/bin/java" filemode="755"/>
     </zip>
   </target> 
 
@@ -444,7 +455,7 @@
     </copy>    -->
   </target>
 
-  <target name="installers_no_junit" depends="clean, release_base_zip_no_junit, win_installers, osx_installer, linux_archive" description="Make a release and create installers without running unit tests. Default OS is OSX (add -Dos=linux to build Mac dmg file under Linux with genisoimage). Run with -Drelease=X-Y-Z -Dversion=X.Y.Z -Djre=&lt;path to JRE zip to unpack in Weka windows install directory&gt; -Dlinux-jre=&lt;path to a linux JRE tgz to include in the linux archive -Djvm-vendor=JVM vendor (e.g. -Djvm-vendor=azul-zulu) -Dmakensis=&lt;absolute path to the makensis executable&gt; (only needed if makensis is not in the PATH). Note that Mac application for oracle requires Java >=1.8 and the bundleapp taskdef at the beginning of this build script to be uncommented. Also supply the location of the OSX JRE to embed (e.g. -Dosx-jre-home=path to JRE). Note that the OSX JRE needs to be in Mac application format (i.e. has a ./Contents/... directory structure including Info.plist file)">
+  <target name="installers_no_junit" depends="clean, release_base_zip_no_junit, win_installers, osx_installer, linux_archive" description="Make a release and create installers without running unit tests. Default OS is OSX (add -Dos=linux to build Mac dmg file under Linux with genisoimage). Run with -Drelease=X-Y-Z -Dversion=X.Y.Z -Djre=&lt;path to JRE zip to unpack in Weka windows install directory&gt; -Djre-linux=&lt;path to a linux JRE tgz to include in the linux archive -Djvm-vendor=JVM vendor (e.g. -Djvm-vendor=azul-zulu) -Dmakensis=&lt;absolute path to the makensis executable&gt; (only needed if makensis is not in the PATH). Note that Mac application for oracle requires Java >=1.8 and the bundleapp taskdef at the beginning of this build script to be uncommented. Also supply the location of the OSX JRE to embed (e.g. -Dosx-jre-home=path to JRE). Note that the OSX JRE needs to be in Mac application format (i.e. has a ./Contents/... directory structure including Info.plist file)">
     <echo message="Cleaning up..."/>
     <delete dir="${temp}"/>
   </target>
