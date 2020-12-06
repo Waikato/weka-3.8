@@ -1519,7 +1519,8 @@ public class ClassifierPanelRemoteLauncher extends JPanel implements
         m_classifierPanel.isSelectedOutputPerClassStats();
       boolean outputSummary = true;
       boolean outputEntropy = m_classifierPanel.isSelectedOutputEntropy();
-      boolean saveVis = m_classifierPanel.isSelectedStorePredictions();
+      //      boolean saveVis = m_classifierPanel.isSelectedStorePredictions();
+      boolean saveVis = m_classifierPanel.isSelectedStoreTestDataAndPredictions();
       boolean outputPredictionsText =
         m_classifierPanel.getClassificationOutputFormatter().getClass() != Null.class;
 
