@@ -70,10 +70,10 @@ public class ConverterFileChooser extends WekaFileChooser {
   public final static int SAVER_DIALOG = 2;
 
   /** the file filters for the loaders. */
-  protected static Vector<ExtensionFileFilter> m_LoaderFileFilters;
+  protected static Vector<ExtensionFileFilterWithClass> m_LoaderFileFilters;
 
   /** the file filters for the savers. */
-  protected static Vector<ExtensionFileFilter> m_SaverFileFilters;
+  protected static Vector<ExtensionFileFilterWithClass> m_SaverFileFilters;
 
   /** the type of dialog to display. */
   protected int m_DialogType;
@@ -203,21 +203,20 @@ public class ConverterFileChooser extends WekaFileChooser {
    * @return the filtered list of filters
    * @see #m_CoreConvertersOnly
    */
-  protected Vector<ExtensionFileFilter> filterNonCoreLoaderFileFilters(
-    Vector<ExtensionFileFilter> list) {
-    Vector<ExtensionFileFilter> result;
+  protected Vector<ExtensionFileFilterWithClass> filterNonCoreLoaderFileFilters(
+    Vector<ExtensionFileFilterWithClass> list) {
+    Vector<ExtensionFileFilterWithClass> result;
     int i;
-    ExtensionFileFilter filter;
+    ExtensionFileFilterWithClass filter;
     AbstractLoader loader;
 
     if (!getCoreConvertersOnly()) {
       result = list;
     } else {
-      result = new Vector<ExtensionFileFilter>();
+      result = new Vector<ExtensionFileFilterWithClass>();
       for (i = 0; i < list.size(); i++) {
         filter = list.get(i);
-        loader = ConverterUtils
-          .getLoaderForExtension(filter.getExtensions()[0]);
+        loader = (AbstractLoader) filter.newInstance();
         if (ConverterResources.isCoreFileLoader(loader.getClass().getName())) {
           result.add(filter);
         }
@@ -234,20 +233,20 @@ public class ConverterFileChooser extends WekaFileChooser {
    * @return the filtered list of filters
    * @see #m_CoreConvertersOnly
    */
-  protected Vector<ExtensionFileFilter> filterNonCoreSaverFileFilters(
-    Vector<ExtensionFileFilter> list) {
-    Vector<ExtensionFileFilter> result;
+  protected Vector<ExtensionFileFilterWithClass> filterNonCoreSaverFileFilters(
+    Vector<ExtensionFileFilterWithClass> list) {
+    Vector<ExtensionFileFilterWithClass> result;
     int i;
-    ExtensionFileFilter filter;
+    ExtensionFileFilterWithClass filter;
     AbstractSaver saver;
 
     if (!getCoreConvertersOnly()) {
       result = list;
     } else {
-      result = new Vector<ExtensionFileFilter>();
+      result = new Vector<ExtensionFileFilterWithClass>();
       for (i = 0; i < list.size(); i++) {
         filter = list.get(i);
-        saver = ConverterUtils.getSaverForExtension(filter.getExtensions()[0]);
+        saver = (AbstractSaver) filter.newInstance();
         if (ConverterResources.isCoreFileSaver(saver.getClass().getName())) {
           result.add(filter);
         }
@@ -264,17 +263,17 @@ public class ConverterFileChooser extends WekaFileChooser {
    * @param list the filters to check
    * @return the filtered list of filters
    */
-  protected Vector<ExtensionFileFilter> filterSaverFileFilters(
-    Vector<ExtensionFileFilter> list) {
-    Vector<ExtensionFileFilter> result;
+  protected Vector<ExtensionFileFilterWithClass> filterSaverFileFilters(
+    Vector<ExtensionFileFilterWithClass> list) {
+    Vector<ExtensionFileFilterWithClass> result;
     int i;
-    ExtensionFileFilter filter;
+    ExtensionFileFilterWithClass filter;
     AbstractSaver saver;
 
     if (m_CapabilitiesFilter == null) {
       result = list;
     } else {
-      result = new Vector<ExtensionFileFilter>();
+      result = new Vector<ExtensionFileFilterWithClass>();
 
       for (i = 0; i < list.size(); i++) {
         filter = list.get(i);
@@ -289,7 +288,7 @@ public class ConverterFileChooser extends WekaFileChooser {
   }
 
   /**
-   * initializes the ExtensionFileFilters.
+   * initializes the ExtensionFileFilterWithClasss.
    * 
    * @param loader if true then the loader filter are initialized
    * @param classnames the classnames of the converters
@@ -302,12 +301,12 @@ public class ConverterFileChooser extends WekaFileChooser {
     String[] ext;
     String desc;
     FileSourcedConverter converter;
-    ExtensionFileFilter filter;
+    ExtensionFileFilterWithClass filter;
 
     if (loader) {
-      m_LoaderFileFilters = new Vector<ExtensionFileFilter>();
+      m_LoaderFileFilters = new Vector<ExtensionFileFilterWithClass>();
     } else {
-      m_SaverFileFilters = new Vector<ExtensionFileFilter>();
+      m_SaverFileFilters = new Vector<ExtensionFileFilterWithClass>();
     }
 
     for (i = 0; i < classnames.size(); i++) {
@@ -333,12 +332,12 @@ public class ConverterFileChooser extends WekaFileChooser {
       // loader?
       if (loader) {
         for (n = 0; n < ext.length; n++) {
-          filter = new ExtensionFileFilter(ext[n], desc + " (*" + ext[n] + ")");
+          filter = new ExtensionFileFilterWithClass(ext[n], desc + " (*" + ext[n] + ")", cls);
           m_LoaderFileFilters.add(filter);
         }
       } else {
         for (n = 0; n < ext.length; n++) {
-          filter = new ExtensionFileFilter(ext[n], desc + " (*" + ext[n] + ")");
+          filter = new ExtensionFileFilterWithClass(ext[n], desc + " (*" + ext[n] + ")", cls);
           m_SaverFileFilters.add(filter);
         }
       }
@@ -351,7 +350,7 @@ public class ConverterFileChooser extends WekaFileChooser {
    * @param dialogType the type of dialog to setup the GUI for
    */
   protected void initGUI(int dialogType) {
-    Vector<ExtensionFileFilter> list;
+    Vector<ExtensionFileFilterWithClass> list;
     int i;
     boolean acceptAll;
 
@@ -526,9 +525,9 @@ public class ConverterFileChooser extends WekaFileChooser {
 
     // do we have to add the extension?
     if ((result == APPROVE_OPTION) && (getSelectedFile().isFile())) {
-      if (getFileFilter() instanceof ExtensionFileFilter) {
+      if (getFileFilter() instanceof ExtensionFileFilterWithClass) {
         String filename = getSelectedFile().getAbsolutePath();
-        String[] extensions = ((ExtensionFileFilter) getFileFilter())
+        String[] extensions = ((ExtensionFileFilterWithClass) getFileFilter())
           .getExtensions();
         if (!filename.endsWith(extensions[0])) {
           filename += extensions[0];
@@ -600,9 +599,9 @@ public class ConverterFileChooser extends WekaFileChooser {
 
     // do we have to add the extension?
     if (result == APPROVE_OPTION) {
-      if (getFileFilter() instanceof ExtensionFileFilter) {
+      if (getFileFilter() instanceof ExtensionFileFilterWithClass) {
         String filename = getSelectedFile().getAbsolutePath();
-        String[] extensions = ((ExtensionFileFilter) getFileFilter())
+        String[] extensions = ((ExtensionFileFilterWithClass) getFileFilter())
           .getExtensions();
         if (!filename.endsWith(extensions[0])) {
           filename += extensions[0];
@@ -697,7 +696,6 @@ public class ConverterFileChooser extends WekaFileChooser {
    * sets the current converter according to the current filefilter.
    */
   protected void updateCurrentConverter() {
-    String[] extensions;
     Object newConverter;
 
     if (getFileFilter() == null) {
@@ -706,12 +704,7 @@ public class ConverterFileChooser extends WekaFileChooser {
 
     if (!isAcceptAllFileFilterUsed()) {
       // determine current converter
-      extensions = ((ExtensionFileFilter) getFileFilter()).getExtensions();
-      if (m_DialogType == LOADER_DIALOG) {
-        newConverter = ConverterUtils.getLoaderForExtension(extensions[0]);
-      } else {
-        newConverter = ConverterUtils.getSaverForExtension(extensions[0]);
-      }
+      newConverter = ((ExtensionFileFilterWithClass) getFileFilter()).newInstance();
 
       try {
         if (m_CurrentConverter == null) {
@@ -738,6 +731,7 @@ public class ConverterFileChooser extends WekaFileChooser {
   protected void configureCurrentConverter(int dialogType) {
     String filename;
     File currFile;
+    ExtensionFileFilterWithClass filter;
 
     if ((getSelectedFile() == null) || (getSelectedFile().isDirectory())) {
       return;
@@ -746,10 +740,11 @@ public class ConverterFileChooser extends WekaFileChooser {
     filename = getSelectedFile().getAbsolutePath();
 
     if (m_CurrentConverter == null) {
+      filter = (ExtensionFileFilterWithClass) getFileFilter();
       if (dialogType == LOADER_DIALOG) {
-        m_CurrentConverter = ConverterUtils.getLoaderForFile(filename);
+        m_CurrentConverter = filter.newInstance();
       } else if (dialogType == SAVER_DIALOG) {
-        m_CurrentConverter = ConverterUtils.getSaverForFile(filename);
+        m_CurrentConverter = filter.newInstance();
       } else {
         throw new IllegalStateException("Cannot determine loader/saver!");
       }

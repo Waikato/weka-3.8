@@ -322,7 +322,7 @@ public class RunPanel
 		   +"complete...");
       }
       ((ExperimentRunner)m_RunThread).abortExperiment();
-      // m_RunThread.stop() ??
+      m_RunThread.stop();
       m_RunThread = null;
     }
   }

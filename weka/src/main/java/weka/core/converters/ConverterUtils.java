@@ -34,9 +34,11 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.StreamTokenizer;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -671,13 +673,13 @@ public class ConverterUtils implements Serializable, RevisionHandler {
   }
 
   /** all available loaders (extension &lt;-&gt; classname). */
-  protected static Hashtable<String, String> m_FileLoaders;
+  protected static Hashtable<String, List<String>> m_FileLoaders;
 
   /** all available URL loaders (extension &lt;-&gt; classname). */
-  protected static Hashtable<String, String> m_URLFileLoaders;
+  protected static Hashtable<String, List<String>> m_URLFileLoaders;
 
   /** all available savers (extension &lt;-&gt; classname). */
-  protected static Hashtable<String, String> m_FileSavers;
+  protected static Hashtable<String, List<String>> m_FileSavers;
 
   // determine all loaders/savers
   static {
@@ -733,19 +735,21 @@ public class ConverterUtils implements Serializable, RevisionHandler {
    * @param ht the hashtable with the extension/converter relation
    * @return the classnames of the loaders
    */
-  protected static Vector<String> getConverters(Hashtable<String, String> ht) {
+  protected static Vector<String> getConverters(Hashtable<String, List<String>> ht) {
     Vector<String> result;
-    Enumeration<String> enm;
-    String converter;
+    Enumeration<List<String>> enm;
+    List<String> convs;
 
     result = new Vector<String>();
 
     // get all classnames
     enm = ht.elements();
     while (enm.hasMoreElements()) {
-      converter = enm.nextElement();
-      if (!result.contains(converter)) {
-        result.add(converter);
+      convs = enm.nextElement();
+      for (String converter: convs) {
+        if (!result.contains(converter)) {
+          result.add(converter);
+        }
       }
     }
 
@@ -764,7 +768,7 @@ public class ConverterUtils implements Serializable, RevisionHandler {
    * @return the converter if one was found, null otherwise
    */
   protected static Object getConverterForFile(String filename,
-    Hashtable<String, String> ht) {
+    Hashtable<String, List<String>> ht) {
     Object result;
     String extension;
     int index;
@@ -795,18 +799,80 @@ public class ConverterUtils implements Serializable, RevisionHandler {
    * @return the converter if one was found, null otherwise
    */
   protected static Object getConverterForExtension(String extension,
-    Hashtable<String, String> ht) {
+    Hashtable<String, List<String>> ht) {
     Object result;
+    List<String> classnames;
     String classname;
 
     result = null;
-    classname = ht.get(extension);
-    if (classname != null) {
+    classnames = ht.get(extension);
+    if ((classnames != null) && !classnames.isEmpty()) {
       try {
-        result = WekaPackageClassLoaderManager.forName(classname).newInstance();
+        result = WekaPackageClassLoaderManager.forName(classnames.get(0)).newInstance();
       } catch (Exception e) {
         result = null;
         e.printStackTrace();
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * tries to determine the converter to use for this kind of file, returns null
+   * if none can be found in the given hashtable.
+   *
+   * @param filename the file to return a converter for
+   * @param ht the hashtable with the relation extension/converter
+   * @return the converter if one was found, null otherwise
+   */
+  protected static List<Object> getConvertersForFile(String filename,
+    Hashtable<String, List<String>> ht) {
+    List<Object> result;
+    String extension;
+    int index;
+
+    result = new ArrayList<Object>();
+
+    index = filename.lastIndexOf('.');
+    if (index > -1) {
+      extension = filename.substring(index).toLowerCase();
+      result = getConvertersForExtension(extension, ht);
+      // is it a compressed format?
+      if (extension.equals(".gz") && result == null) {
+        index = filename.lastIndexOf('.', index - 1);
+        extension = filename.substring(index).toLowerCase();
+        result = getConvertersForExtension(extension, ht);
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * tries to determine the loaders to use for this kind of extension, returns
+   * null if none can be found.
+   *
+   * @param extension the file extension to return a converter for
+   * @param ht the hashtable with the relation extension/converter
+   * @return the converters
+   */
+  protected static List<Object> getConvertersForExtension(String extension,
+    Hashtable<String, List<String>> ht) {
+    List<Object> result;
+    List<String> classnames;
+
+    result = new ArrayList<Object>();
+    classnames = ht.get(extension);
+    if ((classnames != null) && !classnames.isEmpty()) {
+      for (String classname: classnames) {
+	try {
+	  result.add(WekaPackageClassLoaderManager.forName(classnames.get(0)).newInstance());
+	}
+	catch (Exception e) {
+	  result = null;
+	  e.printStackTrace();
+	}
       }
     }
 
@@ -834,6 +900,23 @@ public class ConverterUtils implements Serializable, RevisionHandler {
   }
 
   /**
+   * tries to determine the loaders to use for this kind of file.
+   *
+   * @param filename the file to return converters for
+   * @return the converters, list is empty if none found
+   */
+  public static List<AbstractFileLoader> getLoadersForFile(String filename) {
+    List<Object> objects;
+    List<AbstractFileLoader> result;
+
+    objects = getConvertersForFile(filename, m_FileLoaders);
+    result = new ArrayList<AbstractFileLoader>();
+    for (Object object: objects)
+      result.add((AbstractFileLoader) object);
+    return result;
+  }
+
+  /**
    * tries to determine the loader to use for this kind of file, returns null if
    * none can be found.
    * 
@@ -842,6 +925,16 @@ public class ConverterUtils implements Serializable, RevisionHandler {
    */
   public static AbstractFileLoader getLoaderForFile(File file) {
     return getLoaderForFile(file.getAbsolutePath());
+  }
+
+  /**
+   * tries to determine the loaders to use for this kind of file.
+   *
+   * @param file the file to return converters for
+   * @return the converters, empty list if none found
+   */
+  public static List<AbstractFileLoader> getLoadersForFile(File file) {
+    return getLoadersForFile(file.getAbsolutePath());
   }
 
   /**
@@ -854,6 +947,23 @@ public class ConverterUtils implements Serializable, RevisionHandler {
   public static AbstractFileLoader getLoaderForExtension(String extension) {
     return (AbstractFileLoader) getConverterForExtension(extension,
       m_FileLoaders);
+  }
+
+  /**
+   * tries to determine the loader to use for this kind of extension, returns
+   * null if none can be found.
+   *
+   * @param extension the file extension to return a converter for
+   * @return the converter if one was found, null otherwise
+   */
+  public static List<AbstractFileLoader> getLoadersForExtension(String extension) {
+    List<Object> objects;
+    List<AbstractFileLoader> result;
+    objects = getConvertersForExtension(extension, m_FileLoaders);
+    result = new ArrayList<AbstractFileLoader>();
+    for (Object object: objects)
+      result.add((AbstractFileLoader) object);
+    return result;
   }
 
   /**
@@ -877,6 +987,23 @@ public class ConverterUtils implements Serializable, RevisionHandler {
   }
 
   /**
+   * tries to determine the URL loader to use for this kind of file.
+   *
+   * @param filename the file to return URL converters for
+   * @return the converters, empty list if none found
+   */
+  public static List<AbstractFileLoader> getURLLoadersForFile(String filename) {
+    List<Object> objects;
+    List<AbstractFileLoader> result;
+
+    objects = getConvertersForFile(filename, m_URLFileLoaders);
+    result = new ArrayList<AbstractFileLoader>();
+    for (Object object: objects)
+      result.add((AbstractFileLoader) object);
+    return result;
+  }
+
+  /**
    * tries to determine the URL loader to use for this kind of file, returns
    * null if none can be found.
    * 
@@ -885,6 +1012,16 @@ public class ConverterUtils implements Serializable, RevisionHandler {
    */
   public static AbstractFileLoader getURLLoaderForFile(File file) {
     return getURLLoaderForFile(file.getAbsolutePath());
+  }
+
+  /**
+   * tries to determine the URL loaders to use for this kind of file.
+   *
+   * @param file the file to return URL converters for
+   * @return the converters, empty list if none found
+   */
+  public static List<AbstractFileLoader> getURLLoadersForFile(File file) {
+    return getURLLoadersForFile(file.getAbsolutePath());
   }
 
   /**
@@ -897,6 +1034,23 @@ public class ConverterUtils implements Serializable, RevisionHandler {
   public static AbstractFileLoader getURLLoaderForExtension(String extension) {
     return (AbstractFileLoader) getConverterForExtension(extension,
       m_URLFileLoaders);
+  }
+
+  /**
+   * tries to determine the URL loaders to use for this kind of extension.
+   *
+   * @param extension the file extension to return URL converters for
+   * @return the converters, empty list of none found
+   */
+  public static List<AbstractFileLoader> getURLLoadersForExtension(String extension) {
+    List<Object> objects;
+    List<AbstractFileLoader> result;
+
+    objects = getConvertersForExtension(extension, m_URLFileLoaders);
+    result = new ArrayList<AbstractFileLoader>();
+    for (Object object: objects)
+      result.add((AbstractFileLoader) object);
+    return result;
   }
 
   /**
@@ -920,6 +1074,23 @@ public class ConverterUtils implements Serializable, RevisionHandler {
   }
 
   /**
+   * tries to determine the savers to use for this kind of file.
+   *
+   * @param filename the file to return converters for
+   * @return the converters, empty list if none found
+   */
+  public static List<AbstractFileSaver> getSaversForFile(String filename) {
+    List<Object> objects;
+    List<AbstractFileSaver> result;
+
+    objects = getConvertersForFile(filename, m_FileSavers);
+    result = new ArrayList<AbstractFileSaver>();
+    for (Object object: objects)
+      result.add((AbstractFileSaver) object);
+    return result;
+  }
+
+  /**
    * tries to determine the saver to use for this kind of file, returns null if
    * none can be found.
    * 
@@ -931,6 +1102,16 @@ public class ConverterUtils implements Serializable, RevisionHandler {
   }
 
   /**
+   * tries to determine the savers to use for this kind of file.
+   *
+   * @param file the file to return converters for
+   * @return the converters, empty list if none found
+   */
+  public static List<AbstractFileSaver> getSaversForFile(File file) {
+    return getSaversForFile(file.getAbsolutePath());
+  }
+
+  /**
    * tries to determine the saver to use for this kind of extension, returns
    * null if none can be found.
    * 
@@ -939,6 +1120,23 @@ public class ConverterUtils implements Serializable, RevisionHandler {
    */
   public static AbstractFileSaver getSaverForExtension(String extension) {
     return (AbstractFileSaver) getConverterForExtension(extension, m_FileSavers);
+  }
+
+  /**
+   * tries to determine the savers to use for this kind of extension.
+   *
+   * @param extension the file extension to return converters for
+   * @return the converters, empty list if none found
+   */
+  public static List<AbstractFileSaver> getSaversForExtension(String extension) {
+    List<Object> objects;
+    List<AbstractFileSaver> result;
+
+    objects = getConvertersForExtension(extension, m_FileSavers);
+    result = new ArrayList<AbstractFileSaver>();
+    for (Object object: objects)
+      result.add((AbstractFileSaver) object);
+    return result;
   }
 
   /**
