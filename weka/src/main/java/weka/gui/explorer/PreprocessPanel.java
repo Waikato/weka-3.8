@@ -1153,8 +1153,12 @@ public class PreprocessPanel extends AbstractPerspective implements
                 // generate
                 generatorPanel.execute(showOutput);
                 boolean generated = (generatorPanel.getInstances() != null);
-                if (generated)
-                  setInstances(generatorPanel.getInstances());
+                if (generated) {
+                  Instances genInst = generatorPanel.getInstances();
+                  // unset any class, to be consistent with filter behaviour
+                  genInst.setClassIndex(-1);
+                  setInstances(genInst);
+                }
 
                 // close dialog
                 dialog.dispose();
