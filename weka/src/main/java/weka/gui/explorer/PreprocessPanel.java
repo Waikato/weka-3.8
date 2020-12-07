@@ -897,6 +897,8 @@ public class PreprocessPanel extends AbstractPerspective implements
               // if class was not set before, reset it again after use of filter
               /* if (m_Instances.classIndex() < 0)
                 newInstances.setClassIndex(-1); */
+
+              newInstances.setClassIndex(-1);
               m_Instances = newInstances;
               setInstances(m_Instances);
               if (m_Log instanceof TaskLogger) {

@@ -366,6 +366,7 @@ public class AssociationsPanel extends AbstractPerspective implements
           // Copy the current state of things
           m_Log.statusMessage("Setting up...");
           Instances inst = new Instances(m_Instances);
+          inst.setClassIndex(-1);
           String grph = null;
           // String xmlRules = null;
           AssociationRules rulesList = null;
