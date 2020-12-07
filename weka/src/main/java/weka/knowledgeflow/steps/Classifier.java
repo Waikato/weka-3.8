@@ -560,6 +560,7 @@ public class Classifier extends WekaAlgorithmWrapper implements
       // multiple downstream steps
       batchClassifier.setPayloadElement(
         StepManager.CON_AUX_DATA_PRIMARY_PAYLOAD_NOT_THREAD_SAFE, true);
+      getStepManager().logBasic("Dispatching classifier");
       getStepManager().outputData(batchClassifier);
       if (isStopRequested()) {
         getStepManager().interrupted();
