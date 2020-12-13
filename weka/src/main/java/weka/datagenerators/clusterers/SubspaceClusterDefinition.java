@@ -283,7 +283,7 @@ public class SubspaceClusterDefinition extends ClusterDefinition {
       throw new Exception("Only one cluster type can be specified!");
     }
 
-    setAttrIndexRange(fromToStr);
+    // setAttrIndexRange(fromToStr);
 
     tmpStr = Utils.getOption('D', options);
     if (tmpStr.length() != 0) {
@@ -760,9 +760,10 @@ public class SubspaceClusterDefinition extends ClusterDefinition {
    *          instances per cluster separated by ..
    * @throws Exception if values are not correct in number or value
    */
-  public void setValuesList(String fromToList) throws Exception {
+  private void setValuesList(String fromToList) throws Exception {
     m_valueA = new double[m_numClusterAttributes];
     m_valueB = new double[m_numClusterAttributes];
+
     setValuesList(fromToList, m_valueA, m_valueB, "D");
     SubspaceCluster parent = (SubspaceCluster) getParent();
 
@@ -808,7 +809,7 @@ public class SubspaceClusterDefinition extends ClusterDefinition {
   /**
    * returns the range for each attribute as string
    */
-  public String getValuesList() {
+  private String getValuesList() {
     String result;
     int i;
 
@@ -854,6 +855,7 @@ public class SubspaceClusterDefinition extends ClusterDefinition {
 
     tok = new StringTokenizer(fromToList, ",");
     if (tok.countTokens() != first.length + second.length) {
+      System.err.println("Num tokens " + tok.countTokens() + " first length " + first.length + " second length " + second.length);
       throw new Exception("Wrong number of values for option '-" + optionLetter
         + "'.");
     }

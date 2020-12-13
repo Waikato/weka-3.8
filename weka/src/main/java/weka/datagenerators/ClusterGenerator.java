@@ -57,16 +57,20 @@ public abstract class ClusterGenerator extends DataGenerator {
   private static final long serialVersionUID = 6131722618472046365L;
 
   /** Number of attribute the dataset should have */
-  protected int m_NumAttributes;
+  protected int m_NumAttributes = 1;
 
   /** class flag */
   protected boolean m_ClassFlag = false;
 
   /** Stores which columns are boolean (default numeric) */
-  protected Range m_booleanCols;
+  protected Range m_booleanCols = new Range();
+
+  protected String m_boolRangeStr = "none";
 
   /** Stores which columns are nominal (default numeric) */
-  protected Range m_nominalCols;
+  protected Range m_nominalCols = new Range();
+
+  protected String m_nomRangeStr = "none";
 
   /**
    * initializes the generator
@@ -124,11 +128,11 @@ public abstract class ClusterGenerator extends DataGenerator {
     setClassFlag(Utils.getFlag('c', options));
 
     tmpStr = Utils.getOption('b', options);
-    setBooleanIndices(tmpStr);
+    setBooleanCols(tmpStr);
     m_booleanCols.setUpper(getNumAttributes() - 1);
 
     tmpStr = Utils.getOption('m', options);
-    setNominalIndices(tmpStr);
+    setNominalCols(tmpStr);
     m_nominalCols.setUpper(getNumAttributes() - 1);
 
     // check indices
@@ -157,15 +161,15 @@ public abstract class ClusterGenerator extends DataGenerator {
       result.add("-c");
     }
 
-    if (!getBooleanCols().toString().equalsIgnoreCase("empty")) {
+    //if (!getBooleanCols().toString().equalsIgnoreCase("empty")) {
       result.add("-b");
-      result.add("" + getBooleanCols().getRanges());
-    }
+      result.add("" + getBooleanCols()/*.getRanges()*/);
+    // }
 
-    if (!getNominalCols().toString().equalsIgnoreCase("empty")) {
+    // if (!getNominalCols().toString().equalsIgnoreCase("empty")) {
       result.add("-m");
-      result.add("" + getNominalCols().getRanges());
-    }
+      result.add("" + getNominalCols()/*.getRanges()*/);
+    // }
 
     return result.toArray(new String[result.size()]);
   }
@@ -186,8 +190,8 @@ public abstract class ClusterGenerator extends DataGenerator {
    */
   public void setNumAttributes(int numAttributes) {
     m_NumAttributes = numAttributes;
-    getBooleanCols().setUpper(getNumAttributes());
-    getNominalCols().setUpper(getNumAttributes());
+    m_booleanCols.setUpper(getNumAttributes());
+    m_nominalCols.setUpper(getNumAttributes());
   }
 
   /**
@@ -247,17 +251,24 @@ public abstract class ClusterGenerator extends DataGenerator {
    *          eg: first-3,5,6-last
    * @throws IllegalArgumentException if an invalid range list is supplied
    */
-  public void setBooleanIndices(String rangeList) {
+  /* public void setBooleanIndices(String rangeList) {
     m_booleanCols.setRanges(rangeList);
-  }
+  } */
 
   /**
    * Sets which attributes are boolean.
    * 
    * @param value the range to use
    */
-  public void setBooleanCols(Range value) {
-    m_booleanCols.setRanges(value.getRanges());
+  public void setBooleanCols(String value) {
+    if (m_booleanCols == null) {
+      m_booleanCols = new Range();
+    }
+
+    m_boolRangeStr = value;
+    if (!value.equalsIgnoreCase("none")) {
+      m_booleanCols.setRanges(value);
+    }
   }
 
   /**
@@ -265,12 +276,12 @@ public abstract class ClusterGenerator extends DataGenerator {
    * 
    * @return the range of boolean attributes
    */
-  public Range getBooleanCols() {
+  public String getBooleanCols() {
     if (m_booleanCols == null) {
       m_booleanCols = new Range();
     }
 
-    return m_booleanCols;
+    return m_boolRangeStr;
   }
 
   /**
@@ -301,8 +312,15 @@ public abstract class ClusterGenerator extends DataGenerator {
    * 
    * @param value the range to use
    */
-  public void setNominalCols(Range value) {
-    m_nominalCols.setRanges(value.getRanges());
+  public void setNominalCols(String value) {
+    if (m_nominalCols == null) {
+      m_nominalCols = new Range();
+    }
+
+    m_nomRangeStr = value;
+    if (!value.equalsIgnoreCase("none")) {
+      m_nominalCols.setRanges(value);
+    }
   }
 
   /**
@@ -310,12 +328,12 @@ public abstract class ClusterGenerator extends DataGenerator {
    * 
    * @return the range of nominal attributes
    */
-  public Range getNominalCols() {
+  public String getNominalCols() {
     if (m_nominalCols == null) {
       m_nominalCols = new Range();
     }
 
-    return m_nominalCols;
+    return m_boolRangeStr;
   }
 
   /**
