@@ -6,10 +6,10 @@
 PackageName=kerasZoo
 
 # Version (required)
-Version=1.0.2
+Version=1.0.3
 
 #Date
-Date=2019-10-23
+Date=2020-12-15
 
 # Title (required)
 Title=Provides a wrapper classifier for zoo models available in Keras
@@ -28,10 +28,10 @@ License=GPL 3.0
 # Description (required)
 Description=Provides a wrapper classifier for invoking zoo models available in Keras. Python version 2.7.x or higher is required. Also requires the following packages to be installed in python: keras, numpy, pandas, matplotlib and scikit-learn.
 
-Changes=This release includes a fix to enable windows paths containing backslashes to be handled correctly when generating python code
+Changes=This release exposes the support for python virtual environments that was added in wekaPython 1.0.13
 
 # Package URL for obtaining the package archive (required)
-PackageURL=http://prdownloads.sourceforge.net/weka/kerasZoo1.0.2.zip?download
+PackageURL=http://prdownloads.sourceforge.net/weka/kerasZoo1.0.3.zip?download
 
 # URL for further information
 URL=
@@ -43,7 +43,7 @@ URL=
 #Related=
 
 # Dependencies
-Depends=weka (>=3.8.0), wekaPython (>=1.0.9)
+Depends=weka (>=3.8.0), wekaPython (>=1.0.13)
 
 MessageToDisplayOnInstallation=This package requires python (2.7.x or 3.x) to be installed on your\n\
  computer before it can be used. The python command must be in the PATH. Within python it requires the:\n\

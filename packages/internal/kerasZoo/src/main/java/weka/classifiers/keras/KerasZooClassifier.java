@@ -262,6 +262,20 @@ public class KerasZooClassifier extends AbstractClassifier implements
   /** Seed for attempting to achieve determinism */
   protected String m_seed = "1";
 
+  /** Default - use python in PATH */
+  protected String m_pyCommand = "default";
+
+  /** Default - use PATH as is for executing python */
+  protected String m_pyPath = "default";
+
+  /**
+   * Optional server name/ID by which to force a new server for this instance
+   * (or share amongst specific instances). The string "none" indicates no
+   * specific server name. Python command + server name uniquely identifies a
+   * server to use
+   */
+  protected String m_serverID = "none";
+
   // ------ image stuff ---------
   /**
    * True to turn off the use of the preprocess_input function associated with
@@ -2011,6 +2025,93 @@ public class KerasZooClassifier extends AbstractClassifier implements
     return m_gpusDoNotMergeOnCPU;
   }
 
+  /**
+   * Set the python command to use. Empty string or "default" indicate that the
+   * python present in the PATH should be used.
+   *
+   * @param pyCommand the path to the python executable (or empty
+   *          string/"default" to use python in the PATH)
+   */
+  @OptionMetadata(displayName = "Python command ",
+    description = "Path to python executable ('default' to use python in the PATH)",
+    commandLineParamName = "py-command",
+    commandLineParamSynopsis = "-py-command <path to python executable>",
+    displayOrder = 90,
+    category = "Python server")
+  public void setPythonCommand(String pyCommand) {
+    m_pyCommand = pyCommand;
+  }
+
+  /**
+   * Get the python command to use. Empty string or "default" indicate that the
+   * python present in the PATH should be used.
+   *
+   * @return the path to the python executable (or empty string/"default" to use
+   *         python in the PATH)
+   */
+  public String getPythonCommand() {
+    return m_pyCommand;
+  }
+
+  /**
+   * Set optional entries to prepend to the PATH so that python can execute
+   * correctly. Only applies when not using a default python.
+   *
+   * @param pythonPath additional entries to prepend to the PATH
+   */
+  @OptionMetadata(displayName = "Python path",
+    description = "Optional elements to prepend to the PATH so that python can "
+      + "execute correctly ('default' to use PATH as-is)",
+    commandLineParamName = "py-path",
+    commandLineParamSynopsis = "-py-path <path>", displayOrder = 91,
+    category = "Python server")
+  public void setPythonPath(String pythonPath) {
+    m_pyPath = pythonPath;
+  }
+
+  /**
+   * Get optional entries to prepend to the PATH so that python can execute
+   * correctly. Only applies when not using a default python.
+   *
+   * @return additional entries to prepend to the PATH
+   */
+  public String getPythonPath() {
+    return m_pyPath;
+  }
+
+  /**
+   * Set an optional server name by which to identify the python server to use.
+   * Can be used share a given server amongst selected instances or reserve a
+   * server specifically for this classifier. Python command + server name
+   * uniquely identifies the server to use.
+   *
+   * @param serverID the name of the server to use (or none for no specific
+   *          server name).
+   */
+  @OptionMetadata(displayName = "Server name/ID",
+    description = "Optional name to identify this server, can be used to share "
+      + "a given server instance - default = 'none' (i.e. no server name)",
+    commandLineParamName = "server-name",
+    commandLineParamSynopsis = "-server-name <server name | none>",
+    displayOrder = 92,
+    category = "Python server")
+  public void setServerID(String serverID) {
+    m_serverID = serverID;
+  }
+
+  /**
+   * Get an optional server name by which to identify the python server to use.
+   * Can be used share a given server amongst selected instances or reserve a
+   * server specifically for this classifier. Python command + server name
+   * uniquely identifies the server to use.
+   *
+   * @return the name of the server to use (or none) for no specific server
+   *         name.
+   */
+  public String getServerID() {
+    return m_serverID;
+  }
+
   private void samplewiseCenterSetting(StringBuilder b) {
     b.append("samplewise_center=" + (m_samplewiseCenter ? "True" : "False")
       + ",");
@@ -2195,7 +2296,8 @@ public class KerasZooClassifier extends AbstractClassifier implements
       return;
     }
     // now determine if multiple GPUs are available...
-    PythonSession session = PythonSession.acquireSession(this);
+    // PythonSession session = PythonSession.acquireSession(this);
+    PythonSession session = getSession();
     StringBuilder temp = new StringBuilder();
     temp.append("from keras import backend as K\n\n");
     temp
@@ -2341,6 +2443,16 @@ public class KerasZooClassifier extends AbstractClassifier implements
           loadPath = m_modelSavePath.toString();
         }
       }
+
+      if (!ok) {
+        // Try the default path...
+        File defaultF = new File("${user.home}" + File.separator + "defaultModel.hdf5");
+        if (modelLoadPathValid(defaultF)) {
+          ok = true;
+          loadPath = defaultF.toString();
+        }
+      }
+
       if (!ok) {
         throw new WekaException("Model load path '"
           + environmentSubstitute(loadPath) + "' is not valid!");
@@ -2978,18 +3090,28 @@ public class KerasZooClassifier extends AbstractClassifier implements
    * @param modelName the name of the variable that holds the model in python
    */
   protected void generateNetworkSave(StringBuilder b, String modelName) {
-    if (m_modelSavePath != null && m_modelSavePath.toString().length() > 0
-      && !m_modelSavePath.toString().equals("-NONE-")) {
-      String savePath = environmentSubstitute(m_modelSavePath.toString());
-      if (!savePath.endsWith(".hdf5")) {
-        savePath += ".hdf5";
-      }
+    String savePath = "";
+    if (m_modelSavePath == null || m_modelSavePath.toString().length() == 0
+      || m_modelSavePath.toString().equals("-NONE-")) {
+      String message = "[WARNING] No network save path defined. Using ${user.home} " + File.separator +
+        "defaultModel.hdf5";
 
-      savePath = escapeWindowsBackslashes(savePath);
-
-      b.append(modelName + "_" + m_modelHash).append(
-        ".save('" + savePath + "')\n\n");
+      message = environmentSubstitute(message);
+      logMessage(message);
+      savePath = "${user.home}" + File.separator + "defaultModel.hdf5";
+    } else {
+      savePath = m_modelSavePath.toString();
     }
+
+    savePath = environmentSubstitute(savePath);
+    if (!savePath.endsWith(".hdf5")) {
+      savePath += ".hdf5";
+    }
+
+    savePath = escapeWindowsBackslashes(savePath);
+
+    b.append(modelName + "_" + m_modelHash).append(
+      ".save('" + savePath + "')\n\n");
   }
 
   /**
@@ -3093,6 +3215,91 @@ public class KerasZooClassifier extends AbstractClassifier implements
   }
 
   /**
+   * Gets a python session object to use for interacting with python
+   *
+   * @return a PythonSession object
+   * @throws WekaException if a problem occurs
+   */
+  protected PythonSession getSession() throws WekaException {
+    PythonSession session = null;
+    String pyCommand = m_pyCommand != null && m_pyCommand.length() > 0
+      && !m_pyCommand.equalsIgnoreCase("default") ? m_pyCommand : null;
+    String pyPath = m_pyPath != null && m_pyPath.length() > 0
+      && !m_pyPath.equalsIgnoreCase("default") ? m_pyPath : null;
+    String serverID = m_serverID != null && m_serverID.length() > 0
+      && !m_serverID.equalsIgnoreCase("none") ? m_serverID : null;
+    if (pyCommand != null) {
+      if (!PythonSession.pythonAvailable(pyCommand, serverID)) {
+        // try to create this environment/server
+        // System.err.println("Starting server: " + pyCommand + " " + serverID);
+        if (!PythonSession.initSession(pyCommand, serverID, pyPath, getDebug())) {
+          String envEvalResults =
+            PythonSession.getPythonEnvCheckResults(pyCommand, serverID);
+          throw new WekaException("Was unable to start python environment ("
+            + pyCommand + ")\n\n" + envEvalResults);
+        }
+      }
+      session = PythonSession.acquireSession(pyCommand, serverID, this);
+    } else {
+      if (!PythonSession.pythonAvailable()) {
+        // try initializing
+        if (!PythonSession.initSession("python", getDebug())) {
+          String envEvalResults = PythonSession.getPythonEnvCheckResults();
+          throw new WekaException(
+            "Was unable to start python environment:\n\n" + envEvalResults);
+        }
+      }
+      session = PythonSession.acquireSession(this);
+    }
+
+    return session;
+  }
+
+  /**
+   * Release the python session
+   *
+   * @throws WekaException if a problem occurs
+   */
+  protected void releaseSession() throws WekaException {
+    PythonSession session = null;
+    String pyCommand = m_pyCommand != null && m_pyCommand.length() > 0
+      && !m_pyCommand.equalsIgnoreCase("default") ? m_pyCommand : null;
+    String serverID = m_serverID != null && m_serverID.length() > 0
+      && !m_serverID.equalsIgnoreCase("none") ? m_serverID : null;
+    if (pyCommand != null) {
+      if (PythonSession.pythonAvailable(pyCommand, serverID)) {
+        PythonSession.releaseSession(pyCommand, serverID, this);
+      }
+    } else {
+      if (PythonSession.pythonAvailable()) {
+        PythonSession.releaseSession(this);
+      }
+    }
+  }
+
+  /**
+   * Get the results of executing the environment check in python
+   *
+   * @return the results of executing the environment check
+   * @throws WekaException if a problem occurs
+   */
+  protected String getPythonEnvCheckResults() throws WekaException {
+    String result = "";
+    String pyCommand = m_pyCommand != null && m_pyCommand.length() > 0
+      && !m_pyCommand.equalsIgnoreCase("default") ? m_pyCommand : null;
+    String serverID = m_serverID != null && m_serverID.length() > 0
+      && !m_serverID.equalsIgnoreCase("none") ? m_serverID : null;
+
+    if (pyCommand != null) {
+      result = PythonSession.getPythonEnvCheckResults(pyCommand, serverID);
+    } else {
+      result = PythonSession.getPythonEnvCheckResults();
+    }
+
+    return result;
+  }
+
+  /**
    * Perform some initialization.
    *
    * @param data the training data
@@ -3144,7 +3351,8 @@ public class KerasZooClassifier extends AbstractClassifier implements
       }
     } */
 
-    PythonSession session = PythonSession.acquireSession(this);
+    // PythonSession session = PythonSession.acquireSession(this);
+    PythonSession session = getSession();
     session.instancesToPython(data, "keras_zoo_train_" + m_modelHash,
       getDebug());
 
@@ -3193,10 +3401,13 @@ public class KerasZooClassifier extends AbstractClassifier implements
   /**
    * Checks that python and keras are available
    */
-  private void checkPythonEnvironment() {
+  private void checkPythonEnvironment() throws WekaException {
     m_pythonAvailable = true;
     m_kerasInstalled = true;
-    if (!PythonSession.pythonAvailable()) {
+
+    PythonSession session = getSession();
+
+    /* if (!PythonSession.pythonAvailable()) {
       // try initializing
       try {
         if (!PythonSession.initSession("python", getDebug())) {
@@ -3207,12 +3418,12 @@ public class KerasZooClassifier extends AbstractClassifier implements
         ex.printStackTrace();
         m_pythonAvailable = false;
       }
-    }
+    } */
 
-    if (m_pythonAvailable) {
+    //if (m_pythonAvailable) {
       // check for keras
       try {
-        PythonSession session = PythonSession.acquireSession(this);
+        //PythonSession session = PythonSession.acquireSession(this);
         String script = "import keras\n";
         List<String> outAndErr = session.executeScript(script, getDebug());
         if (outAndErr.get(1).length() > 0
@@ -3223,17 +3434,18 @@ public class KerasZooClassifier extends AbstractClassifier implements
             .println("Keras does not seem to be available in the python "
               + "environment : \n" + outAndErr.get(1));
         }
-      } catch (WekaException e) {
+      } /* catch (WekaException e) {
         m_kerasInstalled = false;
         e.printStackTrace();
-      } finally {
-        PythonSession.releaseSession(this);
+      }*/ finally {
+        // PythonSession.releaseSession(this);
+        releaseSession();
       }
-    } else {
+    /* } else {
       System.err.println("The python environment is either not available or "
         + "is not configured correctly:\n\n"
         + PythonSession.getPythonEnvCheckResults());
-    }
+    } */
   }
 
   /**
@@ -3267,13 +3479,12 @@ public class KerasZooClassifier extends AbstractClassifier implements
     }
 
     checkPythonEnvironment();
-    PythonSession session = initialize(data);
 
     if (!m_pythonAvailable) {
       String message =
         "The python environment is either not available or is "
           + "not configured correctly:\n\n"
-          + PythonSession.getPythonEnvCheckResults();
+          + getPythonEnvCheckResults();
       logMessage(message);
       throw new WekaException(message);
     }
@@ -3307,6 +3518,7 @@ public class KerasZooClassifier extends AbstractClassifier implements
     }
 
     try {
+      PythonSession session = initialize(data);
       if (session != null) {
         String code = generateTrainingCode(data);
         logMessage("KerasZooClassifier - generated training code:\n\n" + code);
@@ -3329,9 +3541,10 @@ public class KerasZooClassifier extends AbstractClassifier implements
         }
       }
     } finally {
-      if (session != null) {
-        PythonSession.releaseSession(this);
-      }
+//      if (session != null) {
+        // PythonSession.releaseSession(this);
+        releaseSession();
+  //    }
     }
   }
 
@@ -3392,7 +3605,7 @@ public class KerasZooClassifier extends AbstractClassifier implements
       String message =
         "The python environment is either not available or is "
           + "not configured correctly:\n\n"
-          + PythonSession.getPythonEnvCheckResults();
+          + getPythonEnvCheckResults();
       logMessage(message);
       throw new WekaException(message);
     }
@@ -3406,7 +3619,8 @@ public class KerasZooClassifier extends AbstractClassifier implements
 
     double[][] results = null;
     try {
-      PythonSession session = PythonSession.acquireSession(this);
+      // PythonSession session = PythonSession.acquireSession(this);
+      PythonSession session = getSession();
       // check to see if model is set in python
       boolean loadModel =
         !session.checkIfPythonVariableIsSet(m_pythonModelPrefix + "_"
@@ -3464,7 +3678,8 @@ public class KerasZooClassifier extends AbstractClassifier implements
         results[j++] = newDist;
       }
     } finally {
-      PythonSession.releaseSession(this);
+      //PythonSession.releaseSession(this);
+      releaseSession();
     }
 
     return results;

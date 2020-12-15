@@ -101,7 +101,7 @@
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>
       <artifactId>wekaPython</artifactId>
-      <version>[1.0.10,)</version>
+      <version>[1.0.13,)</version>
     </dependency>
     
     <dependency>
