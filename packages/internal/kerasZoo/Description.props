@@ -9,7 +9,7 @@ PackageName=kerasZoo
 Version=1.0.3
 
 #Date
-Date=2020-12-15
+Date=2020-12-16
 
 # Title (required)
 Title=Provides a wrapper classifier for zoo models available in Keras
