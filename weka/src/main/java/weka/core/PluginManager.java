@@ -606,7 +606,7 @@ public class PluginManager {
    */
   public static boolean pluginRegistered(String interfaceType, String name) {
     Map<String, String> pluginsOfInterfaceType = PLUGINS.get(interfaceType);
-    return pluginsOfInterfaceType.get(name) != null;
+    return pluginsOfInterfaceType != null && pluginsOfInterfaceType.get(name) != null;
   }
 
   /**
