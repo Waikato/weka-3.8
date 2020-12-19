@@ -119,16 +119,6 @@ import weka.datagenerators.ClusterGenerator;
  * </pre>
  * 
  * <pre>
- * -b &lt;range&gt;
- *  The indices for boolean attributes.
- * </pre>
- * 
- * <pre>
- * -m &lt;range&gt;
- *  The indices for nominal attributes.
- * </pre>
- * 
- * <pre>
  * -k &lt;num&gt;
  *  The number of clusters (default 4)
  * </pre>
@@ -177,14 +167,7 @@ import weka.datagenerators.ClusterGenerator;
  *  input order is RANDOMIZED. RANDOMIZED is currently not 
  *  implemented, therefore is the input order always ORDERED.
  * </pre>
- * 
- * <pre>
- * -P &lt;num&gt;
- *  The noise rate in percent (default 0.0).
- *  Can be between 0% and 30%. (Remark: The original 
- *  algorithm only allows noise up to 10%.)
- * </pre>
- * 
+ *
  * <!-- options-end -->
  * 
  * @author Gabi Schmidberger (gabi@cs.waikato.ac.nz)
@@ -241,9 +224,6 @@ public class BIRCHCluster extends ClusterGenerator implements
 
   /** input order (changed with option O) */
   private int m_InputOrder;
-
-  /** noise rate in percent (option P, between 0 and 30) */
-  private double m_NoiseRate;
 
   /** cluster list */
   private ArrayList<Cluster> m_ClusterList;
@@ -456,7 +436,6 @@ public class BIRCHCluster extends ClusterGenerator implements
     setDistMult(defaultDistMult());
     setNumCycles(defaultNumCycles());
     setInputOrder(defaultInputOrder());
-    setNoiseRate(defaultNoiseRate());
   }
 
   /**
@@ -549,11 +528,6 @@ public class BIRCHCluster extends ClusterGenerator implements
         + "\timplemented, therefore is the input order always ORDERED.", "O",
       0, "-O"));
 
-    result.addElement(new Option("\tThe noise rate in percent (default "
-      + defaultNoiseRate() + ").\n"
-      + "\tCan be between 0% and 30%. (Remark: The original \n"
-      + "\talgorithm only allows noise up to 10%.)", "P", 1, "-P <num>"));
-
     return result.elements();
   }
 
@@ -598,16 +572,6 @@ public class BIRCHCluster extends ClusterGenerator implements
    * <pre>
    * -c
    *  Class Flag, if set, the cluster is listed in extra attribute.
-   * </pre>
-   * 
-   * <pre>
-   * -b &lt;range&gt;
-   *  The indices for boolean attributes.
-   * </pre>
-   * 
-   * <pre>
-   * -m &lt;range&gt;
-   *  The indices for nominal attributes.
    * </pre>
    * 
    * <pre>
@@ -659,14 +623,7 @@ public class BIRCHCluster extends ClusterGenerator implements
    *  input order is RANDOMIZED. RANDOMIZED is currently not 
    *  implemented, therefore is the input order always ORDERED.
    * </pre>
-   * 
-   * <pre>
-   * -P &lt;num&gt;
-   *  The noise rate in percent (default 0.0).
-   *  Can be between 0% and 30%. (Remark: The original 
-   *  algorithm only allows noise up to 10%.)
-   * </pre>
-   * 
+   *
    * <!-- options-end -->
    * 
    * @param options the list of options as an array of strings
@@ -739,13 +696,6 @@ public class BIRCHCluster extends ClusterGenerator implements
     } else {
       setInputOrder(defaultInputOrder());
     }
-
-    tmpStr = Utils.getOption('P', options);
-    if (tmpStr.length() != 0) {
-      setNoiseRate(Double.parseDouble(tmpStr));
-    } else {
-      setNoiseRate(defaultNoiseRate());
-    }
   }
 
   /**
@@ -787,9 +737,6 @@ public class BIRCHCluster extends ClusterGenerator implements
     if (getOrderedFlag()) {
       result.add("-O");
     }
-
-    result.add("-P");
-    result.add("" + getNoiseRate());
 
     return result.toArray(new String[result.size()]);
   }
@@ -1212,43 +1159,6 @@ public class BIRCHCluster extends ClusterGenerator implements
    */
   public boolean getOrderedFlag() {
     return m_InputOrder == ORDERED;
-  }
-
-  /**
-   * returns the default noise rate
-   * 
-   * @return the default noise rate
-   */
-  protected double defaultNoiseRate() {
-    return 0.0;
-  }
-
-  /**
-   * Gets the percentage of noise set.
-   * 
-   * @return the percentage of noise set
-   */
-  public double getNoiseRate() {
-    return m_NoiseRate;
-  }
-
-  /**
-   * Sets the percentage of noise set.
-   * 
-   * @param newNoiseRate new percentage of noise
-   */
-  public void setNoiseRate(double newNoiseRate) {
-    m_NoiseRate = newNoiseRate;
-  }
-
-  /**
-   * Returns the tip text for this property
-   * 
-   * @return tip text for this property suitable for displaying in the
-   *         explorer/experimenter gui
-   */
-  public String noiseRateTipText() {
-    return "The noise rate to use.";
   }
 
   /**

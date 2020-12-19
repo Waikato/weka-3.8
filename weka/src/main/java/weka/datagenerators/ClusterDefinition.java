@@ -38,8 +38,7 @@ import weka.core.Utils;
  * @version $Revision$
  */
 
-public abstract class ClusterDefinition implements Serializable, OptionHandler,
-  RevisionHandler {
+public abstract class ClusterDefinition implements Serializable, OptionHandler, RevisionHandler {
 
   /** for serialization */
   private static final long serialVersionUID = -5950001207047429961L;
@@ -55,13 +54,12 @@ public abstract class ClusterDefinition implements Serializable, OptionHandler,
   }
 
   /**
-   * initializes the cluster
+   * initializes the cluster by setting the parent and the defaults
    * 
    * @param parent the datagenerator this cluster belongs to
    */
   public ClusterDefinition(ClusterGenerator parent) {
     m_Parent = parent;
-
     try {
       setDefaults();
     } catch (Exception e) {
@@ -83,37 +81,8 @@ public abstract class ClusterDefinition implements Serializable, OptionHandler,
    *         explorer/experimenter gui
    */
   public String globalInfo() {
-    return "Contains informations about a certain cluster of a cluster generator.";
+    return "Contains information about a certain cluster of a cluster generator.";
   }
-
-  /**
-   * Returns an enumeration describing the available options.
-   * 
-   * @return an enumeration of all the available options
-   */
-  @Override
-  public abstract Enumeration<Option> listOptions();
-
-  /**
-   * Parses a list of options for this object.
-   * <p/>
-   * 
-   * For list of valid options see class description.
-   * <p/>
-   * 
-   * @param options the list of options as an array of strings
-   * @throws Exception if an option is not supported
-   */
-  @Override
-  public abstract void setOptions(String[] options) throws Exception;
-
-  /**
-   * Gets the current settings of the datagenerator BIRCHCluster.
-   * 
-   * @return an array of strings suitable for passing to setOptions
-   */
-  @Override
-  public abstract String[] getOptions();
 
   /**
    * returns the parent datagenerator this cluster belongs to

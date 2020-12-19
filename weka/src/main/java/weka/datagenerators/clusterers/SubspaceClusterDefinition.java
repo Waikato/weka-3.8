@@ -35,8 +35,8 @@ import weka.datagenerators.ClusterDefinition;
 import weka.datagenerators.ClusterGenerator;
 
 /**
- * <!-- globalinfo-start --> A single cluster for the SubspaceCluster
- * datagenerator
+ * <!-- globalinfo-start -->
+ * A single cluster for the SubspaceCluster data generator.
  * <p/>
  * <!-- globalinfo-end -->
  * 
@@ -45,23 +45,22 @@ import weka.datagenerators.ClusterGenerator;
  * 
  * <pre>
  * -A &lt;range&gt;
- *  Generates randomly distributed instances in the cluster.
+ *  Uses a random uniform distribution for the instances in the cluster.
  * </pre>
  * 
  * <pre>
  * -U &lt;range&gt;
- *  Generates uniformly distributed instances in the cluster.
+ *  Generates totally uniformly distributed instances in the cluster.
  * </pre>
  * 
  * <pre>
  * -G &lt;range&gt;
- *  Generates gaussian distributed instances in the cluster.
+ *  Uses a Gaussian distribution for the instances in the cluster.
  * </pre>
  * 
  * <pre>
  * -D &lt;num&gt;,&lt;num&gt;
- *  The attribute min/max (-A and -U) or mean/stddev (-G) for
- *  the cluster.
+ *  The attribute min/max (-A and -U) or mean/stddev (-G) for the cluster, repeated for each attribute.
  * </pre>
  * 
  * <pre>
@@ -71,7 +70,7 @@ import weka.datagenerators.ClusterGenerator;
  * 
  * <pre>
  * -I
- *  Uses integer instead of continuous values (default continuous).
+ *  Uses integer instead of continuous values (default: continuous).
  * </pre>
  * 
  * <!-- options-end -->
@@ -87,25 +86,28 @@ public class SubspaceClusterDefinition extends ClusterDefinition {
   static final long serialVersionUID = 3135678125044007231L;
 
   /** cluster type */
-  protected int m_clustertype;
+  protected int m_clustertype = defaultClusterType().getSelectedTag().getID();
 
   /** cluster subtypes */
-  protected int m_clustersubtype;
+  protected int m_clustersubtype =  defaultClusterSubType().getSelectedTag().getID();
+
+  /** minimal number of instances for this cluster */
+  protected int m_MinInstNum = defaultMinInstNum();
+
+  /** maximal number of instances for this cluster */
+  protected int m_MaxInstNum = defaultMaxInstNum();
+
+  /** range of atttributes */
+  protected Range m_AttrIndexRange = new Range(defaultAttrIndexRange());
+
+  /** the specification of the list of values as a string */
+  protected String m_valuesList = defaultValuesList();
 
   /** number of attributes the cluster is defined for */
   protected int m_numClusterAttributes;
 
   /** number of instances for this cluster */
   protected int m_numInstances;
-
-  /** minimal number of instances for this cluster */
-  protected int m_MinInstNum;
-
-  /** maximal number of instances for this cluster */
-  protected int m_MaxInstNum;
-
-  /** range of atttributes */
-  protected Range m_AttrIndexRange;
 
   /** attributes of this cluster */
   protected boolean[] m_attributes;
@@ -120,15 +122,13 @@ public class SubspaceClusterDefinition extends ClusterDefinition {
   protected double[] m_valueB;
 
   /**
-   * initializes the cluster, without a parent cluster (necessary for GOE)
+   * Needed so that this class can be found as permissible.
    */
-  public SubspaceClusterDefinition() {
-    super();
-  }
+  public SubspaceClusterDefinition() {};
 
   /**
    * initializes the cluster with default values
-   * 
+   *
    * @param parent the datagenerator this cluster belongs to
    */
   public SubspaceClusterDefinition(ClusterGenerator parent) {
@@ -137,23 +137,15 @@ public class SubspaceClusterDefinition extends ClusterDefinition {
 
   /**
    * sets the default values
-   * 
+   *
    * @throws Exception if setting of defaults fails
    */
   @Override
-  protected void setDefaults() throws Exception {
-    setClusterType(defaultClusterType());
-    setClusterSubType(defaultClusterSubType());
-    setMinInstNum(defaultMinInstNum());
-    setMaxInstNum(defaultMaxInstNum());
-    setAttrIndexRange(defaultAttrIndexRange());
-    m_numClusterAttributes = 1;
-    setValuesList(defaultValuesList());
-  }
+  protected void setDefaults() throws Exception { }
 
   /**
    * Returns a string describing this data generator.
-   * 
+   *
    * @return a description of the data generator suitable for displaying in the
    *         explorer/experimenter gui
    */
@@ -164,7 +156,7 @@ public class SubspaceClusterDefinition extends ClusterDefinition {
 
   /**
    * Returns an enumeration describing the available options.
-   * 
+   *
    * @return an enumeration of all the available options
    */
   @Override
@@ -172,20 +164,20 @@ public class SubspaceClusterDefinition extends ClusterDefinition {
     Vector<Option> result = new Vector<Option>();
 
     result.addElement(new Option(
-      "\tGenerates randomly distributed instances in the cluster.", "A", 1,
+      "\tUses a random uniform distribution for the instances in the cluster.", "A", 1,
       "-A <range>"));
 
     result.addElement(new Option(
-      "\tGenerates uniformly distributed instances in the cluster.", "U", 1,
+      "\tGenerates totally uniformly distributed instances in the cluster.", "U", 1,
       "-U <range>"));
 
     result.addElement(new Option(
-      "\tGenerates gaussian distributed instances in the cluster.", "G", 1,
+      "\tUses a Gaussian distribution for instances in the cluster.", "G", 1,
       "-G <range>"));
 
     result.addElement(new Option(
       "\tThe attribute min/max (-A and -U) or mean/stddev (-G) for\n"
-        + "\tthe cluster.", "D", 1, "-D <num>,<num>"));
+        + "\tthe cluster, repeated for each attribute.", "D", 1, "-D <num>,<num>"));
 
     result.addElement(new Option(
       "\tThe range of number of instances per cluster (default "
@@ -202,96 +194,87 @@ public class SubspaceClusterDefinition extends ClusterDefinition {
   /**
    * Parses a list of options for this object.
    * <p/>
-   * 
+   *
    * <!-- options-start --> Valid options are:
    * <p/>
-   * 
+   *
    * <pre>
    * -A &lt;range&gt;
-   *  Generates randomly distributed instances in the cluster.
+   *  Uses a random uniform distribution for the instances in the cluster.
    * </pre>
-   * 
+   *
    * <pre>
    * -U &lt;range&gt;
-   *  Generates uniformly distributed instances in the cluster.
+   *  Generates totally uniformly distributed instances in the cluster.
    * </pre>
-   * 
+   *
    * <pre>
    * -G &lt;range&gt;
-   *  Generates gaussian distributed instances in the cluster.
+   *  Uses a Gaussian distribution for the instances in the cluster.
    * </pre>
-   * 
+   *
    * <pre>
    * -D &lt;num&gt;,&lt;num&gt;
-   *  The attribute min/max (-A and -U) or mean/stddev (-G) for
-   *  the cluster.
+   *  The attribute min/max (-A and -U) or mean/stddev (-G) for the cluster, repeated for each attribute.
    * </pre>
-   * 
+   *
    * <pre>
    * -N &lt;num&gt;..&lt;num&gt;
    *  The range of number of instances per cluster (default 1..50).
    * </pre>
-   * 
+   *
    * <pre>
    * -I
-   *  Uses integer instead of continuous values (default continuous).
+   *  Uses integer instead of continuous values (default: continuous).
    * </pre>
-   * 
+   *
    * <!-- options-end -->
-   * 
+   *
    * @param options the list of options as an array of strings
    * @throws Exception if an option is not supported
    */
   @Override
   public void setOptions(String[] options) throws Exception {
-    String tmpStr;
-    String fromToStr;
-    int typeCount;
 
-    typeCount = 0;
-    fromToStr = "";
+    int typeCount = 0;
+    String fromToStr = "";
 
-    tmpStr = Utils.getOption('A', options);
+    String tmpStr = Utils.getOption('A', options);
     if (tmpStr.length() != 0) {
       fromToStr = tmpStr;
-      setClusterType(new SelectedTag(SubspaceCluster.UNIFORM_RANDOM,
-        SubspaceCluster.TAGS_CLUSTERTYPE));
+      setClusterType(new SelectedTag(SubspaceCluster.UNIFORM_RANDOM, SubspaceCluster.TAGS_CLUSTERTYPE));
       typeCount++;
     }
 
     tmpStr = Utils.getOption('U', options);
     if (tmpStr.length() != 0) {
       fromToStr = tmpStr;
-      setClusterType(new SelectedTag(SubspaceCluster.TOTAL_UNIFORM,
-        SubspaceCluster.TAGS_CLUSTERTYPE));
+      setClusterType(new SelectedTag(SubspaceCluster.TOTAL_UNIFORM, SubspaceCluster.TAGS_CLUSTERTYPE));
       typeCount++;
     }
 
     tmpStr = Utils.getOption('G', options);
     if (tmpStr.length() != 0) {
       fromToStr = tmpStr;
-      setClusterType(new SelectedTag(SubspaceCluster.GAUSSIAN,
-        SubspaceCluster.TAGS_CLUSTERTYPE));
+      setClusterType(new SelectedTag(SubspaceCluster.GAUSSIAN, SubspaceCluster.TAGS_CLUSTERTYPE));
       typeCount++;
     }
 
     // default is uniform/random
     if (typeCount == 0) {
-      setClusterType(new SelectedTag(SubspaceCluster.UNIFORM_RANDOM,
-        SubspaceCluster.TAGS_CLUSTERTYPE));
+      setClusterType(new SelectedTag(SubspaceCluster.UNIFORM_RANDOM, SubspaceCluster.TAGS_CLUSTERTYPE));
     } else if (typeCount > 1) {
       throw new Exception("Only one cluster type can be specified!");
     }
 
-    // setAttrIndexRange(fromToStr);
+    setAttrIndexRange(fromToStr);
 
     tmpStr = Utils.getOption('D', options);
     if (tmpStr.length() != 0) {
-        setValuesList(tmpStr);
+      setValuesList(tmpStr);
     } else {
-        setValuesList(defaultValuesList());
+      setValuesList(defaultValuesList());
     }
-
 
     tmpStr = Utils.getOption('N', options);
     if (tmpStr.length() != 0) {
@@ -311,7 +294,7 @@ public class SubspaceClusterDefinition extends ClusterDefinition {
 
   /**
    * Gets the current settings of the datagenerator BIRCHCluster.
-   * 
+   *
    * @return an array of strings suitable for passing to setOptions
    */
   @Override
@@ -330,7 +313,7 @@ public class SubspaceClusterDefinition extends ClusterDefinition {
       result.add("-G");
       result.add("" + getAttrIndexRange());
     }
- 
+
     result.add("-D");
     result.add("" + getValuesList());
 
@@ -346,7 +329,7 @@ public class SubspaceClusterDefinition extends ClusterDefinition {
 
   /**
    * Make a string from the attribues list.
-   * 
+   *
    * @return the attributes as string
    */
   public String attributesToString() {
@@ -383,16 +366,6 @@ public class SubspaceClusterDefinition extends ClusterDefinition {
   }
 
   /**
-   * sets the parent datagenerator this cluster belongs to
-   *
-   * @param parent the parent datagenerator
-   */
-  public void setParent(SubspaceCluster parent) {
-    super.setParent(parent);
-    m_AttrIndexRange.setUpper(getParent().getNumAttributes());
-  }
-
-  /**
    * returns the default attribute index range
    *
    * @return the default attribute index range
@@ -402,8 +375,7 @@ public class SubspaceClusterDefinition extends ClusterDefinition {
   }
 
   /**
-   * Sets which attributes are used in the cluster attributes among the
-   * selection will be discretized.
+   * Sets which attributes are used in the cluster.
    *
    * @param rangeList a string representing the list of attributes. Since the
    *          string will typically come from a user, attributes are indexed
@@ -411,34 +383,7 @@ public class SubspaceClusterDefinition extends ClusterDefinition {
    *          eg: first-3,5,6-last
    */
   public void setAttrIndexRange(String rangeList) {
-    m_numClusterAttributes = 0;
-    if (m_AttrIndexRange == null) {
-      m_AttrIndexRange = new Range();
-    }
     m_AttrIndexRange.setRanges(rangeList);
-
-    if (getParent() != null) {
-      m_AttrIndexRange.setUpper(getParent().getNumAttributes());
-      m_attributes = new boolean[getParent().getNumAttributes()];
-      for (int i = 0; i < m_attributes.length; i++) {
-        if (m_AttrIndexRange.isInRange(i)) {
-          m_numClusterAttributes++;
-          m_attributes[i] = true;
-        } else {
-          m_attributes[i] = false;
-        }
-      }
-
-      // store translation from attr in cluster to attr in whole dataset
-      m_attrIndices = new int[m_numClusterAttributes];
-      int clusterI = -1;
-      for (int i = 0; i < m_attributes.length; i++) {
-        if (m_AttrIndexRange.isInRange(i)) {
-          clusterI++;
-          m_attrIndices[clusterI] = i;
-        }
-      }
-    }
   }
 
   /**
@@ -490,8 +435,7 @@ public class SubspaceClusterDefinition extends ClusterDefinition {
    * @return the default cluster type
    */
   protected SelectedTag defaultClusterType() {
-    return new SelectedTag(SubspaceCluster.UNIFORM_RANDOM,
-      SubspaceCluster.TAGS_CLUSTERTYPE);
+    return new SelectedTag(SubspaceCluster.UNIFORM_RANDOM, SubspaceCluster.TAGS_CLUSTERTYPE);
   }
 
   /**
@@ -532,8 +476,7 @@ public class SubspaceClusterDefinition extends ClusterDefinition {
    * @return the default cluster sub type
    */
   protected SelectedTag defaultClusterSubType() {
-    return new SelectedTag(SubspaceCluster.CONTINUOUS,
-      SubspaceCluster.TAGS_CLUSTERSUBTYPE);
+    return new SelectedTag(SubspaceCluster.CONTINUOUS, SubspaceCluster.TAGS_CLUSTERSUBTYPE);
   }
 
   /**
@@ -543,8 +486,7 @@ public class SubspaceClusterDefinition extends ClusterDefinition {
    * @see SubspaceCluster#TAGS_CLUSTERSUBTYPE
    */
   public SelectedTag getClusterSubType() {
-    return new SelectedTag(m_clustersubtype,
-      SubspaceCluster.TAGS_CLUSTERSUBTYPE);
+    return new SelectedTag(m_clustersubtype, SubspaceCluster.TAGS_CLUSTERSUBTYPE);
   }
 
   /**
@@ -643,8 +585,7 @@ public class SubspaceClusterDefinition extends ClusterDefinition {
    *         per cluster separated by ..
    */
   protected String getInstNums() {
-    String text = new String("" + m_MinInstNum + ".." + m_MaxInstNum);
-    return text;
+    return new String("" + m_MinInstNum + ".." + m_MaxInstNum);
   }
 
   /**
@@ -760,71 +701,15 @@ public class SubspaceClusterDefinition extends ClusterDefinition {
    *          instances per cluster separated by ..
    * @throws Exception if values are not correct in number or value
    */
-  private void setValuesList(String fromToList) throws Exception {
-    m_valueA = new double[m_numClusterAttributes];
-    m_valueB = new double[m_numClusterAttributes];
-
-    setValuesList(fromToList, m_valueA, m_valueB, "D");
-    SubspaceCluster parent = (SubspaceCluster) getParent();
-
-    for (int i = 0; i < m_numClusterAttributes; i++) {
-      if ((!isGaussian()) && (m_valueA[i] > m_valueB[i])) {
-        throw new Exception("Min must be smaller than max.");
-      }
-
-      if (getParent() != null) {
-        // boolean values are only 0.0 and 1.0
-        if (parent.isBoolean(m_attrIndices[i])) {
-          parent.getNumValues()[m_attrIndices[i]] = 2;
-          if (((m_valueA[i] != 0.0) && (m_valueA[i] != 1.0))
-            || ((m_valueB[i] != 0.0) && (m_valueB[i] != 1.0))) {
-            throw new Exception("Ranges for boolean must be 0 or 1 only.");
-          }
-        }
-
-        if (parent.isNominal(m_attrIndices[i])) {
-          // nominal values: attributes range might have to be enlarged
-          double rest = m_valueA[i] - Math.rint(m_valueA[i]);
-          if (rest != 0.0) {
-            throw new Exception(" Ranges for nominal must be integer");
-          }
-          rest = m_valueB[i] - Math.rint(m_valueB[i]);
-          if (rest != 0.0) {
-            throw new Exception("Ranges for nominal must be integer");
-          }
-          if (m_valueA[i] < 0.0) {
-            throw new Exception(
-              "Range for nominal must start with number 0.0 or higher");
-          }
-          if (m_valueB[i] + 1 > parent.getNumValues()[m_attrIndices[i]]) {
-            // add new values to attribute
-            // (actual format is not yet defined)
-            parent.getNumValues()[m_attrIndices[i]] = (int) m_valueB[i] + 1;
-          }
-        }
-      }
-    }
+  public void setValuesList(String fromToList) throws Exception {
+    m_valuesList = fromToList;
   }
 
   /**
    * returns the range for each attribute as string
    */
-  private String getValuesList() {
-    String result;
-    int i;
-
-    result = "";
-
-    if (m_valueA != null) {
-      for (i = 0; i < m_valueA.length; i++) {
-        if (i > 0) {
-          result += ",";
-        }
-        result += "" + m_valueA[i] + "," + m_valueB[i];
-      }
-    }
-
-    return result;
+  public String getValuesList() {
+    return m_valuesList;
   }
 
   /**
@@ -838,39 +723,108 @@ public class SubspaceClusterDefinition extends ClusterDefinition {
   }
 
   /**
-   * Sets the ranges for each attribute.
-   * 
-   * @param fromToList the string containing the upper and lower boundary for
-   *          instances per cluster separated by ..
-   * @param first the "from's"
-   * @param second the "to's"
-   * @param optionLetter the option, from which the list came
-   * @throws Exception if values are not correct in number or value
+   * Initialises remaining member variables to get ready for generation.
    */
-  public void setValuesList(String fromToList, double[] first, double[] second,
-    String optionLetter) throws Exception {
+  protected void initialiseMemberVariables() {
 
-    StringTokenizer tok;
-    int index;
+    m_numClusterAttributes = 0;
+    if (getParent() != null) {
+      m_AttrIndexRange.setUpper(getParent().getNumAttributes());
+      m_attributes = new boolean[getParent().getNumAttributes()];
+      for (int i = 0; i < m_attributes.length; i++) {
+        if (m_AttrIndexRange.isInRange(i)) {
+          m_numClusterAttributes++;
+          m_attributes[i] = true;
+        } else {
+          m_attributes[i] = false;
+        }
+      }
 
-    tok = new StringTokenizer(fromToList, ",");
-    if (tok.countTokens() != first.length + second.length) {
-      System.err.println("Num tokens " + tok.countTokens() + " first length " + first.length + " second length " + second.length);
-      throw new Exception("Wrong number of values for option '-" + optionLetter
-        + "'.");
+      // store translation from attr in cluster to attr in whole dataset
+      m_attrIndices = new int[m_numClusterAttributes];
+      int clusterI = -1;
+      for (int i = 0; i < m_attributes.length; i++) {
+        if (m_AttrIndexRange.isInRange(i)) {
+          clusterI++;
+          m_attrIndices[clusterI] = i;
+        }
+      }
+    }
+  }
+
+  /**
+   * Sets the values for each attribute.
+   */
+  protected void setValues() throws Exception {
+
+    m_valueA = new double[m_numClusterAttributes];
+    m_valueB = new double[m_numClusterAttributes];
+
+    StringTokenizer tok = new StringTokenizer(getValuesList(), ",");
+    if (tok.countTokens() != m_valueA.length + m_valueB.length) {
+      throw new Exception("Wrong number of values for option '-D'.");
     }
 
-    index = 0;
+    int index = 0;
     while (tok.hasMoreTokens()) {
-      first[index] = Double.parseDouble(tok.nextToken());
-      second[index] = Double.parseDouble(tok.nextToken());
+      m_valueA[index] = Double.parseDouble(tok.nextToken());
+      m_valueB[index] = Double.parseDouble(tok.nextToken());
       index++;
+    }
+    SubspaceCluster parent = (SubspaceCluster) getParent();
+
+    for (int i = 0; i < m_numClusterAttributes; i++) {
+      if ((!isGaussian()) && (m_valueA[i] > m_valueB[i])) {
+        throw new Exception("Min must be smaller than max.");
+      }
+
+      if (getParent() != null) {
+
+        // boolean values are only 0.0 and 1.0
+        if (parent.isBoolean(m_attrIndices[i])) {
+          if (isGaussian()) {
+            throw new Exception("Cannot generate Gaussian values for Boolean attribute.");
+          }
+          if (!isInteger()) {
+            throw new Exception("Cannot generate non-integer values for Boolean attribute.");
+          }
+          parent.getNumValues()[m_attrIndices[i]] = 2;
+          if (((m_valueA[i] != 0.0) && (m_valueA[i] != 1.0)) || ((m_valueB[i] != 0.0) && (m_valueB[i] != 1.0))) {
+            throw new Exception("Ranges for boolean must be 0 or 1 only.");
+          }
+        } else if (parent.isNominal(m_attrIndices[i])) {
+          if (isGaussian()) {
+            throw new Exception("Cannot generate Gaussian values for nominal attribute.");
+          }
+          if (!isInteger()) {
+            throw new Exception("Cannot generate non-integer values for nominal attribute.");
+          }
+
+          // nominal values: attributes range might have to be enlarged
+          double rest = m_valueA[i] - Math.rint(m_valueA[i]);
+          if (rest != 0.0) {
+            throw new Exception("Ranges for nominal must be integer");
+          }
+          rest = m_valueB[i] - Math.rint(m_valueB[i]);
+          if (rest != 0.0) {
+            throw new Exception("Ranges for nominal must be integer");
+          }
+          if (m_valueA[i] < 0.0) {
+            throw new Exception("Range for nominal must start with number 0.0 or higher");
+          }
+          if (m_valueB[i] + 1 > parent.getNumValues()[m_attrIndices[i]]) {
+            // add new values to attribute
+            // (actual format is not yet defined)
+            parent.getNumValues()[m_attrIndices[i]] = (int) m_valueB[i] + 1;
+          }
+        }
+      }
     }
   }
 
   /**
    * Returns the revision string.
-   * 
+   *
    * @return the revision
    */
   @Override
