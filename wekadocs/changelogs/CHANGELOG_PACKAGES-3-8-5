@@ -1,0 +1,507 @@
+------------------------------------------------------------------------
+r15536 | eibe | 2020-03-07 18:05:53 +1300 (Sat, 07 Mar 2020) | 1 line
+Changed paths:
+   M /trunk/packages/external/tigerjython/Description.props
+   M /trunk/packages/external/tigerjython/lib/tigerjython2.jar
+
+Modified Tiger Jython .jar file by replacing the Scala code files in this .jar file with those from Scala 2.11.12, to obtain Java 11 compatibility; expanded scala-library.jar, scala-swing_2.11-1.0.2.jar, and scala-actors-2.11.0.jar for this.
+------------------------------------------------------------------------
+r15538 | mhall | 2020-03-28 14:54:34 +1300 (Sat, 28 Mar 2020) | 1 line
+Changed paths:
+   M /trunk/packages/internal/wekaServer/Description.props
+   M /trunk/packages/internal/wekaServer/build.properties
+   M /trunk/packages/internal/wekaServer/src/main/java/weka/gui/explorer/ClassifierPanelRemoteLauncher.java
+
+Another small change so that weka server is again compatible with the ClassifierPanel
+------------------------------------------------------------------------
+r15540 | mhall | 2020-03-28 14:58:54 +1300 (Sat, 28 Mar 2020) | 1 line
+Changed paths:
+   M /trunk/packages/internal/wekaServer/Description.props
+
+Fixed date in Description.props
+------------------------------------------------------------------------
+r15545 | eibe | 2020-04-08 23:04:02 +1200 (Wed, 08 Apr 2020) | 1 line
+Changed paths:
+   M /trunk/packages/internal/RPlugin/Description.props
+   M /trunk/packages/internal/RPlugin/build_package.xml
+   M /trunk/packages/internal/RPlugin/src/main/java/weka/core/JRILoader.java
+
+The RPlugin works with the latest release of the rJava package for R on macOS now. This also means the super hacky workaround on macOS is no longer necessary.
+------------------------------------------------------------------------
+r15546 | eibe | 2020-04-10 16:36:07 +1200 (Fri, 10 Apr 2020) | 1 line
+Changed paths:
+   M /trunk/packages/internal/RPlugin/Description.props
+   M /trunk/packages/internal/RPlugin/build_package.xml
+   M /trunk/packages/internal/RPlugin/libExternal/JRI.jar
+   M /trunk/packages/internal/RPlugin/libExternal/JRIEngine.jar
+   M /trunk/packages/internal/RPlugin/libExternal/REngine.jar
+   D /trunk/packages/internal/RPlugin/libExternal/xstream-1.4.10.jar
+   A /trunk/packages/internal/RPlugin/libExternal/xstream-1.4.11.1.jar
+   M /trunk/packages/internal/RPlugin/libExternalPreload/REngine.zip
+   M /trunk/packages/internal/RPlugin/libExternalPreload/rJavaClassLoader.zip
+   M /trunk/packages/internal/RPlugin/src/main/java/weka/classifiers/mlr/MLRClassifier.java
+   M /trunk/packages/internal/RPlugin/src/main/java/weka/classifiers/mlr/impl/MLRClassifierImpl.java
+   M /trunk/packages/internal/RPlugin/src/main/java/weka/core/JRILoader.java
+   M /trunk/packages/internal/RPlugin/src/main/java/weka/core/RSession.java
+   M /trunk/packages/internal/RPlugin/src/main/java/weka/core/RSessionImpl.java
+   M /trunk/packages/internal/RPlugin/src/main/java/weka/gui/beans/JavaGDConsolePanel.java
+   M /trunk/packages/internal/RPlugin/src/main/java/weka/gui/beans/RScriptExecutorCustomizer.java
+   M /trunk/packages/internal/RPlugin/src/main/java/weka/gui/knowledgeflow/steps/RScriptExecutorStepEditorDialog.java
+
+The RPlugin works with the latest release of the rJava package for R on macOS now. This also means the super hacky workaround on macOS is no longer necessary. Relevant JAR files and ZIP files have been replaced with code from rJava 0.9-12. HTTP has been replaced by HTTPS in URLs. xstream JAR file has been updated.
+------------------------------------------------------------------------
+r15547 | eibe | 2020-04-11 10:19:12 +1200 (Sat, 11 Apr 2020) | 1 line
+Changed paths:
+   M /trunk/packages/internal/RPlugin/src/main/java/weka/classifiers/mlr/impl/MLRClassifierImpl.java
+   M /trunk/packages/internal/RPlugin/src/main/java/weka/core/JRILoader.java
+   M /trunk/packages/internal/RPlugin/src/main/java/weka/core/RSessionImpl.java
+
+JavaGD library is now installed just after rJava, using the same mechanism. This is a hack to avoid failure of subsequent R package installations performed by WEKA on Windows (download of those packages will not start).
+------------------------------------------------------------------------
+r15548 | eibe | 2020-04-11 11:15:31 +1200 (Sat, 11 Apr 2020) | 1 line
+Changed paths:
+   M /trunk/packages/internal/RPlugin/src/main/java/weka/classifiers/mlr/MLRClassifier.java
+
+Updated MLRCLassifier based on MLR 2.17.1. Functional learners and BARTmachine are not included in this interface to MLR classification and regression schemes.
+------------------------------------------------------------------------
+r15550 | eibe | 2020-04-11 16:45:32 +1200 (Sat, 11 Apr 2020) | 1 line
+Changed paths:
+   M /trunk/packages/internal/RPlugin/Description.props
+
+A couple of small changes to Description.props.
+------------------------------------------------------------------------
+r15555 | eibe | 2020-04-11 17:24:21 +1200 (Sat, 11 Apr 2020) | 1 line
+Changed paths:
+   M /trunk/packages/internal/distributedWekaSparkDev/Description.props
+
+Description.props for latest version had not been checked in.
+------------------------------------------------------------------------
+r15557 | eibe | 2020-04-14 21:53:50 +1200 (Tue, 14 Apr 2020) | 1 line
+Changed paths:
+   M /trunk/packages/external/tigerjython/Description.props
+   M /trunk/packages/external/tigerjython/lib/tigerjython2.jar
+
+Modified Tiger Jython .jar file by adding Apple GUI classes from OpenJDK 8 to achieve compatibility with Java 11 on Macs.
+------------------------------------------------------------------------
+r15585 | mhall | 2020-06-04 14:03:05 +1200 (Thu, 04 Jun 2020) | 1 line
+Changed paths:
+   M /trunk/packages/internal/alternatingDecisionTrees/Description.props
+
+Updated Description.props
+------------------------------------------------------------------------
+r15586 | mhall | 2020-06-04 16:44:22 +1200 (Thu, 04 Jun 2020) | 1 line
+Changed paths:
+   M /trunk/packages/internal/alternatingModelTrees/Description.props
+
+Updated Description.props
+------------------------------------------------------------------------
+r15593 | eibe | 2020-06-30 12:42:48 +1200 (Tue, 30 Jun 2020) | 1 line
+Changed paths:
+   D /trunk/packages/internal/wekaDeeplearning4j
+   D /trunk/packages/internal/wekaDeeplearning4jCPU
+   D /trunk/packages/internal/wekaDeeplearning4jCPULibs
+   D /trunk/packages/internal/wekaDeeplearning4jCore
+   D /trunk/packages/internal/wekaDeeplearning4jGPU
+   D /trunk/packages/internal/wekaDeeplearning4jGPULibs
+
+wekaDeeplearning4j is maintained in a separate GitHub project.
+------------------------------------------------------------------------
+r15603 | mhall | 2020-08-10 12:02:27 +1200 (Mon, 10 Aug 2020) | 1 line
+Changed paths:
+   M /trunk/packages/internal/wekaPython/Description.props
+   M /trunk/packages/internal/wekaPython/src/main/java/weka/gui/knowledgeflow/templates/pythonScripting.kf
+
+Updated scripting knowledge flow template to accomodate plotting package change in pandas. Updated jsyntaxpane to work with Java 11.
+------------------------------------------------------------------------
+r15604 | mhall | 2020-08-10 12:03:14 +1200 (Mon, 10 Aug 2020) | 1 line
+Changed paths:
+   A /trunk/packages/internal/wekaPython/lib/jsyntaxpane-1.1.7.jar
+
+Updated scripting knowledge flow template to accomodate plotting package change in pandas. Updated jsyntaxpane to work with Java 11.
+------------------------------------------------------------------------
+r15605 | mhall | 2020-08-10 12:03:32 +1200 (Mon, 10 Aug 2020) | 1 line
+Changed paths:
+   D /trunk/packages/internal/wekaPython/lib/jsyntaxpane-0.9.5-b29.jar
+
+Updated scripting knowledge flow template to accomodate plotting package change in pandas. Updated jsyntaxpane to work with Java 11.
+------------------------------------------------------------------------
+r15612 | eibe | 2020-08-10 21:50:22 +1200 (Mon, 10 Aug 2020) | 1 line
+Changed paths:
+   M /trunk/packages/internal/RPlugin/Description.props
+   M /trunk/packages/internal/RPlugin/src/main/java/weka/core/JRILoader.java
+
+Fix to prevent WEKA crashing on Windows during installation of RPlugin if R_HOME not set in registry. Also, executable is now added to PATH on Windows automatically (if necessary) even if R_HOME is not set via registry.
+------------------------------------------------------------------------
+r15623 | mhall | 2020-08-14 11:09:27 +1200 (Fri, 14 Aug 2020) | 1 line
+Changed paths:
+   A /trunk/packages/internal/distributedWekaSpark3Dev
+   A /trunk/packages/internal/distributedWekaSpark3Dev/Description.props
+   A /trunk/packages/internal/distributedWekaSpark3Dev/GUIEditors.props
+   A /trunk/packages/internal/distributedWekaSpark3Dev/GenericPropertiesCreator.props
+   A /trunk/packages/internal/distributedWekaSpark3Dev/PluginManager.props
+   A /trunk/packages/internal/distributedWekaSpark3Dev/build.properties
+   A /trunk/packages/internal/distributedWekaSpark3Dev/build_package.xml
+   A /trunk/packages/internal/distributedWekaSpark3Dev/ivy.xml
+   A /trunk/packages/internal/distributedWekaSpark3Dev/ivysettings.xml
+   A /trunk/packages/internal/distributedWekaSpark3Dev/pom.xml
+   A /trunk/packages/internal/distributedWekaSpark3Dev/sample_data
+   A /trunk/packages/internal/distributedWekaSpark3Dev/sample_data/hypothyroid.csv
+   A /trunk/packages/internal/distributedWekaSpark3Dev/sample_data/hypothyroid.names
+   A /trunk/packages/internal/distributedWekaSpark3Dev/sample_data/hypothyroid_with_header_row.csv
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/distributedWekaSpark2Dev.iml
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/distributed
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/distributed/spark
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/distributed/spark/BaseSparkJobConfig.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/distributed/spark/BaseSparkJobConfig.java.mine
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/distributed/spark/BaseSparkJobConfig.java.r13644
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/distributed/spark/BaseSparkJobConfig.java.r13798
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/distributed/spark/SparkJobConfig.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/distributed/spark/SparkJobConfigBeanInfo.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/classifiers
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/classifiers/mllib
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/classifiers/mllib/MLlibClassifier.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/classifiers/mllib/MLlibDecisionTree.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/classifiers/mllib/MLlibGradientBoostedTrees.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/classifiers/mllib/MLlibLinearRegressionSGD.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/classifiers/mllib/MLlibLogistic.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/classifiers/mllib/MLlibNaiveBayes.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/classifiers/mllib/MLlibRandomForest.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/classifiers/mllib/MLlibSVM.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/classifiers/mllib/MLlibSparkContextManager.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/classifiers/mllib/WekaClassifierSparkJobWrapper.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/AbstractDataset.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/ArffHeaderSparkJob.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/ArffHeaderSparkJobBeanInfo.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/AvroDataSink.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/AvroDataSource.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/CSVDataSink.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/CSVDataSource.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/CSVToInstanceFlatMapFunction.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/CSVToInstancePairFlatMapFunction.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/CachingStrategy.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/CanopyClustererSparkJob.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/CorrelationMatrixSparkJob.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/CorrelationMatrixSparkJobBeanInfo.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/DataSink.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/DataSource.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/DatasetManager.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/EMClustererSparkJob.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/FileDataSink.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/FileDataSource.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/IntegerKeyPartitioner.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/KMeansClustererSparkJob.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/KMeansClustererSparkJobBeanInfo.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/MLlibClassifierEvaluationSparkJob.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/MLlibClassifierSparkJob.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/ParquetDataSink.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/ParquetDataSource.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/RandomizedDataSparkJob.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/RandomizedDataSparkJobBeanInfo.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/RowToInstanceFlatMapFunction.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/SparkJob.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/SparkJobBeanInfo.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/SparkUtils.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/WDDataset.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/WekaClassifierEvaluationSparkJob.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/WekaClassifierEvaluationSparkJobBeanInfo.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/WekaClassifierSparkJob.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/WekaClassifierSparkJobBeanInfo.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/WekaScoringSparkJob.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/WekaScoringSparkJobBeanInfo.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/mllib
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/mllib/util
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/distributed/spark/mllib/util/MLlibDatasetMaker.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/filters
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/filters/unsupervised
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/filters/unsupervised/attribute
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/filters/unsupervised/attribute/SubstringLabeler.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/filters/unsupervised/attribute/SubstringLabelerBeanInfo.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/filters/unsupervised/attribute/SubstringReplacer.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/filters/unsupervised/attribute/SubstringReplacerBeanInfo.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/PropertyHidableSheetPanel.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/beans
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/beans/SubstringLabelerFilterCustomizer.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/beans/SubstringReplacerFilterCustomizer.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/knowledgeflow
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/knowledgeflow/HiddenPropertyMLlibJobStepEditorDialog.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/knowledgeflow/icons
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/knowledgeflow/icons/ARFFHeaderSparkJob.gif
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/knowledgeflow/icons/CorrelationMatrixSparkJob.gif
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/knowledgeflow/icons/KMeansClustererSparkJob.gif
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/knowledgeflow/icons/RandomizedDataSparkJob.gif
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/knowledgeflow/icons/WekaClassifierEvaluationSparkJob.gif
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/knowledgeflow/icons/WekaClassifierSparkJob.gif
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/knowledgeflow/icons/WekaScoringSparkJob.gif
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/knowledgeflow/steps
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/knowledgeflow/steps/SparkDataSinkStepEditorDialog.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/knowledgeflow/steps/SparkDataSourceStepEditorDialog.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/knowledgeflow/steps/SparkJobStepEditorDialog.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/knowledgeflow/templates
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/knowledgeflow/templates/computeCorrelationMatrixAndPCA.kf
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/knowledgeflow/templates/createARFFHeaderAndGenerateGraphs.kf
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/knowledgeflow/templates/evaluateThreeClassifiers.kf
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/knowledgeflow/templates/kMeansClustering.kf
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/knowledgeflow/templates/runDesktopMLlibNB.kf
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/knowledgeflow/templates/trainAndSaveThreeClassifiers.kf
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/gui/knowledgeflow/templates/trainClassifierAndScoreData.kf
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/knowledgeflow
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/knowledgeflow/steps
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/knowledgeflow/steps/AbstractDataSink.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/knowledgeflow/steps/AbstractDataSource.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/knowledgeflow/steps/AbstractSparkJob.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/knowledgeflow/steps/ArffHeaderSparkJob.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/knowledgeflow/steps/AvroDataSink.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/knowledgeflow/steps/AvroDataSource.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/knowledgeflow/steps/CSVDataSink.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/knowledgeflow/steps/CSVDataSource.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/knowledgeflow/steps/CorrelationMatrixSparkJob.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/knowledgeflow/steps/KMeansClustererSparkJob.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/knowledgeflow/steps/MLlibClassifierEvaluationSparkJob.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/knowledgeflow/steps/MLlibClassifierSparkJob.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/knowledgeflow/steps/ParquetDataSink.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/knowledgeflow/steps/ParquetDataSource.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/knowledgeflow/steps/RandomizedDataSparkJob.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/knowledgeflow/steps/WekaClassifierEvaluationSparkJob.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/knowledgeflow/steps/WekaClassifierSparkJob.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/knowledgeflow/steps/WekaScoringSparkJob.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/weka/knowledgeflow/steps/WekaScoringSparkStep.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/test
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/test/distributedWekaSpark3Dev.iml
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/test/java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/test/java/weka
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/test/java/weka/filters
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/test/java/weka/filters/unsupervised
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/test/java/weka/filters/unsupervised/attribute
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/test/java/weka/filters/unsupervised/attribute/SubstringLabelerTest.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/src/test/java/weka/filters/unsupervised/attribute/SubstringReplacerTest.java
+   A /trunk/packages/internal/distributedWekaSpark3Dev/wekaSpark.props
+   A /trunk/packages/internal/distributedWekaSpark3Dev/windows
+   A /trunk/packages/internal/distributedWekaSpark3Dev/windows/README.txt
+   A /trunk/packages/internal/distributedWekaSpark3Dev/windows/bin
+   A /trunk/packages/internal/distributedWekaSpark3Dev/windows/bin/winutils.exe
+
+Initial import of trunk distributedWekaSpark3Dev
+------------------------------------------------------------------------
+r15624 | mhall | 2020-08-14 11:10:52 +1200 (Fri, 14 Aug 2020) | 1 line
+Changed paths:
+   M /trunk/packages/internal/distributedWekaSpark3Dev/build.properties
+
+Updated build.properties
+------------------------------------------------------------------------
+r15631 | eibe | 2020-09-05 17:05:32 +1200 (Sat, 05 Sep 2020) | 1 line
+Changed paths:
+   M /trunk/packages/internal/RPlugin/Description.props
+   M /trunk/packages/internal/RPlugin/src/main/java/weka/core/RSessionImpl.java
+   M /trunk/packages/internal/RPlugin/src/main/java/weka/gui/beans/JavaGDConsolePanel.java
+
+Fix to remove extraneous characters in output on Windows. Fixed regular expressions so that q(), quit(), and readline() are no longer accepted in console.
+------------------------------------------------------------------------
+r15641 | fracpete | 2020-10-13 11:37:12 +1300 (Tue, 13 Oct 2020) | 1 line
+Changed paths:
+   M /trunk/packages/internal/distributedWekaSparkDev/pom.xml
+
+bumped junit to 4.13.1
+------------------------------------------------------------------------
+r15644 | fracpete | 2020-10-13 13:06:41 +1300 (Tue, 13 Oct 2020) | 1 line
+Changed paths:
+   M /trunk/packages/external/CLOPE/pom.xml
+   M /trunk/packages/external/DMNBtext/pom.xml
+   M /trunk/packages/external/DilcaDistance/pom.xml
+   M /trunk/packages/external/EMImputation/pom.xml
+   M /trunk/packages/external/GPAttributeGeneration/pom.xml
+   M /trunk/packages/external/J48graft/pom.xml
+   M /trunk/packages/external/LibLINEAR/pom.xml
+   M /trunk/packages/external/LibSVM/pom.xml
+   M /trunk/packages/external/NNge/pom.xml
+   M /trunk/packages/external/SMOTE/pom.xml
+   M /trunk/packages/external/associationRulesVisualizer/pom.xml
+   M /trunk/packages/external/averagedOneDependenceEstimators/pom.xml
+   M /trunk/packages/external/bayesianLogisticRegression/pom.xml
+   M /trunk/packages/external/cascadeKMeans/pom.xml
+   M /trunk/packages/external/citationKNN/pom.xml
+   M /trunk/packages/external/classAssociationRules/pom.xml
+   M /trunk/packages/external/decorate/pom.xml
+   M /trunk/packages/external/elasticNet/pom.xml
+   M /trunk/packages/external/ensembleLibrary/pom.xml
+   M /trunk/packages/external/fastCorrBasedFS/pom.xml
+   M /trunk/packages/external/functionalTrees/pom.xml
+   M /trunk/packages/external/fuzzyLaticeReasoning/pom.xml
+   M /trunk/packages/external/fuzzyUnorderedRuleInduction/pom.xml
+   M /trunk/packages/external/generalizedSequentialPatterns/pom.xml
+   M /trunk/packages/external/hiddenNaiveBayes/pom.xml
+   M /trunk/packages/external/kfGroovy/pom.xml
+   M /trunk/packages/external/kfKettle/pom.xml
+   M /trunk/packages/external/kfPMMLClassifierScoring/pom.xml
+   M /trunk/packages/external/latentSemanticAnalysis/pom.xml
+   M /trunk/packages/external/lazyBayesianRules/pom.xml
+   M /trunk/packages/external/levenshteinEditDistance/pom.xml
+   M /trunk/packages/external/linearForwardSelection/pom.xml
+   M /trunk/packages/external/multilayerPerceptronCS/pom.xml
+   M /trunk/packages/external/normalize/pom.xml
+   M /trunk/packages/external/optics_dbScan/pom.xml
+   M /trunk/packages/external/ordinalLearningMethod/pom.xml
+   M /trunk/packages/external/ordinalStochasticDominance/pom.xml
+   M /trunk/packages/external/prefuseGraph/pom.xml
+   M /trunk/packages/external/prefuseGraphViewer/pom.xml
+   M /trunk/packages/external/prefuseTree/pom.xml
+   M /trunk/packages/external/probabilisticSignificanceAE/pom.xml
+   M /trunk/packages/external/rotationForest/pom.xml
+   M /trunk/packages/external/scatterPlot3D/pom.xml
+   M /trunk/packages/external/stackingC/pom.xml
+   M /trunk/packages/external/tabuAndScatterSearch/pom.xml
+   M /trunk/packages/external/tertius/pom.xml
+   M /trunk/packages/external/winnow/pom.xml
+   M /trunk/packages/internal/DTNB/pom.xml
+   M /trunk/packages/internal/RBFNetwork/pom.xml
+   M /trunk/packages/internal/SPegasos/pom.xml
+   M /trunk/packages/internal/SVMAttributeEval/pom.xml
+   M /trunk/packages/internal/WekaExcel/pom.xml
+   M /trunk/packages/internal/WekaODF/pom.xml
+   M /trunk/packages/internal/XMeans/pom.xml
+   M /trunk/packages/internal/alternatingDecisionTrees/pom.xml
+   M /trunk/packages/internal/alternatingModelTrees/pom.xml
+   M /trunk/packages/internal/attributeSelectionSearchMethods/pom.xml
+   M /trunk/packages/internal/bestFirstTree/pom.xml
+   M /trunk/packages/internal/calibrationCurve/pom.xml
+   M /trunk/packages/internal/chiSquaredAttributeEval/pom.xml
+   M /trunk/packages/internal/classificationViaClustering/pom.xml
+   M /trunk/packages/internal/classifierBasedAttributeSelection/pom.xml
+   M /trunk/packages/internal/clojureClassifier/pom.xml
+   M /trunk/packages/internal/complementNaiveBayes/pom.xml
+   M /trunk/packages/internal/conjunctiveRule/pom.xml
+   M /trunk/packages/internal/consistencySubsetEval/pom.xml
+   M /trunk/packages/internal/costSensitiveAttributeSelection/pom.xml
+   M /trunk/packages/internal/dagging/pom.xml
+   M /trunk/packages/internal/denormalize/pom.xml
+   M /trunk/packages/internal/discriminantAnalysis/pom.xml
+   M /trunk/packages/internal/dualPerturbAndCombine/pom.xml
+   M /trunk/packages/internal/ensemblesOfNestedDichotomies/pom.xml
+   M /trunk/packages/internal/extraTrees/pom.xml
+   M /trunk/packages/internal/filteredAttributeSelection/pom.xml
+   M /trunk/packages/internal/fourierTransform/pom.xml
+   M /trunk/packages/internal/grading/pom.xml
+   M /trunk/packages/internal/gridSearch/pom.xml
+   M /trunk/packages/internal/hotSpot/pom.xml
+   M /trunk/packages/internal/hyperPipes/pom.xml
+   M /trunk/packages/internal/isolationForest/pom.xml
+   M /trunk/packages/internal/isotonicRegression/pom.xml
+   M /trunk/packages/internal/iterativeAbsoluteErrorRegression/pom.xml
+   M /trunk/packages/internal/javaFXScatter3D/pom.xml
+   M /trunk/packages/internal/kerasZoo/pom.xml
+   M /trunk/packages/internal/kernelLogisticRegression/pom.xml
+   M /trunk/packages/internal/largeScaleKernelLearning/pom.xml
+   M /trunk/packages/internal/leastMedSquared/pom.xml
+   M /trunk/packages/internal/localOutlierFactor/pom.xml
+   M /trunk/packages/internal/logarithmicErrorMetrics/pom.xml
+   M /trunk/packages/internal/metaCost/pom.xml
+   M /trunk/packages/internal/multiBoostAB/pom.xml
+   M /trunk/packages/internal/multiInstanceFilters/pom.xml
+   M /trunk/packages/internal/multiInstanceLearning/pom.xml
+   M /trunk/packages/internal/multiLayerPerceptrons/pom.xml
+   M /trunk/packages/internal/naiveBayesTree/pom.xml
+   M /trunk/packages/internal/niftiLoader/pom.xml
+   M /trunk/packages/internal/oneClassClassifier/pom.xml
+   M /trunk/packages/internal/ordinalClassClassifier/pom.xml
+   M /trunk/packages/internal/paceRegression/pom.xml
+   M /trunk/packages/internal/partialLeastSquares/pom.xml
+   M /trunk/packages/internal/percentageErrorMetrics/pom.xml
+   M /trunk/packages/internal/predictiveApriori/pom.xml
+   M /trunk/packages/internal/probabilityCalibrationTrees/pom.xml
+   M /trunk/packages/internal/raceSearch/pom.xml
+   M /trunk/packages/internal/racedIncrementalLogitBoost/pom.xml
+   M /trunk/packages/internal/realAdaBoost/pom.xml
+   M /trunk/packages/internal/ridor/pom.xml
+   M /trunk/packages/internal/scriptingClassifiers/pom.xml
+   M /trunk/packages/internal/sequentialInformationalBottleneckClusterer/pom.xml
+   M /trunk/packages/internal/simpleCART/pom.xml
+   M /trunk/packages/internal/simpleEducationalLearningSchemes/pom.xml
+   M /trunk/packages/internal/supervisedAttributeScaling/pom.xml
+   M /trunk/packages/internal/thresholdSelector/pom.xml
+   M /trunk/packages/internal/timeSeriesFilters/pom.xml
+   M /trunk/packages/internal/userClassifier/pom.xml
+   M /trunk/packages/internal/votingFeatureIntervals/pom.xml
+   M /trunk/packages/internal/wavelet/pom.xml
+   M /trunk/packages/internal/wekaPython/pom.xml
+
+bumped junit to 4.13.1
+------------------------------------------------------------------------
+r15645 | fracpete | 2020-10-14 11:15:45 +1300 (Wed, 14 Oct 2020) | 1 line
+Changed paths:
+   M /trunk/packages/internal/distributedWekaBase/ivy.xml
+   M /trunk/packages/internal/distributedWekaBase/pom.xml
+   M /trunk/packages/internal/distributedWekaHadoopCore/pom.xml
+   M /trunk/packages/internal/distributedWekaSpark/ivy.xml
+   M /trunk/packages/internal/distributedWekaSpark/pom.xml
+   M /trunk/packages/internal/distributedWekaSpark2Dev/ivy.xml
+   M /trunk/packages/internal/distributedWekaSpark2Dev/pom.xml
+   M /trunk/packages/internal/distributedWekaSpark3Dev/ivy.xml
+   M /trunk/packages/internal/distributedWekaSpark3Dev/pom.xml
+   M /trunk/packages/internal/distributedWekaSparkDev/ivy.xml
+   M /trunk/packages/internal/streamingUnivariateStats/pom.xml
+   M /trunk/packages/internal/timeseriesForecasting/pom.xml
+   M /trunk/packages/internal/wekaServer/pom.xml
+
+bumped junit to 4.13.1
+------------------------------------------------------------------------
+r15649 | mhall | 2020-11-06 15:51:02 +1300 (Fri, 06 Nov 2020) | 1 line
+Changed paths:
+   M /trunk/packages/internal/distributedWekaSpark3Dev/Description.props
+   M /trunk/packages/internal/distributedWekaSpark3Dev/pom.xml
+   M /trunk/packages/internal/distributedWekaSpark3Dev/src/main/java/distributed/spark/BaseSparkJobConfig.java
+
+Fixed a bug in the auto-detection of the main weka jar file in the classpath
+------------------------------------------------------------------------
+r15657 | mhall | 2020-12-04 14:59:20 +1300 (Fri, 04 Dec 2020) | 1 line
+Changed paths:
+   D /trunk/packages/internal/wekaPython/Beans.props
+   M /trunk/packages/internal/wekaPython/Description.props
+   M /trunk/packages/internal/wekaPython/build_package.xml
+   M /trunk/packages/internal/wekaPython/pom.xml
+   M /trunk/packages/internal/wekaPython/src/main/java/weka/classifiers/sklearn/ScikitLearnClassifier.java
+   M /trunk/packages/internal/wekaPython/src/main/java/weka/clusterers/ScikitLearnClusterer.java
+   M /trunk/packages/internal/wekaPython/src/main/java/weka/gui/PythonPanel.java
+   D /trunk/packages/internal/wekaPython/src/main/java/weka/gui/beans
+   M /trunk/packages/internal/wekaPython/src/main/java/weka/knowledgeflow/steps/PythonScriptExecutor.java
+   M /trunk/packages/internal/wekaPython/src/main/java/weka/python/PythonSession.java
+
+Now supports using multiple python servers/virtual environments. Optional server ID + path to python executable uniquely identifies a given server and allows it to be dedicated to one client or shared among several
+------------------------------------------------------------------------
+r15659 | mhall | 2020-12-04 15:08:18 +1300 (Fri, 04 Dec 2020) | 1 line
+Changed paths:
+   M /trunk/packages/internal/wekaPython/pom.xml
+
+Updated pom
+------------------------------------------------------------------------
+r15661 | mhall | 2020-12-04 15:12:35 +1300 (Fri, 04 Dec 2020) | 1 line
+Changed paths:
+   M /trunk/packages/internal/wekaPython/pom.xml
+
+[maven-release-plugin] prepare release wekaPython-1.0.13
+------------------------------------------------------------------------
+r15663 | mhall | 2020-12-04 15:12:37 +1300 (Fri, 04 Dec 2020) | 1 line
+Changed paths:
+   M /trunk/packages/internal/wekaPython/pom.xml
+
+[maven-release-plugin] prepare for next development iteration
+------------------------------------------------------------------------
+r15692 | mhall | 2020-12-15 13:48:59 +1300 (Tue, 15 Dec 2020) | 1 line
+Changed paths:
+   M /trunk/packages/internal/kerasZoo/Description.props
+   M /trunk/packages/internal/kerasZoo/pom.xml
+   M /trunk/packages/internal/kerasZoo/src/main/java/weka/classifiers/keras/KerasZooClassifier.java
+
+Now exposes the support for python virtual environments added in the 1.0.13 release of wekaPython
+------------------------------------------------------------------------
+r15698 | mhall | 2020-12-16 10:29:04 +1300 (Wed, 16 Dec 2020) | 1 line
+Changed paths:
+   M /trunk/packages/internal/kerasZoo/Description.props
+
+Updated Description.props
+------------------------------------------------------------------------

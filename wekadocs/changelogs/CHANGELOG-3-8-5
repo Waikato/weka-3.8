@@ -1,0 +1,564 @@
+------------------------------------------------------------------------
+r15482 | eibe | 2019-12-19 22:31:48 +1300 (Thu, 19 Dec 2019) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/meta/ClassificationViaRegression.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/meta/ClassificationViaRegression.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/meta/ClassificationViaRegression.java
+
+ClassificationViaRegression now implements WeightedInstancesHandler.
+------------------------------------------------------------------------
+r15486 | mhall | 2019-12-20 13:21:17 +1300 (Fri, 20 Dec 2019) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/gui/knowledgeflow/steps/StripChartInteractiveView.java
+
+Fixed an npe that would occur if the window was closed while accepting data points
+------------------------------------------------------------------------
+r15492 | mhall | 2019-12-20 16:21:54 +1300 (Fri, 20 Dec 2019) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/core/version.txt
+
+Version number bumped
+------------------------------------------------------------------------
+r15495 | mhall | 2019-12-20 16:24:26 +1300 (Fri, 20 Dec 2019) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/core/version.txt
+
+Reverting version number as need to make maven release before bumping
+------------------------------------------------------------------------
+r15515 | mhall | 2019-12-20 17:09:06 +1300 (Fri, 20 Dec 2019) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/core/version.txt
+
+Version number bumped
+------------------------------------------------------------------------
+r15518 | eibe | 2019-12-24 13:47:22 +1300 (Tue, 24 Dec 2019) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/ASEvaluation.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/ASSearch.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/BestFirst.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/CfsSubsetEval.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/CheckAttributeSelection.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/ClassifierAttributeEval.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/ClassifierSubsetEval.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/CorrelationAttributeEval.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/GainRatioAttributeEval.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/GreedyStepwise.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/HoldOutSubsetEvaluator.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/InfoGainAttributeEval.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/OneRAttributeEval.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/PrincipalComponents.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/Ranker.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/ReliefFAttributeEval.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/SymmetricalUncertAttributeEval.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/WrapperSubsetEval.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/ASEvaluation.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/ASSearch.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/BestFirst.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/CfsSubsetEval.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/CheckAttributeSelection.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/ClassifierAttributeEval.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/ClassifierSubsetEval.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/CorrelationAttributeEval.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/GainRatioAttributeEval.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/GreedyStepwise.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/HoldOutSubsetEvaluator.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/InfoGainAttributeEval.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/OneRAttributeEval.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/PrincipalComponents.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/Ranker.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/ReliefFAttributeEval.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/SymmetricalUncertAttributeEval.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/WrapperSubsetEval.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/ASEvaluation.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/ASSearch.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/BestFirst.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/CfsSubsetEval.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/CheckAttributeSelection.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/ClassifierAttributeEval.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/ClassifierSubsetEval.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/CorrelationAttributeEval.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/GainRatioAttributeEval.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/GreedyStepwise.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/HoldOutSubsetEvaluator.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/InfoGainAttributeEval.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/OneRAttributeEval.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/PrincipalComponents.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/Ranker.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/ReliefFAttributeEval.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/SymmetricalUncertAttributeEval.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/WrapperSubsetEval.java
+
+ASEvaluation and ASSearch now implement OptionHandler interface and descendant classes can now use the @OptionMetaData tag to add command-line option handling. Tidied up option handling in sub classes. Fixed typos.
+------------------------------------------------------------------------
+r15520 | eibe | 2019-12-24 21:56:20 +1300 (Tue, 24 Dec 2019) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/associations/AbstractAssociator.java
+   M /branches/stable-3-8/weka/src/main/java/weka/associations/Apriori.java
+   M /branches/stable-3-8/weka/src/main/java/weka/associations/FPGrowth.java
+   M /branches/stable-3-8/weka/src/main/java/weka/associations/SingleAssociatorEnhancer.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/ASEvaluation.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/ASSearch.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/BestFirst.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/CfsSubsetEval.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/ClassifierAttributeEval.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/ClassifierSubsetEval.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/CorrelationAttributeEval.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/GainRatioAttributeEval.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/GreedyStepwise.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/InfoGainAttributeEval.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/OneRAttributeEval.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/PrincipalComponents.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/Ranker.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/ReliefFAttributeEval.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/SymmetricalUncertAttributeEval.java
+   M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/WrapperSubsetEval.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/AbstractClassifier.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/SingleClassifierEnhancer.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/bayes/BayesNet.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/bayes/NaiveBayes.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/bayes/NaiveBayesMultinomialText.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/functions/GaussianProcesses.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/functions/LinearRegression.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/functions/Logistic.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/functions/MultilayerPerceptron.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/functions/SGD.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/functions/SGDText.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/functions/SMO.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/functions/SMOreg.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/functions/SimpleLinearRegression.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/functions/SimpleLogistic.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/functions/VotedPerceptron.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/lazy/IBk.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/lazy/KStar.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/meta/AdaBoostM1.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/meta/AdditiveRegression.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/meta/AttributeSelectedClassifier.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/meta/Bagging.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/meta/CVParameterSelection.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/meta/CostSensitiveClassifier.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/meta/FilteredClassifier.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/meta/IterativeClassifierOptimizer.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/meta/LogitBoost.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/meta/MultiClassClassifier.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/meta/RandomSubSpace.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/meta/RegressionByDiscretization.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/misc/SerializedClassifier.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/rules/DecisionTable.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/rules/JRip.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/trees/HoeffdingTree.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/trees/J48.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/trees/LMT.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/trees/REPTree.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/trees/RandomTree.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/trees/m5/M5Base.java
+   M /branches/stable-3-8/weka/src/main/java/weka/clusterers/AbstractClusterer.java
+   M /branches/stable-3-8/weka/src/main/java/weka/clusterers/Cobweb.java
+   M /branches/stable-3-8/weka/src/main/java/weka/clusterers/EM.java
+   M /branches/stable-3-8/weka/src/main/java/weka/clusterers/FarthestFirst.java
+   M /branches/stable-3-8/weka/src/main/java/weka/clusterers/FilteredClusterer.java
+   M /branches/stable-3-8/weka/src/main/java/weka/clusterers/HierarchicalClusterer.java
+   M /branches/stable-3-8/weka/src/main/java/weka/clusterers/MakeDensityBasedClusterer.java
+   M /branches/stable-3-8/weka/src/main/java/weka/clusterers/SimpleKMeans.java
+   M /branches/stable-3-8/weka/src/main/java/weka/clusterers/SingleClustererEnhancer.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/associations/AbstractAssociator.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/associations/Apriori.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/associations/FPGrowth.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/associations/SingleAssociatorEnhancer.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/ASEvaluation.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/ASSearch.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/BestFirst.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/CfsSubsetEval.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/ClassifierAttributeEval.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/ClassifierSubsetEval.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/CorrelationAttributeEval.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/GainRatioAttributeEval.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/GreedyStepwise.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/InfoGainAttributeEval.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/OneRAttributeEval.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/PrincipalComponents.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/Ranker.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/ReliefFAttributeEval.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/SymmetricalUncertAttributeEval.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/attributeSelection/WrapperSubsetEval.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/AbstractClassifier.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/SingleClassifierEnhancer.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/bayes/BayesNet.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/bayes/NaiveBayes.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/bayes/NaiveBayesMultinomialText.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/functions/GaussianProcesses.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/functions/LinearRegression.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/functions/Logistic.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/functions/MultilayerPerceptron.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/functions/SGD.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/functions/SGDText.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/functions/SimpleLinearRegression.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/functions/SimpleLogistic.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/functions/VotedPerceptron.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/lazy/IBk.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/lazy/KStar.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/meta/AdaBoostM1.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/meta/AdditiveRegression.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/meta/AttributeSelectedClassifier.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/meta/Bagging.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/meta/CVParameterSelection.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/meta/CostSensitiveClassifier.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/meta/FilteredClassifier.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/meta/IterativeClassifierOptimizer.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/meta/LogitBoost.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/meta/MultiClassClassifier.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/meta/RandomSubSpace.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/meta/RegressionByDiscretization.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/misc/SerializedClassifier.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/rules/DecisionTable.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/rules/JRip.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/trees/HoeffdingTree.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/trees/J48.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/trees/LMT.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/trees/REPTree.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/trees/RandomTree.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/trees/m5/M5Base.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/clusterers/AbstractClusterer.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/clusterers/Cobweb.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/clusterers/EM.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/clusterers/FarthestFirst.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/clusterers/FilteredClusterer.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/clusterers/HierarchicalClusterer.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/clusterers/MakeDensityBasedClusterer.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/clusterers/SimpleKMeans.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/clusterers/SingleClustererEnhancer.java
+   M /branches/waikato/weka/src/main/java/weka/associations/AbstractAssociator.java
+   M /branches/waikato/weka/src/main/java/weka/associations/Apriori.java
+   M /branches/waikato/weka/src/main/java/weka/associations/FPGrowth.java
+   M /branches/waikato/weka/src/main/java/weka/associations/SingleAssociatorEnhancer.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/ASEvaluation.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/ASSearch.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/BestFirst.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/CfsSubsetEval.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/ClassifierAttributeEval.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/ClassifierSubsetEval.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/CorrelationAttributeEval.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/GainRatioAttributeEval.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/GreedyStepwise.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/InfoGainAttributeEval.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/OneRAttributeEval.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/PrincipalComponents.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/Ranker.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/ReliefFAttributeEval.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/SymmetricalUncertAttributeEval.java
+   M /branches/waikato/weka/src/main/java/weka/attributeSelection/WrapperSubsetEval.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/AbstractClassifier.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/SingleClassifierEnhancer.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/bayes/BayesNet.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/bayes/NaiveBayes.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/bayes/NaiveBayesMultinomialText.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/functions/GaussianProcesses.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/functions/LinearRegression.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/functions/Logistic.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/functions/MultilayerPerceptron.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/functions/SGD.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/functions/SGDText.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/functions/SimpleLinearRegression.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/functions/SimpleLogistic.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/functions/VotedPerceptron.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/lazy/IBk.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/lazy/KStar.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/meta/AdaBoostM1.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/meta/AdditiveRegression.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/meta/AttributeSelectedClassifier.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/meta/Bagging.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/meta/CVParameterSelection.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/meta/CostSensitiveClassifier.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/meta/FilteredClassifier.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/meta/IterativeClassifierOptimizer.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/meta/LogitBoost.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/meta/MultiClassClassifier.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/meta/RandomSubSpace.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/meta/RegressionByDiscretization.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/misc/SerializedClassifier.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/rules/DecisionTable.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/rules/JRip.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/trees/HoeffdingTree.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/trees/J48.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/trees/LMT.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/trees/REPTree.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/trees/RandomTree.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/trees/m5/M5Base.java
+   M /branches/waikato/weka/src/main/java/weka/clusterers/AbstractClusterer.java
+   M /branches/waikato/weka/src/main/java/weka/clusterers/Cobweb.java
+   M /branches/waikato/weka/src/main/java/weka/clusterers/EM.java
+   M /branches/waikato/weka/src/main/java/weka/clusterers/FarthestFirst.java
+   M /branches/waikato/weka/src/main/java/weka/clusterers/FilteredClusterer.java
+   M /branches/waikato/weka/src/main/java/weka/clusterers/HierarchicalClusterer.java
+   M /branches/waikato/weka/src/main/java/weka/clusterers/MakeDensityBasedClusterer.java
+   M /branches/waikato/weka/src/main/java/weka/clusterers/SimpleKMeans.java
+   M /branches/waikato/weka/src/main/java/weka/clusterers/SingleClustererEnhancer.java
+
+Some tidying up of command-line option handling of classifiers, associators, clusterers, and attribute selection. The idea is that the most abstract super class in these class hierarchies calls checkForRemainingOptions() at the end of setOptions(). Sub classes, if they implement setOptions(), should just call super.setOptions() as the last statement in setOptions() and not call checkForRemainingOptions() themselves.
+------------------------------------------------------------------------
+r15522 | eibe | 2019-12-29 18:09:07 +1300 (Sun, 29 Dec 2019) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/estimators/CheckEstimator.java
+   M /branches/stable-3-8/weka/src/main/java/weka/estimators/DDConditionalEstimator.java
+   M /branches/stable-3-8/weka/src/main/java/weka/estimators/DKConditionalEstimator.java
+   M /branches/stable-3-8/weka/src/main/java/weka/estimators/DNConditionalEstimator.java
+   M /branches/stable-3-8/weka/src/main/java/weka/estimators/DiscreteEstimator.java
+   M /branches/stable-3-8/weka/src/main/java/weka/estimators/Estimator.java
+   M /branches/stable-3-8/weka/src/main/java/weka/estimators/EstimatorUtils.java
+   M /branches/stable-3-8/weka/src/main/java/weka/estimators/KDConditionalEstimator.java
+   M /branches/stable-3-8/weka/src/main/java/weka/estimators/KKConditionalEstimator.java
+   M /branches/stable-3-8/weka/src/main/java/weka/estimators/KernelEstimator.java
+   M /branches/stable-3-8/weka/src/main/java/weka/estimators/MahalanobisEstimator.java
+   M /branches/stable-3-8/weka/src/main/java/weka/estimators/NDConditionalEstimator.java
+   M /branches/stable-3-8/weka/src/main/java/weka/estimators/NNConditionalEstimator.java
+   M /branches/stable-3-8/weka/src/main/java/weka/estimators/NormalEstimator.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/estimators/CheckEstimator.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/estimators/DDConditionalEstimator.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/estimators/DKConditionalEstimator.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/estimators/DNConditionalEstimator.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/estimators/DiscreteEstimator.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/estimators/Estimator.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/estimators/EstimatorUtils.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/estimators/KDConditionalEstimator.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/estimators/KKConditionalEstimator.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/estimators/KernelEstimator.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/estimators/MahalanobisEstimator.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/estimators/NDConditionalEstimator.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/estimators/NNConditionalEstimator.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/estimators/NormalEstimator.java
+   M /branches/waikato/weka/src/main/java/weka/estimators/CheckEstimator.java
+   M /branches/waikato/weka/src/main/java/weka/estimators/DDConditionalEstimator.java
+   M /branches/waikato/weka/src/main/java/weka/estimators/DKConditionalEstimator.java
+   M /branches/waikato/weka/src/main/java/weka/estimators/DNConditionalEstimator.java
+   M /branches/waikato/weka/src/main/java/weka/estimators/DiscreteEstimator.java
+   M /branches/waikato/weka/src/main/java/weka/estimators/Estimator.java
+   M /branches/waikato/weka/src/main/java/weka/estimators/EstimatorUtils.java
+   M /branches/waikato/weka/src/main/java/weka/estimators/KDConditionalEstimator.java
+   M /branches/waikato/weka/src/main/java/weka/estimators/KKConditionalEstimator.java
+   M /branches/waikato/weka/src/main/java/weka/estimators/KernelEstimator.java
+   M /branches/waikato/weka/src/main/java/weka/estimators/MahalanobisEstimator.java
+   M /branches/waikato/weka/src/main/java/weka/estimators/NDConditionalEstimator.java
+   M /branches/waikato/weka/src/main/java/weka/estimators/NNConditionalEstimator.java
+   M /branches/waikato/weka/src/main/java/weka/estimators/NormalEstimator.java
+
+Added default constructors. Fixed bugs in class-conditional addValues() methods in Estimator class (unused in core WEKA code). Added core OptionHandler methods to Estimator class. Improved Javadoc. KernelEstimator now rounds argument value in getProbability() to be consistent with NormalEstimator. Both, KernelEstimator and NormalEstimator, now return a density estimate that integrates to one via getProbability(). Small changes in the results of NaiveBayes result because of the rounding when the kernel density estimator is applied in NaiveBayes. Bug fix in KKConditionalEstimator: scale of kernels for non-evidence variable is now reasonable because weights are rescaled before being passed to the corresponding estimator. Also, rounding is applied in getEstimator() for consistency with KernelEstimator and NormalEstimator. Bug fix in MahalanobisEstimator: square root was applied incorrectly in normalization term. Bug fix in NNConditionalEstimator: now, it does actually compute the conditional density rather than the joint density! Apart from the change to rounding in KernelEstimator, none of the other changes and bug fixes should have an effect on core WEKA because this other functionality does not appear to be used anywhere.
+------------------------------------------------------------------------
+r15529 | eibe | 2020-02-17 18:44:27 +1300 (Mon, 17 Feb 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/filters/unsupervised/attribute/RenameNominalValues.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/filters/unsupervised/attribute/RenameNominalValues.java
+   M /branches/waikato/weka/src/main/java/weka/filters/unsupervised/attribute/RenameNominalValues.java
+
+A few bug fixes primarily relating to cases where new values already existed in the nominal attribute concerned or the position of an attribute value had shifted because renaming caused a value to disappear. Improved efficiency by replacing getOutputFormat() with outputFormatPeek() where appropriate and introducing a hashset to check for presence of a value. Filter was not initialised correctly when reused because hash map was not initialised in setInputFormat().
+------------------------------------------------------------------------
+r15531 | eibe | 2020-02-18 11:11:02 +1300 (Tue, 18 Feb 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/filters/unsupervised/attribute/RenameNominalValues.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/filters/unsupervised/attribute/RenameNominalValues.java
+   M /branches/waikato/weka/src/main/java/weka/filters/unsupervised/attribute/RenameNominalValues.java
+
+Bug fixes and code simplification.
+------------------------------------------------------------------------
+r15533 | eibe | 2020-02-21 18:57:27 +1300 (Fri, 21 Feb 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/functions/Logistic.java
+   M /branches/stable-3-8/weka/src/main/java/weka/core/Optimization.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/functions/Logistic.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/core/Optimization.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/functions/Logistic.java
+   M /branches/waikato/weka/src/main/java/weka/core/Optimization.java
+
+Fixed bug in line search in Optimization.java (hopefully) that could cause convergence problems in conjugate gradient descent in rare cases. Added option to Logistic (logistic regression) to turn off standardization of attributes (which is performed by default).
+------------------------------------------------------------------------
+r15535 | eibe | 2020-02-22 00:24:37 +1300 (Sat, 22 Feb 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/functions/Logistic.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/functions/Logistic.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/functions/Logistic.java
+
+Fixed tool tip.
+------------------------------------------------------------------------
+r15541 | mhall | 2020-03-31 16:33:22 +1300 (Tue, 31 Mar 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/core/WekaPackageManager.java
+
+startupCheck() was not honoring the offline flag - fixed
+------------------------------------------------------------------------
+r15560 | eibe | 2020-04-17 20:13:55 +1200 (Fri, 17 Apr 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/meta/RandomCommittee.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/meta/RandomCommittee.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/meta/RandomCommittee.java
+
+RandomCommittee performed resampling whenever the base learner did not implement WeightedInstancesHandler, regardless of whether the training data had uniform weights or not. Fixed now: resampling will now be performed only if the base learner does not implement WeightedInstancesHandler *and* the instance weights are not all equal.
+------------------------------------------------------------------------
+r15562 | eibe | 2020-05-02 15:25:40 +1200 (Sat, 02 May 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/functions/SMO.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/functions/supportVector/NormalizedPolyKernel.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/functions/supportVector/RegOptimizer.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/functions/supportVector/NormalizedPolyKernel.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/functions/supportVector/NormalizedPolyKernel.java
+
+ Speed improvements to NormalizedPolyKernel. Changed check for linear model in RegOptimizer and SMO so that it is now possible to run the NormalizedPolyKernel with exponent 1.
+------------------------------------------------------------------------
+r15564 | mhall | 2020-05-04 12:04:05 +1200 (Mon, 04 May 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/core/Option.java
+
+Added code to handle setting an array option that has element types other than File or OptionHandler
+------------------------------------------------------------------------
+r15570 | eibe | 2020-05-06 14:43:07 +1200 (Wed, 06 May 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/core/Instances.java
+   M /branches/stable-3-8/weka/src/main/java/weka/core/Utils.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/core/Instances.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/core/Utils.java
+   M /branches/waikato/weka/src/main/java/weka/core/Instances.java
+   M /branches/waikato/weka/src/main/java/weka/core/Utils.java
+
+Tidied up some error messages generated by the Instances class.
+------------------------------------------------------------------------
+r15572 | eibe | 2020-05-06 19:02:48 +1200 (Wed, 06 May 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/gui/ComponentHelper.java
+   M /branches/stable-3-8/weka/src/main/java/weka/gui/arffviewer/ArffTableModel.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/gui/ComponentHelper.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/gui/arffviewer/ArffTableModel.java
+   M /branches/waikato/weka/src/main/java/weka/gui/ComponentHelper.java
+   M /branches/waikato/weka/src/main/java/weka/gui/arffviewer/ArffTableModel.java
+
+A notification is now being popped up by ArffTableModel when the user tries to rename an attribute and the name already exists in another attribute.
+------------------------------------------------------------------------
+r15574 | mhall | 2020-05-11 11:30:08 +1200 (Mon, 11 May 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/core/DictionaryBuilder.java
+   M /branches/stable-3-8/weka/src/main/java/weka/filters/unsupervised/attribute/FixedDictionaryStringToWordVector.java
+
+Fixed some bugs in DictionaryBuilder and FixedDictionaryStringToWordVector. DictionaryBuilder now writes the total document count into the dictionary file (both text and binary forms) in order to facilitate output of TF-IDF values. Loading a binary dictionary was not setting the output format - fixed. Fixed some option handling in FixedDictionaryStringToWordVectory. For meaningful error messages with existing dictionary files now prints an exception if TF-IDF is requested, but the total document count is not available in the dictionary file
+------------------------------------------------------------------------
+r15582 | mhall | 2020-05-26 14:09:30 +1200 (Tue, 26 May 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/knowledgeflow/FlowRunner.java
+   M /branches/stable-3-8/weka/src/main/java/weka/knowledgeflow/steps/Sorter.java
+
+Fixed some logging output in the Sorter step. Also added a check to ensure that the user has added at least one sorting rule to the list (otherwise a cryptic exception relating to a class not implementing Comparable is generated). FlowRunner now sets the environment variable Internal.knowledgeflow.directory when executed from the command line.
+------------------------------------------------------------------------
+r15590 | mhall | 2020-06-12 16:19:54 +1200 (Fri, 12 Jun 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/core/OptionMetadata.java
+
+Updated javadoc to make it clear that command-line option details must be specified for objects that will be edited by the GenericObjectEditor
+------------------------------------------------------------------------
+r15596 | mhall | 2020-07-27 14:29:33 +1200 (Mon, 27 Jul 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/core/packageManagement/DefaultPackageManager.java
+
+Now cleans any pre-existing installed package when installing from a zip file
+------------------------------------------------------------------------
+r15600 | mhall | 2020-08-10 11:54:51 +1200 (Mon, 10 Aug 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/gui/WorkbenchApp.java
+   M /branches/stable-3-8/weka/src/main/java/weka/gui/knowledgeflow/KnowledgeFlowApp.java
+
+Fixed a bug that can cause a npe under OSX when using LAFs that differ from Aqua
+------------------------------------------------------------------------
+r15608 | eibe | 2020-08-10 16:03:19 +1200 (Mon, 10 Aug 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/knowledgeflow/FlowRunner.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/knowledgeflow/FlowRunner.java
+   M /branches/waikato/weka/src/main/java/weka/knowledgeflow/FlowRunner.java
+
+Removed unused import statement.
+------------------------------------------------------------------------
+r15626 | eibe | 2020-08-25 17:18:40 +1200 (Tue, 25 Aug 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/lib/README
+   D /branches/stable-3-8/weka/lib/jflex-full-1.7.0.jar
+   A /branches/stable-3-8/weka/lib/jflex-full-1.8.2.jar
+   M /branches/stable-3-8/weka/src/main/java/weka/core/expressionlanguage/parser/Scanner.java
+   M /branches/stable-3-8/weka/src/main/java/weka/core/json/Scanner.java
+   M /branches/waikato-3-8/weka/lib/README
+   D /branches/waikato-3-8/weka/lib/jflex-full-1.7.0.jar
+   A /branches/waikato-3-8/weka/lib/jflex-full-1.8.2.jar
+   M /branches/waikato-3-8/weka/src/main/java/weka/core/expressionlanguage/parser/Scanner.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/core/json/Scanner.java
+   M /branches/waikato/weka/lib/README
+   D /branches/waikato/weka/lib/jflex-full-1.7.0.jar
+   A /branches/waikato/weka/lib/jflex-full-1.8.2.jar
+   M /branches/waikato/weka/src/main/java/weka/core/expressionlanguage/parser/Scanner.java
+   M /branches/waikato/weka/src/main/java/weka/core/json/Scanner.java
+
+Updated jflex library .jar to 1.8.2 and regenerated the two Parser.java files in WEKA using this new version.
+------------------------------------------------------------------------
+r15652 | mhall | 2020-11-20 09:43:22 +1300 (Fri, 20 Nov 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/experiment/DatabaseUtils.props.mysql
+
+Updated database URL to include the parameter nullDatabaseMeansCurrent=true. This maintains the behaviour of returning current database metadata as seen in drivers prior to version 5.1.47.
+------------------------------------------------------------------------
+r15666 | eibe | 2020-12-06 14:58:07 +1300 (Sun, 06 Dec 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/core/converters/ConverterResources.java
+   M /branches/stable-3-8/weka/src/main/java/weka/core/converters/ConverterUtils.java
+   M /branches/stable-3-8/weka/src/main/java/weka/gui/ConverterFileChooser.java
+   A /branches/stable-3-8/weka/src/main/java/weka/gui/ExtensionFileFilterWithClass.java
+   M /branches/stable-3-8/weka/src/main/java/weka/gui/experiment/RunPanel.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/core/converters/ConverterResources.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/core/converters/ConverterUtils.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/gui/ConverterFileChooser.java
+   A /branches/waikato-3-8/weka/src/main/java/weka/gui/ExtensionFileFilterWithClass.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/gui/experiment/RunPanel.java
+   M /branches/waikato/weka/src/main/java/weka/gui/experiment/RunPanel.java
+
+Copied Peter's mods enabling additional converters so that this is also possible in the stable branches. Uncommented thread stop() in RunPanel of Experimenter to be consistent with main trunk.
+------------------------------------------------------------------------
+r15671 | mhall | 2020-12-07 12:06:16 +1300 (Mon, 07 Dec 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/core/Copyright.props
+
+Updated year
+------------------------------------------------------------------------
+r15675 | mhall | 2020-12-08 11:06:43 +1300 (Tue, 08 Dec 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/knowledgeflow/steps/Classifier.java
+
+Added a extra line of logging
+------------------------------------------------------------------------
+r15679 | mhall | 2020-12-08 11:12:42 +1300 (Tue, 08 Dec 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/gui/explorer/AssociationsPanel.java
+   M /branches/stable-3-8/weka/src/main/java/weka/gui/explorer/PreprocessPanel.java
+
+Preprocess panel now unsets any class attribute after applying a filter. Associate panel now always unsets class attribute before running associator
+------------------------------------------------------------------------
+r15683 | mhall | 2020-12-08 12:45:36 +1300 (Tue, 08 Dec 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/gui/explorer/PreprocessPanel.java
+
+Now unsets class for generated instances. This is now consistent with filter usage in the PreprocessPanel
+------------------------------------------------------------------------
+r15687 | mhall | 2020-12-14 12:32:23 +1300 (Mon, 14 Dec 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/datagenerators/ClusterGenerator.java
+   M /branches/stable-3-8/weka/src/main/java/weka/datagenerators/clusterers/SubspaceClusterDefinition.java
+
+Fixed some option handling issues
+------------------------------------------------------------------------
+r15702 | mhall | 2020-12-18 09:39:37 +1300 (Fri, 18 Dec 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/core/PluginManager.java
+
+Fixed a potential npe
+------------------------------------------------------------------------
+r15707 | eibe | 2020-12-19 15:58:46 +1300 (Sat, 19 Dec 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/datagenerators/ClusterDefinition.java
+   M /branches/stable-3-8/weka/src/main/java/weka/datagenerators/ClusterGenerator.java
+   M /branches/stable-3-8/weka/src/main/java/weka/datagenerators/clusterers/BIRCHCluster.java
+   M /branches/stable-3-8/weka/src/main/java/weka/datagenerators/clusterers/SubspaceCluster.java
+   M /branches/stable-3-8/weka/src/main/java/weka/datagenerators/clusterers/SubspaceClusterDefinition.java
+   M /branches/stable-3-8/weka/src/main/java/weka/gui/GUIEditors.props
+   A /branches/stable-3-8/weka/src/main/java/weka/gui/RangeEditor.java
+
+Many fixes to SubspaceCluster generator and related classes. No longer backwards compatible because unused noise parameter has been removed (this also affects BIRCHCluster). Totally uniform generation of of real values on a grid works now (it did not work as intended before) but the distribution is not ideal when number of samples does not yield an integer n-th root. Generation of uniform integer values should work as well now. Added new simple text field-based RangeEditor for configuring Range objects in the GUI.
+------------------------------------------------------------------------
