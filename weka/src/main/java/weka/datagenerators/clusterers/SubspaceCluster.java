@@ -915,35 +915,30 @@ public class SubspaceCluster extends ClusterGenerator {
   private void generateUniformIntegerExamples(Instances format,
     int numInstances, SubspaceClusterDefinition cl, String cName) {
 
-    int numAtts = m_NumAttributes;
-    if (getClassFlag()) {
-      numAtts++;
-    }
+    double[] values = new double[getClassFlag() ? m_NumAttributes + 1 : m_NumAttributes];
 
-    double[] values = new double[numAtts];
-    boolean[] attributes = cl.getAttributes();
-    double[] minValue = cl.getMinValue();
-    double[] maxValue = cl.getMaxValue();
-    int[] minInt = new int[minValue.length];
-    int[] maxInt = new int[maxValue.length];
-    int[] intValue = new int[maxValue.length];
-    int[] numInt = new int[minValue.length];
+    int[] minInt = new int[m_NumAttributes];
+    int[] maxInt = new int[m_NumAttributes];
+
+    int[] indices = new int[cl.getMaxValue().length];
 
     int num = 1;
-    for (int i = 0; i < minValue.length; i++) {
-      minInt[i] = (int) Math.ceil(minValue[i]);
-      maxInt[i] = (int) Math.floor(maxValue[i]);
-      numInt[i] = (maxInt[i] - minInt[i] + 1);
-      num = num * numInt[i];
+    int index = 0;
+    for (int i = 0; i < m_NumAttributes; i++) {
+      if (cl.getAttributes()[i]) {
+        minInt[i] = (int) Math.ceil(cl.getMinValue()[index]);
+        maxInt[i] = (int) Math.floor(cl.getMaxValue()[index]);
+        num *= (maxInt[i] - minInt[i] + 1);
+        indices[index++] = i;
+      }
     }
     int numEach = numInstances / num;
     int rest = numInstances - numEach * num;
 
     // initialize with smallest values combination
     for (int i = 0; i < m_NumAttributes; i++) {
-      if (attributes[i]) {
+      if (cl.getAttributes()[i]) {
         values[i] = minInt[i];
-        intValue[i] = minInt[i];
       } else {
         values[i] = Utils.missingValue();
       }
@@ -952,13 +947,9 @@ public class SubspaceCluster extends ClusterGenerator {
       values[format.classIndex()] = format.classAttribute().indexOfValue(cName);
     }
 
-    DenseInstance example = new DenseInstance(1.0, values);
-    example.setDataset(format);
-
     int added = 0;
-    int attr = 0;
-    // do while not added all
-    do {
+    while (added < numInstances) {
+      DenseInstance example = new DenseInstance(1.0, values);
       // add all for one value combination
       for (int k = 0; k < numEach; k++) {
         format.add(example); // Instance will be copied here
@@ -969,23 +960,18 @@ public class SubspaceCluster extends ClusterGenerator {
         added++;
         rest--;
       }
-
-      if (added >= numInstances) {
-        break;
-      }
       // switch to the next value combination
-      boolean done = false;
-      do {
-        if (attributes[attr] && (intValue[attr] + 1 <= maxInt[attr])) {
-          intValue[attr]++;
-          done = true;
-        } else {
-          attr++;
+      values = example.toDoubleArray();
+      values[indices[0]]++;
+      for (int i = 0; i < indices.length; i++) {
+        if (values[indices[i]] > maxInt[indices[i]]) {
+          values[indices[i]] = minInt[indices[i]];
+          if (i + 1 < indices.length) {
+            values[indices[i + 1]]++;
+          }
         }
-      } while (!done);
-
-      example.setValue(attr, intValue[attr]);
-    } while (added < numInstances);
+      }
+    }
   }
 
   /**
