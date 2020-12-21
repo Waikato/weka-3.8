@@ -41,7 +41,7 @@
   <target name="init_all" depends="requirements_instructions">
     <!-- Create the time stamp and various dirs -->
     <tstamp>
-      <format property="TODAY" pattern="yyyy-MM-dd"/>
+      <format property="TODAY" pattern="yyyy-MM-dd HH:mm"/>
     </tstamp>
 
     <!-- Remove packages that have no test classes -->

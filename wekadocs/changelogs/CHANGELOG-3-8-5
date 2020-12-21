@@ -1,36 +1,4 @@
 ------------------------------------------------------------------------
-r15482 | eibe | 2019-12-19 22:31:48 +1300 (Thu, 19 Dec 2019) | 1 line
-Changed paths:
-   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/meta/ClassificationViaRegression.java
-   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/meta/ClassificationViaRegression.java
-   M /branches/waikato/weka/src/main/java/weka/classifiers/meta/ClassificationViaRegression.java
-
-ClassificationViaRegression now implements WeightedInstancesHandler.
-------------------------------------------------------------------------
-r15486 | mhall | 2019-12-20 13:21:17 +1300 (Fri, 20 Dec 2019) | 1 line
-Changed paths:
-   M /branches/stable-3-8/weka/src/main/java/weka/gui/knowledgeflow/steps/StripChartInteractiveView.java
-
-Fixed an npe that would occur if the window was closed while accepting data points
-------------------------------------------------------------------------
-r15492 | mhall | 2019-12-20 16:21:54 +1300 (Fri, 20 Dec 2019) | 1 line
-Changed paths:
-   M /branches/stable-3-8/weka/src/main/java/weka/core/version.txt
-
-Version number bumped
-------------------------------------------------------------------------
-r15495 | mhall | 2019-12-20 16:24:26 +1300 (Fri, 20 Dec 2019) | 1 line
-Changed paths:
-   M /branches/stable-3-8/weka/src/main/java/weka/core/version.txt
-
-Reverting version number as need to make maven release before bumping
-------------------------------------------------------------------------
-r15515 | mhall | 2019-12-20 17:09:06 +1300 (Fri, 20 Dec 2019) | 1 line
-Changed paths:
-   M /branches/stable-3-8/weka/src/main/java/weka/core/version.txt
-
-Version number bumped
-------------------------------------------------------------------------
 r15518 | eibe | 2019-12-24 13:47:22 +1300 (Tue, 24 Dec 2019) | 1 line
 Changed paths:
    M /branches/stable-3-8/weka/src/main/java/weka/attributeSelection/ASEvaluation.java
@@ -561,4 +529,16 @@ Changed paths:
    A /branches/stable-3-8/weka/src/main/java/weka/gui/RangeEditor.java
 
 Many fixes to SubspaceCluster generator and related classes. No longer backwards compatible because unused noise parameter has been removed (this also affects BIRCHCluster). Totally uniform generation of of real values on a grid works now (it did not work as intended before) but the distribution is not ideal when number of samples does not yield an integer n-th root. Generation of uniform integer values should work as well now. Added new simple text field-based RangeEditor for configuring Range objects in the GUI.
+------------------------------------------------------------------------
+r15712 | mhall | 2020-12-21 12:44:19 +1300 (Mon, 21 Dec 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/core/version.txt
+
+Version bump prior to maven release
+------------------------------------------------------------------------
+r15715 | eibe | 2020-12-21 14:20:55 +1300 (Mon, 21 Dec 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/datagenerators/clusterers/SubspaceCluster.java
+
+Now has the corrected version of generateUniformIntegerExamples() in SubspaceCluster.java
 ------------------------------------------------------------------------
