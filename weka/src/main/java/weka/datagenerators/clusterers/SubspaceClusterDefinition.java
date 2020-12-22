@@ -267,7 +267,7 @@ public class SubspaceClusterDefinition extends ClusterDefinition {
       throw new Exception("Only one cluster type can be specified!");
     }
 
-    setAttrIndexRange(fromToStr);
+    setAttrIndexRange(fromToStr.length() > 0 ? fromToStr : defaultAttrIndexRange());
 
     tmpStr = Utils.getOption('D', options);
     if (tmpStr.length() != 0) {
