@@ -326,12 +326,9 @@ public class SubspaceCluster extends ClusterGenerator {
    */
   @Override
   public void setOptions(String[] options) throws Exception {
-    String tmpStr;
-    SubspaceClusterDefinition cl;
-    Vector<SubspaceClusterDefinition> list;
     super.setOptions(options);
 
-    tmpStr = Utils.getOption('b', options);
+    String tmpStr = Utils.getOption('b', options);
     setBooleanIndices(tmpStr);
     m_booleanCols.setUpper(getNumAttributes() - 1);
 
@@ -340,16 +337,22 @@ public class SubspaceCluster extends ClusterGenerator {
     m_nominalCols.setUpper(getNumAttributes() - 1);
 
     // cluster definitions
-    list = new Vector<SubspaceClusterDefinition>();
-
+    Vector<SubspaceClusterDefinition> list = new Vector<SubspaceClusterDefinition>();
     do {
       tmpStr = Utils.getOption('C', options);
       if (tmpStr.length() != 0) {
-        cl = new SubspaceClusterDefinition(this);
+        SubspaceClusterDefinition cl = new SubspaceClusterDefinition(this);
         cl.setOptions(Utils.splitOptions(tmpStr));
         list.add(cl);
       }
     } while (tmpStr.length() != 0);
+
+    // If list is empty, add default cluster definition, to be consistent with
+    // initialisation of member variables in this class and to make generator work when
+    // run from command-line without any explicit cluster specifications.
+    if (list.size() == 0) {
+      list.add(new SubspaceClusterDefinition(this));
+    }
 
     m_Clusters = list.toArray(new ClusterDefinition[list.size()]);
    }
