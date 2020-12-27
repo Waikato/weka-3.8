@@ -21,14 +21,13 @@
 
 package weka.classifiers.evaluation;
 
-import java.util.ArrayList;
-
-import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instances;
 import weka.core.RevisionHandler;
 import weka.core.RevisionUtils;
+
+import java.util.ArrayList;
 
 /**
  * Generates points illustrating probablity cost tradeoffs that can be obtained
@@ -144,35 +143,5 @@ public class CostCurve implements RevisionHandler {
   @Override
   public String getRevision() {
     return RevisionUtils.extract("$Revision$");
-  }
-
-  /**
-   * Tests the CostCurve generation from the command line. The classifier is
-   * currently hardcoded. Pipe in an arff file.
-   * 
-   * @param args currently ignored
-   */
-  public static void main(String[] args) {
-
-    try {
-
-      Instances inst = new Instances(new java.io.InputStreamReader(System.in));
-
-      inst.setClassIndex(inst.numAttributes() - 1);
-      CostCurve cc = new CostCurve();
-      EvaluationUtils eu = new EvaluationUtils();
-      Classifier classifier = new weka.classifiers.functions.Logistic();
-      ArrayList<Prediction> predictions = new ArrayList<Prediction>();
-      for (int i = 0; i < 2; i++) { // Do two runs.
-        eu.setSeed(i);
-        predictions.addAll(eu.getCVPredictions(classifier, inst, 10));
-        // System.out.println("\n\n\n");
-      }
-      Instances result = cc.getCurve(predictions);
-      System.out.println(result);
-
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
   }
 }

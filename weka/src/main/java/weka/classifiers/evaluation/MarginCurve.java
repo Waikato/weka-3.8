@@ -145,29 +145,4 @@ public class MarginCurve implements RevisionHandler {
   public String getRevision() {
     return RevisionUtils.extract("$Revision$");
   }
-
-  /**
-   * Tests the MarginCurve generation from the command line. The classifier is
-   * currently hardcoded. Pipe in an arff file.
-   * 
-   * @param args currently ignored
-   */
-  public static void main(String[] args) {
-
-    try {
-      Utils.SMALL = 0;
-      Instances inst = new Instances(new java.io.InputStreamReader(System.in));
-      inst.setClassIndex(inst.numAttributes() - 1);
-      MarginCurve tc = new MarginCurve();
-      EvaluationUtils eu = new EvaluationUtils();
-      weka.classifiers.meta.LogitBoost classifier = new weka.classifiers.meta.LogitBoost();
-      classifier.setNumIterations(20);
-      ArrayList<Prediction> predictions = eu.getTrainTestPredictions(
-        classifier, inst, inst);
-      Instances result = tc.getCurve(predictions);
-      System.out.println(result);
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
 }
