@@ -15,15 +15,16 @@
 
 /*
  *    AttributeSummaryPanel.java
- *    Copyright (C) 1999-2012 University of Waikato, Hamilton, New Zealand
+ *    Copyright (C) 1999-2020 University of Waikato, Hamilton, New Zealand
  *
  */
 
 package weka.gui;
 
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import weka.core.Attribute;
+import weka.core.AttributeStats;
+import weka.core.Instances;
+import weka.core.Utils;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -35,11 +36,9 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-
-import weka.core.Attribute;
-import weka.core.AttributeStats;
-import weka.core.Instances;
-import weka.core.Utils;
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
 /**
  * This panel displays summary statistics about an attribute: name, type
@@ -328,10 +327,10 @@ public class AttributeSummaryPanel extends JPanel {
       Object[] colNames = { "No.", "Label", "Count", "Weight" };
       Object[][] data = new Object[as.nominalCounts.length][4];
       for (int i = 0; i < as.nominalCounts.length; i++) {
-        data[i][0] = new Integer(i + 1);
+        data[i][0] = i + 1;
         data[i][1] = att.value(i);
-        data[i][2] = new Integer(as.nominalCounts[i]);
-        data[i][3] = new Double(Utils.doubleToString(as.nominalWeights[i], 3));
+        data[i][2] = as.nominalCounts[i];
+        data[i][3] = Utils.doubleToString(as.nominalWeights[i], 3);
       }
       m_StatsTable.setModel(new DefaultTableModel(data, colNames));
       m_StatsTable.getColumnModel().getColumn(0).setMaxWidth(60);
@@ -342,13 +341,20 @@ public class AttributeSummaryPanel extends JPanel {
       Object[] colNames = { "Statistic", "Value" };
       Object[][] data = new Object[4][2];
       data[0][0] = "Minimum";
-      data[0][1] = Utils.doubleToString(as.numericStats.min, 3);
       data[1][0] = "Maximum";
-      data[1][1] = Utils.doubleToString(as.numericStats.max, 3);
       data[2][0] = "Mean" + ((!m_allEqualWeights) ? " (weighted)" : "");
-      data[2][1] = Utils.doubleToString(as.numericStats.mean, 3);
       data[3][0] = "StdDev" + ((!m_allEqualWeights) ? " (weighted)" : "");
-      data[3][1] = Utils.doubleToString(as.numericStats.stdDev, 3);
+      if (m_Instances.attribute(index).isDate()) {
+        data[0][1] = m_Instances.attribute(index).formatDate(as.numericStats.min);
+        data[1][1] = m_Instances.attribute(index).formatDate(as.numericStats.max);
+        data[2][1] = m_Instances.attribute(index).formatDate(as.numericStats.mean);
+        data[3][1] = m_Instances.attribute(index).formatDate(as.numericStats.stdDev);
+      } else {
+        data[0][1] = Utils.doubleToString(as.numericStats.min, 3);
+        data[1][1] = Utils.doubleToString(as.numericStats.max, 3);
+        data[2][1] = Utils.doubleToString(as.numericStats.mean, 3);
+        data[3][1] = Utils.doubleToString(as.numericStats.stdDev, 3);
+      }
       m_StatsTable.setModel(new DefaultTableModel(data, colNames));
     } else {
       m_StatsTable.setModel(new DefaultTableModel());
