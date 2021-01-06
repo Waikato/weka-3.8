@@ -233,8 +233,8 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
     // class
     result.enable(Capability.NO_CLASS);
-    // result.enable(Capability.NUMERIC_CLASS);
-    // result.enable(Capability.NOMINAL_CLASS);
+    result.enable(Capability.NUMERIC_CLASS);
+    result.enable(Capability.NOMINAL_CLASS);
 
     return result;
   }
