@@ -6,10 +6,10 @@
 PackageName=WekaExcel
 
 # Version (required)
-Version=1.0.7
+Version=1.0.8
 
 #Date (year-month-day)
-Date=2018-01-09
+Date=2021-01-15
 
 # Title (required)
 Title=WEKA MS Excel loader/saver
@@ -33,7 +33,7 @@ Description=WekaExcel adds support to directly read from and write to spreadshee
 Changes=Prefix of created file is now correct when selecting xlsx files in the Knowledge Flow's ExcelSaver step.
 
 # Package URL for obtaining the package archive (required)
-PackageURL=http://prdownloads.sourceforge.net/weka/WekaExcel1.0.7.zip?download
+PackageURL=http://prdownloads.sourceforge.net/weka/WekaExcel1.0.8.zip?download
 
 # URL for further information
 URL=http://poi.apache.org/spreadsheet/how-to.html
