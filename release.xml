@@ -76,6 +76,7 @@
   </target>
 
   <target name="nsis_osx_howto">
+    <echo message="The following is no longer relevant as the NSIS executable is available via macports and homebrew these days."/>
     <echo message="To build makensis for OS X:"/>
     <echo message="1) Download and install scons: http://www.scons.org/"/>
     <echo message="2) Download pre-compiled (Windows) NSIS v2.46 (zip archive) from sourceforge and unzip somewhere"/>
@@ -219,7 +220,7 @@
     <delete dir="${temp}"/>
   </target>
 
-  <!-- build the Mac application suitable for running under Oracle Java >= 1.7 -->
+  <!-- build the Mac application suitable for running under x64 Java >= 1.7 -->
   <target name="osx_app_oracle" if="${osx_jre_oracle}">
     <bundleapp outputdirectory="${temp}"
         name="weka-${release}-${jvm-vendor}"
@@ -238,6 +239,27 @@
 
     <antcall target="dmg_${os}">
       <param name="jvm_target" value="${jvm_target}"/>
+    </antcall>
+  </target>
+
+    <!-- build the Mac application suitable for running under ARM Java >= 1.7 -->
+  <target name="osx_app_arm" depends="installer_init">
+    <bundleapp outputdirectory="${temp}"
+        name="weka-${release}-${jvm-vendor}"
+        displayname="Weka-${release}"
+	icon="weka/src/main/java/weka/gui/weka_icon_new.icns"
+        identifier="nz.ac.waikato.cms.Weka"
+        shortversion="${version}"
+        mainclassname="weka.gui.GUIChooser">
+      <runtime dir="${osx-arm-jre-home}">
+	<include name="conf/**" />
+      </runtime>
+      <classpath file="${temp}/weka-${release}/weka.jar"/>
+      <option value="-Xss20M"/>
+    </bundleapp>
+
+    <antcall target="dmg_${os}">
+      <param name="jvm_target" value="${jvm_target}-arm"/>
     </antcall>
   </target>
 
@@ -336,6 +358,19 @@
       <param name="jvm_target" value="apple-jvm"/>
     </antcall>
   </target>
+
+      <target name="osx_installer_arm" description="Make an OS X application (and installer) for ARM architecture. Must be run as a separate target after other installers have been made (or at least one of the release_base_zip targets). Run with -Drelease=&lt;number of release (eg. 3-4-1)&gt; and the name of the JVM vendor (e.g. -Djvm-vendor=azul-zulu). Also Requires -Dosx-arm-jre-home to point to an unpacked ARM jre to embed - e.g. -Dosx-arm-jre-home=/Users/mhall/wekaRelease/jre/zulu11.45.27-ca-fx-jre11.0.10-macosx_aarch64/zulu-11.jre/Contents/Home/. IMPORTANT: appbundler-arm-1.1.0.jar MUST be in the classpath before/or replace the standard x64 appbundler jar">
+
+    <delete dir="${temp}/nsis"/>
+    <delete dir="${temp}/weka-${release}/jre"/>
+
+    <antcall target="osx_app_arm">      
+      <param name="jvm_target" value="${jvm-vendor}"/>
+    </antcall>
+    <echo message="Cleaning up..."/>
+    <delete dir="${temp}"/>
+  </target>
+  
 
   <target name="installer_init">
     <unzip src="${dist}/weka-${release}.zip" dest="${temp}"/>
