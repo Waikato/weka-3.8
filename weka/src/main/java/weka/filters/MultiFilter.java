@@ -45,14 +45,20 @@ import weka.core.*;
  * -F &lt;classname [options]&gt;
  *  A filter to apply (can be specified multiple times).
  * </pre>
- * 
+ *
+ * <pre>
+ * -S num <br>
+ *  The random number seed that will be passed through all filters that are randomizable (default 1). <p>
+ * </pre>
+ *
  * <!-- options-end -->
  * 
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
  * @see weka.filters.StreamableFilter
  */
-public class MultiFilter extends SimpleStreamFilter implements WeightedAttributesHandler, WeightedInstancesHandler {
+public class MultiFilter extends SimpleStreamFilter implements
+        WeightedAttributesHandler, WeightedInstancesHandler, Randomizable {
 
   /** for serialization */
   private static final long serialVersionUID = -6293720886005713120L;
@@ -65,6 +71,9 @@ public class MultiFilter extends SimpleStreamFilter implements WeightedAttribute
 
   /** whether we already checked the streamable state */
   protected boolean m_StreamableChecked = false;
+
+  /** The random number seed that will be passed through to all filters that are randomizable. */
+  protected int m_Seed = 1;
 
   /**
    * Returns a string describing this filter
@@ -91,6 +100,11 @@ public class MultiFilter extends SimpleStreamFilter implements WeightedAttribute
       "\tA filter to apply (can be specified multiple times).", "F", 1,
       "-F <classname [options]>"));
 
+    result.addElement(new Option(
+            "\tThe random number seed that will be passed through all filters that are randomizable.\n"
+                    + "\t(default 1)",
+            "S", 1, "-S <num>"));
+
     result.addAll(Collections.list(super.listOptions()));
 
     return result.elements();
@@ -107,7 +121,12 @@ public class MultiFilter extends SimpleStreamFilter implements WeightedAttribute
    * -D
    *  Turns on output of debugging information.
    * </pre>
-   * 
+   *
+   * <pre>
+   * -S num <br>
+   *  The random number seed that will be passed through all filters that are randomizable (default 1). <p>
+   * </pre>
+   *
    * <pre>
    * -F &lt;classname [options]&gt;
    *  A filter to apply (can be specified multiple times).
@@ -141,6 +160,13 @@ public class MultiFilter extends SimpleStreamFilter implements WeightedAttribute
     }
 
     setFilters(filters.toArray(new Filter[filters.size()]));
+
+    String seed = Utils.getOption('S', options);
+    if (seed.length() != 0) {
+      setSeed(Integer.parseInt(seed));
+    } else {
+      setSeed(1);
+    }
   }
 
   /**
@@ -165,6 +191,9 @@ public class MultiFilter extends SimpleStreamFilter implements WeightedAttribute
       result.add("-F");
       result.add(getFilterSpec(getFilter(i)));
     }
+
+    result.add("-S");
+    result.add("" + getSeed());
 
     return result.toArray(new String[result.size()]);
   }
@@ -238,6 +267,35 @@ public class MultiFilter extends SimpleStreamFilter implements WeightedAttribute
    */
   public Filter getFilter(int index) {
     return m_Filters[index];
+  }
+
+  /**
+   * Returns the tip text for this property
+   * @return tip text for this property suitable for
+   * displaying in the explorer/experimenter gui
+   */
+  public String seedTipText() {
+    return "The random number seed that will be passed through all filters that are randomizable.";
+  }
+
+  /**
+   * Set the seed for random number generation.
+   *
+   * @param seed the seed
+   */
+  public void setSeed(int seed) {
+
+    m_Seed = seed;
+  }
+
+  /**
+   * Gets the seed for the random number generations
+   *
+   * @return the seed for the random number generation
+   */
+  public int getSeed() {
+
+    return m_Seed;
   }
 
   /**
@@ -330,13 +388,35 @@ public class MultiFilter extends SimpleStreamFilter implements WeightedAttribute
   @Override
   protected Instances determineOutputFormat(Instances inputFormat)
     throws Exception {
-    Instances result;
-    int i;
 
-    result = getInputFormat();
+    Instances result = getInputFormat();
 
-    for (i = 0; i < getFilters().length; i++) {
+    boolean atLeastOneFilterCanHandleInstanceWeights = false;
+    for (int i = 0; i < getFilters().length; i++) {
+      if (getFilter(i) instanceof WeightedInstancesHandler) {
+        atLeastOneFilterCanHandleInstanceWeights = true;
+        break;
+      }
+    }
+    boolean atLeastOneFilterCanHandleAttributeWeights = false;
+    for (int i = 0; i < getFilters().length; i++) {
+      if (getFilter(i) instanceof WeightedAttributesHandler) {
+        atLeastOneFilterCanHandleAttributeWeights = true;
+        break;
+      }
+    }
+    if (!result.allInstanceWeightsIdentical() && !atLeastOneFilterCanHandleInstanceWeights) {
+      throw new Exception("MultiFilter: unequal instance weights but no included filter can handle instance weights.");
+    }
+    if (!result.allAttributeWeightsIdentical() && !atLeastOneFilterCanHandleAttributeWeights) {
+      throw new Exception("MultiFilter: unequal attribute weights but no included filter can handle attribute weights.");
+    }
+
+    for (int i = 0; i < getFilters().length; i++) {
       if (!isFirstBatchDone()) {
+        if (getFilter(i) instanceof Randomizable) {
+          ((Randomizable) getFilter(i)).setSeed(getSeed());
+        }
         getFilter(i).setInputFormat(result);
       }
       result = getFilter(i).getOutputFormat();
@@ -355,12 +435,10 @@ public class MultiFilter extends SimpleStreamFilter implements WeightedAttribute
    */
   @Override
   protected Instance process(Instance instance) throws Exception {
-    Instance result;
-    int i;
 
-    result = (Instance) instance.copy();
+    Instance result = (Instance) instance.copy();
 
-    for (i = 0; i < getFilters().length; i++) {
+    for (int i = 0; i < getFilters().length; i++) {
       if (getFilter(i).input(result)) {
         result = getFilter(i).output();
       } else {
@@ -387,13 +465,14 @@ public class MultiFilter extends SimpleStreamFilter implements WeightedAttribute
    */
   @Override
   protected Instances process(Instances instances) throws Exception {
-    Instances result;
-    int i;
 
-    result = instances;
+    Instances result = instances;
 
-    for (i = 0; i < getFilters().length; i++) {
+    for (int i = 0; i < getFilters().length; i++) {
       if (!isFirstBatchDone()) {
+        if (getFilter(i) instanceof Randomizable) {
+          ((Randomizable) getFilter(i)).setSeed(getSeed());
+        }
         getFilter(i).setInputFormat(result);
       }
       result = Filter.useFilter(result, getFilter(i));

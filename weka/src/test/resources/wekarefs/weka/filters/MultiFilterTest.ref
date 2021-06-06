@@ -1,4 +1,4 @@
-@relation FilterTest-weka.filters.AllFilter-weka.filters.MultiFilter-Fweka.filters.AllFilter
+@relation FilterTest-weka.filters.AllFilter-weka.filters.MultiFilter-Fweka.filters.AllFilter-S1
 
 @attribute StringAtt1 string
 @attribute NominalAtt1 {r,g,b}
