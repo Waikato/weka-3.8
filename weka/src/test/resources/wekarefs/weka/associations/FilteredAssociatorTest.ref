@@ -1,7 +1,7 @@
-FilteredAssociator using weka.associations.Apriori -N 10 -T 0 -C 0.9 -D 0.05 -U 1.0 -M 0.1 -S -1.0 -c -1 on data filtered through weka.filters.MultiFilter -F "weka.filters.unsupervised.attribute.ReplaceMissingValues "
+FilteredAssociator using weka.associations.Apriori -N 10 -T 0 -C 0.9 -D 0.05 -U 1.0 -M 0.1 -S -1.0 -c -1 on data filtered through weka.filters.MultiFilter -F "weka.filters.unsupervised.attribute.ReplaceMissingValues " -S 1
 
 Filtered Header
-@relation Testdata-weka.filters.unsupervised.attribute.ReplaceMissingValues-weka.filters.MultiFilter-Fweka.filters.unsupervised.attribute.ReplaceMissingValues
+@relation Testdata-weka.filters.unsupervised.attribute.ReplaceMissingValues-weka.filters.MultiFilter-Fweka.filters.unsupervised.attribute.ReplaceMissingValues-S1
 
 @attribute Nominal1 {att1val1,att1val2}
 @attribute Nominal2 {att2val1,att2val2}
@@ -40,10 +40,10 @@ Best rules found:
  9. Class=class1 7 ==> Nominal1=att1val1 Nominal2=att2val1 7    <conf:(1)> lift:(2.86) lev:(0.23) [4] conv:(4.55)
 10. Class=class2 13 ==> Nominal1=att1val2 12    <conf:(0.92)> lift:(1.54) lev:(0.21) [4] conv:(2.6)
 
-FilteredAssociator using weka.associations.Apriori -N 10 -T 0 -C 0.9 -D 0.05 -U 1.0 -M 0.1 -S -1.0 -c -1 on data filtered through weka.filters.MultiFilter -F "weka.filters.unsupervised.attribute.ReplaceMissingValues "
+FilteredAssociator using weka.associations.Apriori -N 10 -T 0 -C 0.9 -D 0.05 -U 1.0 -M 0.1 -S -1.0 -c -1 on data filtered through weka.filters.MultiFilter -F "weka.filters.unsupervised.attribute.ReplaceMissingValues " -S 1
 
 Filtered Header
-@relation Testdata-weka.filters.unsupervised.attribute.ReplaceMissingValues-weka.filters.MultiFilter-Fweka.filters.unsupervised.attribute.ReplaceMissingValues
+@relation Testdata-weka.filters.unsupervised.attribute.ReplaceMissingValues-weka.filters.MultiFilter-Fweka.filters.unsupervised.attribute.ReplaceMissingValues-S1
 
 @attribute Nominal1 {att1val1,att1val2}
 @attribute Nominal2 {att2val1,att2val2}
