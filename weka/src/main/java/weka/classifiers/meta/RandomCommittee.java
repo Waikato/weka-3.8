@@ -21,18 +21,19 @@
 
 package weka.classifiers.meta;
 
+import java.util.HashSet;
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.RandomizableParallelIteratedSingleClassifierEnhancer;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.Randomizable;
-import weka.core.RevisionUtils;
-import weka.core.Utils;
-import weka.core.WeightedInstancesHandler;
-import weka.core.PartitionGenerator;
+import weka.core.*;
+import weka.filters.Filter;
 
 /**
  <!-- globalinfo-start -->
@@ -197,8 +198,8 @@ public class RandomCommittee
    */
   public double[] distributionForInstance(Instance instance) throws Exception {
 
-    double [] sums = new double [instance.numClasses()], newProbs; 
-    
+    double[] sums = new double[instance.numClasses()], newProbs;
+
     double numPreds = 0;
     for (int i = 0; i < m_NumIterations; i++) {
       if (instance.classAttribute().isNumeric() == true) {
@@ -208,9 +209,9 @@ public class RandomCommittee
           numPreds++;
         }
       } else {
-	newProbs = m_Classifiers[i].distributionForInstance(instance);
-	for (int j = 0; j < newProbs.length; j++)
-	  sums[j] += newProbs[j];
+        newProbs = m_Classifiers[i].distributionForInstance(instance);
+        for (int j = 0; j < newProbs.length; j++)
+          sums[j] += newProbs[j];
       }
     }
     if (instance.classAttribute().isNumeric() == true) {
@@ -226,6 +227,206 @@ public class RandomCommittee
       Utils.normalize(sums);
       return sums;
     }
+  }
+
+  /**
+   * Tool tip text for this property
+   *
+   * @return the tool tip for this property
+   */
+  public String batchSizeTipText() {
+    return "Batch size to use if base learner is a BatchPredictor";
+  }
+
+  /**
+   * Set the batch size to use. Gets passed through to the base learner if it
+   * implements BatchPredictor. Otherwise it is just ignored.
+   *
+   * @param size the batch size to use
+   */
+  public void setBatchSize(String size) {
+
+    if (getClassifier() instanceof BatchPredictor) {
+      ((BatchPredictor) getClassifier()).setBatchSize(size);
+    } else {
+      super.setBatchSize(size);
+    }
+  }
+
+  /**
+   * Gets the preferred batch size from the base learner if it implements
+   * BatchPredictor. Returns 1 as the preferred batch size otherwise.
+   *
+   * @return the batch size to use
+   */
+  public String getBatchSize() {
+
+    if (getClassifier() instanceof BatchPredictor) {
+      return ((BatchPredictor) getClassifier()).getBatchSize();
+    } else {
+      return super.getBatchSize();
+    }
+  }
+
+  /**
+   * Batch scoring method. Calls the appropriate method for the base learner if
+   * it implements BatchPredictor. Otherwise it simply calls the
+   * distributionForInstance() method repeatedly.
+   *
+   * @param insts the instances to get predictions for
+   * @return an array of probability distributions, one for each instance
+   * @throws Exception if a problem occurs
+   */
+  public double[][] distributionsForInstances(Instances insts) throws Exception {
+
+    if (getClassifier() instanceof BatchPredictor) {
+
+      ExecutorService pool = Executors.newFixedThreadPool(m_numExecutionSlots);
+
+      // Set up result set, and chunk size
+      final int chunksize = m_Classifiers.length / m_numExecutionSlots;
+      Set<Future<double[][]>> results = new HashSet<Future<double[][]>>();
+
+      // For each thread
+      for (int j = 0; j < m_numExecutionSlots; j++) {
+
+        // Determine batch to be processed
+        final int lo = j * chunksize;
+        final int hi = (j < m_numExecutionSlots - 1) ? (lo + chunksize) : m_Classifiers.length;
+
+        // Create and submit new job for each batch of instances
+        Future<double[][]> futureT = pool.submit(new Callable<double[][]>() {
+          @Override
+          public double[][] call() throws Exception {
+            if (insts.classAttribute().isNumeric()) {
+              double[][] ensemblePreds = new double[insts.numInstances()][2];
+              for (int i = lo; i < hi; i++) {
+                double[][] preds = ((BatchPredictor) m_Classifiers[i]).distributionsForInstances(insts);
+                for (int j = 0; j < preds.length; j++) {
+                  if (!Utils.isMissingValue(preds[j][0])) {
+                    ensemblePreds[j][0] += preds[j][0];
+                    ensemblePreds[j][1]++;
+                  }
+                }
+              }
+              return ensemblePreds;
+            } else {
+              double[][] ensemblePreds = new double[insts.numInstances()][insts.numClasses()];
+              for (int i = lo; i < hi; i++) {
+                double[][] preds = ((BatchPredictor) m_Classifiers[i]).distributionsForInstances(insts);
+                for (int j = 0; j < preds.length; j++) {
+                  for (int k = 0; k < preds[j].length; k++) {
+                    ensemblePreds[j][k] += preds[j][k];
+                  }
+                }
+              }
+              return ensemblePreds;
+            }
+          }
+        });
+        results.add(futureT);
+      }
+
+      // Form ensemble prediction
+      double[][] ensemblePreds =
+              new double[insts.numInstances()][insts.classAttribute().isNumeric() ? 2 : insts.numClasses()];
+      try {
+        for (Future<double[][]> futureT : results) {
+          double[][] preds = futureT.get();
+          for (int j = 0; j < preds.length; j++) {
+            for (int k = 0; k < preds[j].length; k++) {
+              ensemblePreds[j][k] += preds[j][k];
+            }
+          }
+        }
+      } catch (Exception e) {
+        System.out.println("RandomCommittee: predictions could not be generated by thread.");
+        e.printStackTrace();
+      }
+      pool.shutdown();
+
+      // Normalise ensemble predictions
+      if (insts.classAttribute().isNumeric() == true) {
+        double[][] finalPreds = new double[ensemblePreds.length][1];
+        for (int j = 0; j < ensemblePreds.length; j++) {
+          if (ensemblePreds[j][1] == 0) {
+            finalPreds[j][0] = Utils.missingValue();
+          } else {
+            finalPreds[j][0] = ensemblePreds[j][0] / ensemblePreds[j][1];
+          }
+        }
+        return finalPreds;
+      } else {
+        for (int j = 0; j < ensemblePreds.length; j++) {
+          double sum = Utils.sum(ensemblePreds[j]);
+          if (!Utils.eq((sum), 0)) {
+            Utils.normalize(ensemblePreds[j], sum);
+          }
+        }
+        return ensemblePreds;
+      }
+    } else {
+
+      /** Multi-threading in this branch causes issues
+
+      // Set up result set, and chunk size
+      final int chunksize = insts.numInstances() / m_numExecutionSlots;
+      Set<Future<Void>> results = new HashSet<Future<Void>>();
+
+      final double[][] ensemblePreds = new double[insts.numInstances()][insts.numClasses()];
+
+      // For each thread
+      for (int j = 0; j < m_numExecutionSlots; j++) {
+
+        // Determine batch to be processed
+        final int lo = j * chunksize;
+        final int hi = (j < m_numExecutionSlots - 1) ? (lo + chunksize) : insts.numInstances();
+
+        // Create and submit new job for each batch of instances
+        Future<Void> futureT = pool.submit(new Callable<Void>() {
+          @Override
+          public Void call() throws Exception {
+            for (int i = lo; i < hi; i++) {
+              System.arraycopy(distributionForInstance((Instance)insts.instance(i).copy()), 0,
+                      ensemblePreds[i], 0, insts.numClasses());
+            }
+            return null;
+          }
+        });
+        results.add(futureT);
+      }
+
+      // Incorporate predictions
+      try {
+        for (Future<Void> futureT : results) {
+          futureT.get();
+        }
+      } catch (Exception e) {
+        System.out.println("RandomCommittee: predictions could not be generated by thread.");
+        e.printStackTrace();
+      }
+      pool.shutdown();
+
+      return ensemblePreds;*/
+      double[][] result = new double[insts.numInstances()][insts.numClasses()];
+      for (int i = 0; i < insts.numInstances(); i++) {
+        result[i] = distributionForInstance(insts.instance(i));
+      }
+      return result;
+    }
+  }
+
+  /**
+   * Returns true if the base classifier implements BatchPredictor and is able
+   * to generate batch predictions efficiently
+   *
+   * @return true if the base classifier can generate batch predictions efficiently
+   */
+  public boolean implementsMoreEfficientBatchPrediction() {
+    if (!(getClassifier() instanceof BatchPredictor)) {
+      return super.implementsMoreEfficientBatchPrediction();
+    }
+    return ((BatchPredictor) getClassifier()).implementsMoreEfficientBatchPrediction();
   }
 
   /**
