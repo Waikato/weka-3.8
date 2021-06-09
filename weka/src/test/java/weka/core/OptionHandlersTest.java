@@ -43,7 +43,7 @@ public class OptionHandlersTest extends TestCase {
   /**
    * tests a specific OptionHandler
    */
-  public static class OptionHandlerTest extends TestCase {
+  static class OptionHandlerTestInternal extends TestCase {
 
     /** the class to test */
     protected String m_Classname;
@@ -57,7 +57,7 @@ public class OptionHandlersTest extends TestCase {
      * @param name the name of the test class
      * @param classname the actual classname
      */
-    public OptionHandlerTest(String name, String classname) {
+    public OptionHandlerTestInternal(String name, String classname) {
       super(name);
 
       m_Classname = classname;
@@ -215,7 +215,7 @@ public class OptionHandlersTest extends TestCase {
     try {
       // determine all test methods in the OptionHandlerTest class
       Vector<String> testMethods = new Vector<String>();
-      Method[] methods = OptionHandlerTest.class.getDeclaredMethods();
+      Method[] methods = OptionHandlerTestInternal.class.getDeclaredMethods();
       for (Method method : methods) {
         if (method.getName().startsWith("test")) {
           testMethods.add(method.getName());
@@ -251,7 +251,7 @@ public class OptionHandlersTest extends TestCase {
 
           // add tests for this class
           for (int i = 0; i < testMethods.size(); i++) {
-            suite.addTest(new OptionHandlerTest(testMethods.get(i), classname));
+            suite.addTest(new OptionHandlerTestInternal(testMethods.get(i), classname));
           }
         }
       }
