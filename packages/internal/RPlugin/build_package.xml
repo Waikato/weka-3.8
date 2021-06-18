@@ -5,7 +5,7 @@
 
    Type ant -projecthelp for targets and descriptions.
 
-   $Revision: 15546 $
+   $Revision: 15819 $
   ===========================================================================
 -->
 
@@ -94,13 +94,13 @@
   <!-- Compile the java code from ${src}/weka into ${build}/classes -->
   <target name="compile" depends="init_compile, compile-r-api"
    description="Compile package and deposit class files in build/classes">
-    <copy file="${libExt}/javagd-0.6.1.jar" toDir="${lib}" />
+    <copy file="${libExt}/javaGD-0.6-4.jar" toDir="${lib}" />
     <copy file="${libExt}/JRI.jar" toDir="${lib}" />
     <copy file="${libExt}/JRIEngine.jar" toDir="${lib}" />
-    <copy file="${libExt}/jna-4.5.2.jar" toDir="${lib}" />
-    <copy file="${libExt}/jna-platform-4.5.2.jar" toDir="${lib}" />
+    <copy file="${libExt}/jna-5.8.0.jar" toDir="${lib}" />
+    <copy file="${libExt}/jna-platform-5.8.0.jar" toDir="${lib}" />
     <copy file="${libExt}/xmlpull-1.1.3.1.jar" toDir="${lib}" />
-    <copy file="${libExt}/xstream-1.4.11.1.jar" toDir="${lib}" />
+    <copy file="${libExt}/xstream-1.4.17.jar" toDir="${lib}" />
     <copy file="${libExt}/kxml2-min-2.3.0.jar" toDir="${lib}" />
     <copy file="${libExt}/xpp3_min-1.1.4c.jar" toDir="${lib}" />
     <javac srcdir="${src}"

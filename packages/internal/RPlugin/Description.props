@@ -5,10 +5,10 @@
 PackageName=RPlugin
 
 # Version (required)
-Version=1.2.30
+Version=1.2.31
 
 #Date (year-month-day)
-Date=2020-09-05
+Date=2021-06-18
 
 # Title (required)
 Title=Execute R scripts and learning algorithms
@@ -29,13 +29,13 @@ License=LGPL 3.0
 Description=This plugin enables R functionality to be used through WEKA. It provides an R console, a Knowledge Flow component for executing an R script, and a wrapper classifier for the MLR (machine learning in R) R package. The interactive R console enables visualization of data loaded into WEKA using R. This package requires the R software to be installed on the system before it can be used. The bitness of the OS, R, and Java must match up. We recommend using 64-bit versions of all three.The plugin will attempt to set all required environment variables for the R integration. On macOS and Linux, this process assumes that the home of R on the system is /Library/Frameworks/R.framework/Resources and /usr/lib/R respectively. On Windows, R's home will be inferred automatically through the Windows registry. The plugin will attempt to download and install all required R libraries such as rJava and JavaGD automatically into R's user library folder. The location of the R user library folder is established by interrogating R directly. If R is installed in a non-standard location, the plugin can be informed about this by setting the environment variable R_HOME or the Java property r.home to point to the installation directory for R. If a non-standard destination for the R user library folder is desired, then this can be set using the R_LIBS_USER environment variable or the Java property r.libs.user. If the native libjri in R's rJava package is not found automatically, the jri.native.library java property can be set to point directly to the jri native library file, or the java.library.path can be set to point to the directory that contains the jri native library file. More information on configuring Java to access JRI under various OS can be found at https://www.rforge.net/JRI/ Example Knowledge Flow template files demonstrating the R components can be found in ${WEKA_HOME}/packages/RPlugin/templates.
 
 # Package URL for obtaining the package archive (required)
-PackageURL=https://prdownloads.sourceforge.net/weka/RPlugin1.2.30.zip?download
+PackageURL=https://prdownloads.sourceforge.net/weka/RPlugin1.2.31.zip?download
 
 # URL for further information
 URL=https://markahall.blogspot.co.nz/2012/07/r-integration-in-weka.html
 
 # Changes in this release
-Changes=Fix to remove extraneous characters in output on Windows. Fixed regular expressions so that q(), quit(), and readline() are no longer accepted in console.
+Changes=Updated library .jar files (latest javaGD, xstream, and rJava .jar files) and .zip files for preload libraries. RPlugin works on ARM Mac as well now.
 
 # Enhances various other packages ?
 # Enhances=packageName1,packageName2,...
