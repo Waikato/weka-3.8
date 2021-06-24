@@ -1072,6 +1072,10 @@ public class CSVLoader extends AbstractFileLoader implements BatchConverter,
     }
     if (m_noHeaderRow) {
       m_rowBuffer.add(firstRow);
+    } else {
+      while (firstRow.startsWith("#")) {
+        firstRow = m_sourceReader.readLine();
+      }
     }
 
     ArrayList<Attribute> attribNames = new ArrayList<Attribute>();
