@@ -27,10 +27,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Vector;
 
+import weka.core.Attribute;
 import weka.core.Capabilities;
 import weka.core.Capabilities.Capability;
 import weka.core.CapabilitiesHandler;
@@ -46,67 +49,58 @@ import weka.core.SingleIndex;
 import weka.core.Utils;
 
 /**
- * <!-- globalinfo-start --> HotSpot learns a set of rules (displayed in a
- * tree-like structure) that maximize/minimize a target variable/value of
- * interest. With a nominal target, one might want to look for segments of the
- * data where there is a high probability of a minority value occuring (given
- * the constraint of a minimum support). For a numeric target, one might be
- * interested in finding segments where this is higher on average than in the
- * whole data set. For example, in a health insurance scenario, find which
- * health insurance groups are at the highest risk (have the highest claim
- * ratio), or, which groups have the highest average insurance payout. This
- * algorithm is similar in spirit to the PRIM bump hunting algorithm described
- * by Friedman and Fisher (1999).
- * <p/>
- * <!-- globalinfo-end -->
+ <!-- globalinfo-start -->
+ * HotSpot learns a set of rules (displayed in a tree-like structure) that maximize/minimize a target variable/value of interest. With a nominal target, one might want to look for segments of the data where there is a high probability of a minority value occuring (given the constraint of a minimum support). For a numeric target, one might be interested in finding segments where this is higher on average than in the whole data set. For example, in a health insurance scenario, find which health insurance groups are at the highest risk (have the highest claim ratio), or, which groups have the highest average insurance payout.  This algorithm is similar in spirit to the PRIM bump hunting algorithm described by Friedman and Fisher (1999).
+ * <br><br>
+ <!-- globalinfo-end -->
+ *
+ <!-- options-start -->
+ * Valid options are: <p>
  * 
- * <!-- options-start --> Valid options are:
- * <p/>
+ * <pre> -c &lt;num | first | last | attribute name&gt;
+ *  The target index. (default = last)</pre>
  * 
- * <pre>
- * -c &lt;num | first | last&gt;
- *  The target index. (default = last)
- * </pre>
+ * <pre> -V &lt;num | first | last&gt;
+ *  The target value (nominal target only, default = first)</pre>
  * 
- * <pre>
- * -V &lt;num | first | last&gt;
- *  The target value (nominal target only, default = first)
- * </pre>
+ * <pre> -L
+ *  Minimize rather than maximize.</pre>
  * 
- * <pre>
- * -L
- *  Minimize rather than maximize.
- * </pre>
- * 
- * <pre>
- * -S &lt;num&gt;
+ * <pre> -S &lt;num&gt;
  *  Minimum value count (nominal target)/segment size (numeric target).
  *  Values between 0 and 1 are 
  *  interpreted as a percentage of 
- *  the total population; values &gt; 1 are 
+ *  the total population (numeric) or total target value
+ *  population size (nominal); values &gt; 1 are 
  *  interpreted as an absolute number of 
- *  instances (default = 0.3)
- * </pre>
+ *  instances (default = 0.3)</pre>
  * 
- * <pre>
- * -M &lt;num&gt;
- *  Maximum branching factor (default = 2)
- * </pre>
+ * <pre> -M &lt;num&gt;
+ *  Maximum branching factor (default = 2)</pre>
  * 
- * <pre>
- * -I &lt;num&gt;
+ * <pre> -length &lt;num&gt;
+ *  Maximum rule length (default = -1, i.e. no maximum)</pre>
+ * 
+ * <pre> -sum
+ *  Operate on sum, rather than average, for numeric target. Note, this mode
+ *  can only operate on nominal attributes.</pre>
+ * 
+ * <pre> -I &lt;num&gt;
  *  Minimum improvement in target value in order 
- *  to add a new branch/test (default = 0.01 (1%))
- * </pre>
+ *  to add a new branch/test (default = 0.01 (1%))</pre>
  * 
- * <pre>
- * -D
+ * <pre> -Z
+ *  Treat zero (first value) as missing for nominal attributes</pre>
+ * 
+ * <pre> -R
+ *  Output a set of rules instead of a tree structure</pre>
+ * 
+ * <pre> -D
  *  Output debugging info (duplicate rule lookup 
- *  hash table stats)
- * </pre>
+ *  hash table stats)</pre>
  * 
- * <!-- options-end -->
- * 
+ <!-- options-end -->
+ *
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}org
  * @version $Revision$
  */
@@ -176,6 +170,13 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
   /** Minimize, rather than maximize the target */
   protected boolean m_minimize;
 
+  /**
+   * Whether to work with the sum (rather than average) for a numeric target. In this case,
+   * only nominal attributes can be considered and merit is based on relative improvement
+   * over the average/expected sum of the categories of a nominal attribute under consideration.
+   */
+  protected boolean m_sumForNumericTarget;
+
   /** Error messages relating to too large/small support values */
   protected String m_errorMessage;
 
@@ -197,7 +198,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Returns a string describing this classifier
-   * 
+   *
    * @return a description of the classifier suitable for displaying in the
    *         explorer/experimenter gui
    */
@@ -218,7 +219,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Returns default capabilities of HotSpot
-   * 
+   *
    * @return the capabilities of HotSpot
    */
   @Override
@@ -244,7 +245,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
    */
   protected class HotSpotHashKey implements Serializable {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 3962829200560373755L;
 
@@ -301,7 +302,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Build the tree
-   * 
+   *
    * @param instances the training instances
    * @throws Exception if something goes wrong
    */
@@ -325,7 +326,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
       String value = m_targetSI.getSingleIndex();
       int index = -1;
       for (int i = 0; i < instances.numAttributes(); i++) {
-        if (instances.attribute(i).name().indexOf(value) > -1) {
+        if (instances.attribute(i).name().indexOf(value) > -1) { // TODO
           index = i;
           break;
         }
@@ -356,7 +357,15 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
           "Error: support set to more instances than there are in the data!";
         return;
       }
-      m_globalTarget = inst.meanOrMode(m_target);
+      if (m_sumForNumericTarget && !inst.checkForAttributeType(Attribute.NOMINAL)) {
+        m_errorMessage = "Aggregation type sum requires at least one nominal attribute in the data";
+        return;
+      }
+      if (m_sumForNumericTarget) {
+        m_globalTarget = inst.attributeStats(m_target).numericStats.sum;
+      } else {
+        m_globalTarget = inst.meanOrMode(m_target);
+      }
       m_numNonMissingTarget = inst.numInstances()
         - inst.attributeStats(m_target).missingCount;
     } else {
@@ -419,7 +428,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Return the tree as a string
-   * 
+   *
    * @return a String containing the tree
    */
   @Override
@@ -459,8 +468,14 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
     buff.append("\nMaximum branching factor: " + m_maxBranchingFactor);
     buff.append("\nMaximum rule length: "
       + (m_maxRuleLength < 0 ? "unbounded" : "" + m_maxRuleLength));
-    buff.append("\nMinimum improvement in target: "
-      + Utils.doubleToString((m_minImprovement * 100.0), 2) + "%");
+    buff.append("\nMinimum improvement in target: ");
+    if (m_header.attribute(m_target).isNumeric() && m_sumForNumericTarget) {
+      double minImprove = m_minImprovement > 1.0 ? m_minImprovement : m_minImprovement * 100;
+      buff.append("> ").append(Utils.doubleToString(minImprove, 2))
+        .append("x above expected sum over the values of a splitting attribute");
+    } else {
+      buff.append(Utils.doubleToString((m_minImprovement * 100.0), 2) + "%");
+    }
 
     buff.append("\n\n");
     if (!m_outputRules) {
@@ -530,6 +545,34 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
     return text.toString();
   }
 
+  public Map<String, Object> graphAsMap() {
+    Map<String, Object> graph = new LinkedHashMap<String, Object>();
+    String details = "";
+    if (m_header.attribute(m_target).isNumeric()) {
+      details = " (" + m_globalTarget + ")";
+    } else {
+      details = " = " + m_header.attribute(m_target).value(m_targetIndex)
+        + " (" + (m_globalTarget * 100.0) + "% [" + m_globalSupport + "/"
+        + m_numInstances + "])";
+    }
+    graph.put("target", m_header.attribute(m_target).name() + details);
+    String aggregationType = "";
+    if (m_header.attribute(m_target).isNumeric()) {
+      if (m_sumForNumericTarget) {
+        aggregationType = "sum";
+      } else {
+        aggregationType = "average";
+      }
+    } else {
+      aggregationType = "probability";
+    }
+    String objective = m_minimize ? "minimize" : "maximize";
+    graph.put("aggregation", aggregationType);
+    graph.put("objective", objective);
+    m_head.graphAsMap(graph);
+    return graph;
+  }
+
   /**
    * Inner class representing a node/leaf in the tree
    */
@@ -557,6 +600,8 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
       public double m_splitValue;
       public boolean m_lessThan;
 
+      public double m_targetSum; // only when target is numeric and aggregation is sum
+
       public HotTestDetails(int attIndex, double splitVal, boolean lessThan,
         int support, int subsetSize, double merit) {
         m_merit = merit;
@@ -565,6 +610,11 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
         m_lessThan = lessThan;
         m_supportLevel = support;
         m_subsetSize = subsetSize;
+      }
+
+      public HotTestDetails(int attIndex, double splitVal, int support, double targetSum, double merit) {
+        this(attIndex, splitVal, false, support, support, merit);
+        m_targetSum = targetSum;
       }
 
       // reverse order for maximize as PriorityQueue has the least element at
@@ -619,7 +669,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
     /**
      * Constructor
-     * 
+     *
      * @param insts the instances at this node
      * @param targetValue the target value
      * @param splitVals the values of attributes split on so far down this
@@ -645,7 +695,11 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
           if (m_insts.attribute(i).isNominal()) {
             evaluateNominal(i, splitQueue);
           } else {
-            evaluateNumeric(i, splitQueue);
+            if (!m_sumForNumericTarget) {
+              evaluateNumeric(i, splitQueue);
+            }
+            // skip numeric attributes if using the sum, as finding
+            // the best split point does not make sense in this case
           }
         }
       }
@@ -711,7 +765,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
     /**
      * Create a subset of instances that correspond to the supplied test details
-     * 
+     *
      * @param insts the instances to create the subset from
      * @param test the details of the split
      */
@@ -743,7 +797,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
     /**
      * Evaluate a numeric attribute for a potential split
-     * 
+     *
      * @param attIndex the index of the attribute
      * @param pq the priority queue of candidtate splits
      */
@@ -756,7 +810,8 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
       double targetLeft = 0;
       double targetRight = 0;
 
-      int numMissing = 0;
+      int numMissingAtt = 0;
+      int numMissingTarget = 0;
       // count missing values and sum/counts for the initial right subset
       for (int i = tempInsts.numInstances() - 1; i >= 0; i--) {
         if (!tempInsts.instance(i).isMissing(attIndex)) {
@@ -765,14 +820,16 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
               (tempInsts.attribute(m_target).isNumeric()) ? (tempInsts
                 .instance(i).value(m_target)) : ((tempInsts.instance(i).value(
                 m_target) == m_targetIndex) ? 1 : 0);
+          } else {
+            numMissingTarget++;
           }
         } else {
-          numMissing++;
+          numMissingAtt++;
         }
       }
 
       // are there still enough instances?
-      if (tempInsts.numInstances() - numMissing <= m_supportCount) {
+      if (tempInsts.numInstances() - numMissingAtt - numMissingTarget <= m_supportCount) {
         return;
       }
 
@@ -784,7 +841,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
       // denominators
       double leftCount = 0;
-      double rightCount = tempInsts.numInstances() - numMissing;
+      double rightCount = tempInsts.numInstances() - numMissingAtt - numMissingTarget;
 
       /*
        * targetRight = (tempInsts.attribute(m_target).isNumeric()) ?
@@ -795,7 +852,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
       // tempInsts.attributeStats(attIndexnominalCounts[m_targetIndex];
 
       // consider all splits
-      for (int i = 0; i < tempInsts.numInstances() - numMissing; i++) {
+      for (int i = 0; i < tempInsts.numInstances() - numMissingAtt; i++) {
         Instance inst = tempInsts.instance(i);
 
         if (!inst.isMissing(m_target)) {
@@ -810,13 +867,13 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
           }
           leftCount++;
           rightCount--;
+        }
 
-          // move to the end of any ties
-          if (i < tempInsts.numInstances() - 1
-            && inst.value(attIndex) == tempInsts.instance(i + 1)
-              .value(attIndex)) {
-            continue;
-          }
+        // move to the end of any ties
+        if (i < tempInsts.numInstances() - 1
+          && inst.value(attIndex) == tempInsts.instance(i + 1)
+          .value(attIndex)) {
+          continue;
         }
 
         // evaluate split
@@ -939,7 +996,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
     /**
      * Evaluate a nominal attribute for a potential split
-     * 
+     *
      * @param attIndex the index of the attribute
      * @param pq the priority queue of candidtate splits
      */
@@ -978,6 +1035,12 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
           }
         }
 
+        double expectedSumPerCategory = 0;
+        if (m_sumForNumericTarget) {
+          double sumOfMerits = Utils.sum(subsetMerit);
+          expectedSumPerCategory = sumOfMerits / subsetMerit.length;
+        }
+
         // add to queue if it meets min support and exceeds the merit for the
         // full set
         for (int i = 0; i < m_insts.attribute(attIndex).numValues(); i++) {
@@ -990,18 +1053,34 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
                                                                                                // only
                                                                                                // test
               : true)) {
-            double merit = subsetMerit[i] / counts[i]; // subsetMerit[i][1];
-            double delta = (m_minimize) ? m_targetValue - merit : merit
-              - m_targetValue;
+            double merit = m_sumForNumericTarget && m_insts.attribute(m_target).isNumeric()
+              ? subsetMerit[i] / expectedSumPerCategory
+              : subsetMerit[i] / counts[i]; // subsetMerit[i][1];
+            double delta = 0;
+            if (m_sumForNumericTarget && m_insts.attribute(m_target).isNumeric()) {
+              delta = m_minimize ? 1.0 / merit : merit;
+              // need improvement expressed in x's over the average (i.e. values
+              // >= 1.0, so multiply by 100) - default of 0.01 (1%) becomes 1.0
+              double minImprovement = m_minImprovement < 1.0 ? 100.0 * m_minImprovement : m_minImprovement;
+              if (delta > minImprovement) {
+                double support = counts[i];
+                HotTestDetails newD =
+                  new HotTestDetails(attIndex, i, (int) support, subsetMerit[i], merit);
+                pq.add(newD);
+              }
+            } else {
+              delta =
+                m_minimize ? m_targetValue - merit : merit - m_targetValue;
 
-            if (delta / m_targetValue >= m_minImprovement) {
-              double support =
-                (m_insts.attribute(m_target).isNominal()) ? subsetMerit[i]
-                  : counts[i];
+              if (delta / m_targetValue >= m_minImprovement) {
+                double support = (m_insts.attribute(m_target).isNominal()) ?
+                  subsetMerit[i] :
+                  counts[i];
 
-              HotTestDetails newD = new HotTestDetails(attIndex, i, false,
-                (int) support, counts[i], merit);
-              pq.add(newD);
+                HotTestDetails newD =
+                  new HotTestDetails(attIndex, i, false, (int) support, counts[i], merit);
+                pq.add(newD);
+              }
             }
           }
         }
@@ -1035,9 +1114,16 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
       }
 
       if (m_header.attribute(m_target).isNumeric()) {
-        buff.append(spacer + "("
-          + Utils.doubleToString(m_testDetails[i].m_merit, 4) + " ["
-          + m_testDetails[i].m_supportLevel + "])");
+        buff.append(spacer + "(");
+        if (m_sumForNumericTarget) {
+          buff.append(Utils.doubleToString(m_testDetails[i].m_targetSum, 4))
+            .append(" : ").append(Utils.doubleToString(m_testDetails[i].m_merit,2))
+            .append("x ");
+        } else {
+          buff.append(Utils.doubleToString(m_testDetails[i].m_merit, 4));
+        }
+        buff.append(" [").append(
+          m_testDetails[i].m_supportLevel).append("])");
       } else {
         buff.append(spacer + "("
           + Utils.doubleToString((m_testDetails[i].m_merit * 100.0), 2) + "% ["
@@ -1059,9 +1145,70 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
       }
     }
 
+    protected void addNodeDetails(Map<String, Object> node, int i) {
+      node.put("name", m_header.attribute(m_testDetails[i].m_splitAttIndex).name());
+      boolean isNumeric = m_header.attribute(m_testDetails[i].m_splitAttIndex).isNumeric();
+      boolean targetIsNominal = m_header.attribute(m_targetIndex).isNominal();
+      node.put("isNumeric", isNumeric);
+      String comparison = "";
+      Object value = null;
+      double merit = 0;
+      double support = 0;
+      double numericTargetSum = 0;
+      int subsetSize = m_testDetails[i].m_subsetSize;
+      if (isNumeric) {
+        if (m_testDetails[i].m_lessThan) {
+          comparison = "<=";
+        } else {
+          comparison = ">";
+        }
+        value = m_testDetails[i].m_splitValue;
+        merit = m_testDetails[i].m_merit * (targetIsNominal ? 100.0 : 1.0);
+        if (targetIsNominal) {
+          support = m_testDetails[i].m_supportLevel;
+        }
+      } else {
+        comparison = "=";
+        value = m_header.attribute(m_testDetails[i].m_splitAttIndex).value(
+          (int) m_testDetails[i].m_splitValue);
+        merit = m_testDetails[i].m_merit * (targetIsNominal ? 100.0 : 1.0);
+        if (targetIsNominal) {
+          support = m_testDetails[i].m_supportLevel;
+        }
+        if (!targetIsNominal && m_sumForNumericTarget) {
+          numericTargetSum = m_testDetails[i].m_targetSum;
+        }
+      }
+      node.put("comparison", comparison);
+      node.put("value", value);
+      node.put("target", !targetIsNominal && m_sumForNumericTarget ? numericTargetSum : merit); // target value
+      if (!targetIsNominal && m_sumForNumericTarget) {
+        // in this case, merit holds the number of x's that this node's category  is above the expected sum
+        node.put("merit", merit);
+      }
+      node.put("subsetSize", subsetSize);
+      if (support > 0) {
+        node.put("support", support); // nominal target value only
+      }
+    }
+
+    protected void graphAsMap(Map<String, Object> graph) {
+      // details of this node
+      if (m_children != null) {
+        List<Map<String, Object>> childList = new ArrayList<Map<String, Object>>();
+        graph.put("children", childList);
+        for (int i = 0; i < m_children.length; i++) {
+          Map<String, Object> childNode = new LinkedHashMap<String, Object>();
+          childList.add(childNode);
+          addNodeDetails(childNode, i);
+          m_children[i].graphAsMap(childNode);
+        }
+      }
+    }
+
     /**
      * Traverse the tree to create a string description
-     * 
+     *
      * @param depth the depth at this point in the tree
      * @param buff the string buffer to append node details to
      */
@@ -1320,7 +1467,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Returns the tip text for this property
-   * 
+   *
    * @return tip text for this property suitable for displaying in the
    *         explorer/experimenter gui
    */
@@ -1331,7 +1478,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Set the target index
-   * 
+   *
    * @param target the target index as a string (1-based)
    */
   public void setTarget(String target) {
@@ -1340,7 +1487,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Get the target index as a string
-   * 
+   *
    * @return the target index (1-based)
    */
   public String getTarget() {
@@ -1349,7 +1496,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Returns the tip text for this property
-   * 
+   *
    * @return tip text for this property suitable for displaying in the
    *         explorer/experimenter gui
    */
@@ -1359,7 +1506,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * For a nominal target, set the index of the value of interest (1-based)
-   * 
+   *
    * @param index the index of the nominal value of interest
    */
   public void setTargetIndex(String index) {
@@ -1368,7 +1515,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * For a nominal target, get the index of the value of interest (1-based)
-   * 
+   *
    * @return the index of the nominal value of interest
    */
   public String getTargetIndex() {
@@ -1377,7 +1524,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Returns the tip text for this property
-   * 
+   *
    * @return tip text for this property suitable for displaying in the
    *         explorer/experimenter gui
    */
@@ -1387,7 +1534,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Set whether to minimize the target rather than maximize
-   * 
+   *
    * @param m true if target is to be minimized
    */
   public void setMinimizeTarget(boolean m) {
@@ -1396,7 +1543,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Get whether to minimize the target rather than maximize
-   * 
+   *
    * @return true if target is to be minimized
    */
   public boolean getMinimizeTarget() {
@@ -1405,7 +1552,47 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Returns the tip text for this property
-   * 
+   *
+   * @return tip text for this property suitable for displaying in the
+   *         explorer/experimenter gui
+   */
+  public String useRelativeSumForNumericTargetTipText() {
+    return "For a numeric target use the sum of the target (relative to the expected sum) "
+      + "as the aggregation rather than the average. In this mode, only nominal attributes "
+      + "are considered for splitting in the tree. The metric favours categorical values "
+      + "where the sum of the target, within the category, is markedly higher (or lower, "
+      + "if minimizing) than the expected sum.";
+  }
+
+  /**
+   * Set whether to use sum of target (relative to expected sum) as the aggregation
+   * rather than average for a numeric target. In this mode, only nominal attributes
+   * are considered for the splits of the tree. The metric finds categorical values where
+   * the sum of the target, within the category, is markedly higher (or lower, if minimizing)
+   * than the expected sum.
+   *
+   * @param relativeSumForNumericTarget true to use relative sum as the aggregation
+   */
+  public void setUseRelativeSumForNumericTarget(boolean relativeSumForNumericTarget) {
+    m_sumForNumericTarget = relativeSumForNumericTarget;
+  }
+
+  /**
+   * Get whether to use sum of target (relative to expected sum) as the aggregation
+   * rather than average for a numeric target. In this mode, only nominal attributes
+   * are considered for the splits of the tree. The metric finds categorical values where
+   * the sum of the target, within the category, is markedly higher (or lower, if minimizing)
+   * than the expected sum.
+   *
+   * @return true if using relative sum as the aggregation
+   */
+  public boolean getUseRelativeSumForNumericTarget() {
+    return m_sumForNumericTarget;
+  }
+
+  /**
+   * Returns the tip text for this property
+   *
    * @return tip text for this property suitable for displaying in the
    *         explorer/experimenter gui
    */
@@ -1417,7 +1604,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Get the minimum support
-   * 
+   *
    * @return the minimum support
    */
   public String getSupport() {
@@ -1426,7 +1613,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Set the minimum support
-   * 
+   *
    * @param s the minimum support
    */
   public void setSupport(String s) {
@@ -1435,7 +1622,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Returns the tip text for this property
-   * 
+   *
    * @return tip text for this property suitable for displaying in the
    *         explorer/experimenter gui
    */
@@ -1446,7 +1633,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Set the maximum branching factor
-   * 
+   *
    * @param b the maximum branching factor
    */
   public void setMaxBranchingFactor(int b) {
@@ -1455,7 +1642,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Get the maximum branching factor
-   * 
+   *
    * @return the maximum branching factor
    */
   public int getMaxBranchingFactor() {
@@ -1464,7 +1651,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Returns the tip text for this property
-   * 
+   *
    * @return tip text for this property suitable for displaying in the
    *         explorer/experimenter gui
    */
@@ -1475,7 +1662,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Set the maximum rule length
-   * 
+   *
    * @param l the maximum rule length
    */
   public void setMaxRuleLength(int l) {
@@ -1484,7 +1671,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Get the maximum rule length
-   * 
+   *
    * @return the maximum rule length
    */
   public int getMaxRuleLength() {
@@ -1493,7 +1680,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Returns the tip text for this property
-   * 
+   *
    * @return tip text for this property suitable for displaying in the
    *         explorer/experimenter gui
    */
@@ -1505,7 +1692,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Set whether to treat zero as missing.
-   * 
+   *
    * @param t true if zero (first value) for nominal attributes is to be treated
    *          like missing value.
    */
@@ -1515,7 +1702,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Get whether to treat zero as missing.
-   * 
+   *
    * @return true if zero (first value) for nominal attributes is to be treated
    *         like missing value.
    */
@@ -1525,7 +1712,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Returns the tip text for this property
-   * 
+   *
    * @return tip text for this property suitable for displaying in the
    *         explorer/experimenter gui
    */
@@ -1536,7 +1723,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Set the minimum improvement in the target necessary to add a test
-   * 
+   *
    * @param i the minimum improvement
    */
   public void setMinImprovement(double i) {
@@ -1545,7 +1732,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Get the minimum improvement in the target necessary to add a test
-   * 
+   *
    * @return the minimum improvement
    */
   public double getMinImprovement() {
@@ -1554,7 +1741,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Returns the tip text for this property
-   * 
+   *
    * @return tip text for this property suitable for displaying in the
    *         explorer/experimenter gui
    */
@@ -1564,7 +1751,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Set whether debugging info is output
-   * 
+   *
    * @param d true to output debugging info
    */
   public void setDebug(boolean d) {
@@ -1573,7 +1760,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Get whether debugging info is output
-   * 
+   *
    * @return true if outputing debugging info
    */
   public boolean getDebug() {
@@ -1590,7 +1777,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Returns the tip text for this property
-   * 
+   *
    * @return tip text for this property suitable for displaying in the
    *         explorer/experimenter gui
    */
@@ -1600,7 +1787,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Returns the tip text for this property
-   * 
+   *
    * @return tip text for this property suitable for displaying in the
    *         explorer/experimenter gui
    */
@@ -1611,7 +1798,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Set whether capabilities checking is turned off.
-   * 
+   *
    * @param doNotCheck true if capabilities checking is turned off.
    */
   @Override
@@ -1621,7 +1808,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Get whether capabilities checking is turned off.
-   * 
+   *
    * @return true if capabilities checking is turned off.
    */
   @Override
@@ -1631,7 +1818,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
   /**
    * Returns an enumeration describing the available options.
-   * 
+   *
    * @return an enumeration of all the available options.
    */
   @Override
@@ -1657,6 +1844,9 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
     newVector.addElement(new Option(
       "\tMaximum rule length (default = -1, i.e. no maximum)", "length", 1,
       "-length <num>"));
+    newVector.addElement(new Option(
+      "\tOperate on sum, rather than average, for numeric target. Note, this mode\n\t"
+        + "can only operate on nominal attributes.", "sum", 0, "-sum"));
     newVector.addElement(new Option(
       "\tMinimum improvement in target value in order "
         + "\n\tto add a new branch/test (default = 0.01 (1%))", "I", 1,
@@ -1692,52 +1882,52 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
   /**
    * Parses a given list of options.
    * <p/>
-   * 
-   * <!-- options-start --> Valid options are:
-   * <p/>
-   * 
-   * <pre>
-   * -c &lt;num | first | last&gt;
-   *  The target index. (default = last)
-   * </pre>
-   * 
-   * <pre>
-   * -V &lt;num | first | last&gt;
-   *  The target value (nominal target only, default = first)
-   * </pre>
-   * 
-   * <pre>
-   * -L
-   *  Minimize rather than maximize.
-   * </pre>
-   * 
-   * <pre>
-   * -S &lt;num&gt;
-   *  Minimum value count (nominal target)/segment size (numeric target).
-   *  Values between 0 and 1 are 
-   *  interpreted as a percentage of 
-   *  the total population; values &gt; 1 are 
-   *  interpreted as an absolute number of 
-   *  instances (default = 0.3)
-   * </pre>
-   * 
-   * <pre>
-   * -M &lt;num&gt;
-   *  Maximum branching factor (default = 2)
-   * </pre>
-   * 
-   * <pre>
-   * -I &lt;num&gt;
-   *  Minimum improvement in target value in order 
-   *  to add a new branch/test (default = 0.01 (1%))
-   * </pre>
-   * 
-   * <pre>
-   * -D
-   *  Output debugging info (duplicate rule lookup 
-   *  hash table stats)
-   * </pre>
-   * 
+   *
+   * <!-- options-start -->
+   * * Valid options are: <p>
+   * * 
+   * * <pre> -c &lt;num | first | last | attribute name&gt;
+   * *  The target index. (default = last)</pre>
+   * * 
+   * * <pre> -V &lt;num | first | last&gt;
+   * *  The target value (nominal target only, default = first)</pre>
+   * * 
+   * * <pre> -L
+   * *  Minimize rather than maximize.</pre>
+   * * 
+   * * <pre> -S &lt;num&gt;
+   * *  Minimum value count (nominal target)/segment size (numeric target).
+   * *  Values between 0 and 1 are 
+   * *  interpreted as a percentage of 
+   * *  the total population (numeric) or total target value
+   * *  population size (nominal); values &gt; 1 are 
+   * *  interpreted as an absolute number of 
+   * *  instances (default = 0.3)</pre>
+   * * 
+   * * <pre> -M &lt;num&gt;
+   * *  Maximum branching factor (default = 2)</pre>
+   * * 
+   * * <pre> -length &lt;num&gt;
+   * *  Maximum rule length (default = -1, i.e. no maximum)</pre>
+   * * 
+   * * <pre> -sum
+   * *  Operate on sum, rather than average, for numeric target. Note, this mode
+   * *  can only operate on nominal attributes.</pre>
+   * * 
+   * * <pre> -I &lt;num&gt;
+   * *  Minimum improvement in target value in order 
+   * *  to add a new branch/test (default = 0.01 (1%))</pre>
+   * * 
+   * * <pre> -Z
+   * *  Treat zero (first value) as missing for nominal attributes</pre>
+   * * 
+   * * <pre> -R
+   * *  Output a set of rules instead of a tree structure</pre>
+   * * 
+   * * <pre> -D
+   * *  Output debugging info (duplicate rule lookup 
+   * *  hash table stats)</pre>
+   * * 
    * <!-- options-end -->
    * 
    * @param options the list of options as an array of strings
@@ -1782,6 +1972,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
     setDebug(Utils.getFlag('D', options));
     setOutputRules(Utils.getFlag('R', options));
     setTreatZeroAsMissing(Utils.getFlag('Z', options));
+    setUseRelativeSumForNumericTarget(Utils.getFlag("sum", options));
   }
 
   /**
@@ -1791,7 +1982,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
    */
   @Override
   public String[] getOptions() {
-    String[] options = new String[16];
+    String[] options = new String[17];
     int current = 0;
 
     options[current++] = "-c";
@@ -1819,6 +2010,10 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
     if (getTreatZeroAsMissing()) {
       options[current++] = "-Z";
+    }
+
+    if (getUseRelativeSumForNumericTarget()) {
+      options[current++] = "-sum";
     }
 
     while (current < options.length) {
@@ -1918,3 +2113,4 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
     }
   }
 }
+
