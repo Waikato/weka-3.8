@@ -342,6 +342,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
 
     Instances inst = new Instances(instances);
     inst.setClassIndex(m_target);
+    m_header = new Instances(inst, 0);
     // inst.deleteWithMissingClass();
 
     if (inst.attribute(m_target).isNominal()) {
@@ -352,6 +353,14 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
     }
 
     if (inst.attribute(m_target).isNumeric()) {
+      if (m_sumForNumericTarget) {
+        m_globalTarget = inst.attributeStats(m_target).numericStats.sum;
+      } else {
+        m_globalTarget = inst.meanOrMode(m_target);
+      }
+      m_numNonMissingTarget = inst.numInstances()
+        - inst.attributeStats(m_target).missingCount;
+
       if (m_supportCount > m_numInstances) {
         m_errorMessage =
           "Error: support set to more instances than there are in the data!";
@@ -361,13 +370,6 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
         m_errorMessage = "Aggregation type sum requires at least one nominal attribute in the data";
         return;
       }
-      if (m_sumForNumericTarget) {
-        m_globalTarget = inst.attributeStats(m_target).numericStats.sum;
-      } else {
-        m_globalTarget = inst.meanOrMode(m_target);
-      }
-      m_numNonMissingTarget = inst.numInstances()
-        - inst.attributeStats(m_target).missingCount;
     } else {
       double[] probs =
         new double[inst.attributeStats(m_target).nominalCounts.length];
@@ -379,7 +381,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
       if (m_globalSupport < m_supportCount) {
         m_errorMessage = "Error: minimum support " + m_supportCount
           + " is too high. Target value "
-          + m_header.attribute(m_target).value(m_targetIndex) + " has support "
+          + inst.attribute(m_target).value(m_targetIndex) + " has support "
           + m_globalSupport + ".";
       }
 
@@ -415,8 +417,6 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
     if (m_supportCount < 1) {
       m_supportCount = 1;
     }
-
-    m_header = new Instances(inst, 0);
 
     m_ruleLookup = new HashMap<HotSpotHashKey, String>();
     double[] splitVals = new double[m_header.numAttributes()];
@@ -545,7 +545,7 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
     return text.toString();
   }
 
-  public Map<String, Object> graphAsMap() {
+  public Map<String, Object> graphAsMap() throws Exception {
     Map<String, Object> graph = new LinkedHashMap<String, Object>();
     String details = "";
     if (m_header.attribute(m_target).isNumeric()) {
@@ -569,7 +569,13 @@ public class HotSpot implements Associator, OptionHandler, RevisionHandler,
     String objective = m_minimize ? "minimize" : "maximize";
     graph.put("aggregation", aggregationType);
     graph.put("objective", objective);
-    m_head.graphAsMap(graph);
+    if (m_errorMessage != null) {
+      graph.put("error", m_errorMessage);
+    }
+
+    if (m_head != null) {
+      m_head.graphAsMap(graph);
+    }
     return graph;
   }
 
