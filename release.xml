@@ -65,14 +65,15 @@
     <echo message="nsvnkit.jar"/>
     <echo message="svnkit-cli.jar"/>
     <echo message="ant_latex.jar (http://www.dokutransdata.de/ant_latex/)"/>
-    <echo message="jarbundler.jar (Mac app for Apple Java 1.6)"/>
+<!--    <echo message="jarbundler.jar (Mac app for Apple Java 1.6)"/> -->
     <echo message="xercesImpl.jar"/>
-    <echo message="appbundler (Mac app for Oracle Java 1.8 or higher. https://github.com/teras/appbundler)"/>
+<!--    <echo message="appbundler (Mac app for Oracle Java 1.8 or higher. https://github.com/teras/appbundler)"/> -->
     <echo message=""/>
     <echo message="2) To create windows installers the makensis utility from NSIS is needed. Under Linux (Ubuntu), this can be installed by typing sudo apt-get install nsis. For instructions on how to build this for Mac OS X run the nsis_osx_howto target"/>
-    <echo message="3) Building Mac application bundles depends on the target JRE. For JRE 1.6, jarbundler is used. For Oracle JRE >= 1.8, jarbundler does not work and appbundler must be used. Appbundler *requires* Java >= 1.8, so the build script must run under >= 1.8 in this case."/>
+    <echo message="3) Building Mac application bundles now uses the jpackage tool that is included in later version of the JDK. The Mac application for x64 Macs must be built on an x64 Mac, and the arm version on an arm Mac (see project help for the associated targets)"/>
+<!--    <echo message="3) Building Mac application bundles depends on the target JRE. For JRE 1.6, jarbundler is used. For Oracle JRE >= 1.8, jarbundler does not work and appbundler must be used. Appbundler *requires* Java >= 1.8, so the build script must run under >= 1.8 in this case."/>
     <echo message="Under Mac OS X, hdiutil is used to create a compressed dmg file. Under Linux, genisoimage (already installed in Ubuntu) is used to first create a dmg and then libdmg (http://shanemcc.co.uk/libdmg/) is used to produce a compressed dmg file from the uncompressed one"/>
-    <echo message="LaTeX is required for building Weka's documentation. Additionally the wrapfig.sty style is needed if not already insalled"/>
+    <echo message="LaTeX is required for building Weka's documentation. Additionally the wrapfig.sty style is needed if not already insalled"/> -->
   </target>
 
   <target name="nsis_osx_howto">
@@ -220,91 +221,6 @@
     <delete dir="${temp}"/>
   </target>
 
-  <!-- build the Mac application suitable for running under x64 Java >= 1.7 -->
-  <target name="osx_app_oracle" if="${osx_jre_oracle}">
-    <bundleapp outputdirectory="${temp}"
-        name="weka-${release}-${jvm-vendor}"
-        displayname="Weka-${release}"
-	icon="weka/src/main/java/weka/gui/weka_icon_new.icns"
-        identifier="nz.ac.waikato.cms.Weka"
-        shortversion="${version}"
-        mainclassname="weka.gui.GUIChooser">
-<!--      <runtime dir="${env.JAVA_HOME}"> -->
-      <runtime dir="${osx-jre-home}">
-	<include name="conf/**" />
-      </runtime>
-      <classpath file="${temp}/weka-${release}/weka.jar"/>
-      <option value="-Xss20M"/>
-    </bundleapp>
-
-    <antcall target="dmg_${os}">
-      <param name="jvm_target" value="${jvm_target}"/>
-    </antcall>
-  </target>
-
-    <!-- build the Mac application suitable for running under ARM Java >= 1.7 -->
-  <target name="osx_app_arm" depends="installer_init">
-    <bundleapp outputdirectory="${temp}"
-        name="weka-${release}-${jvm-vendor}"
-        displayname="Weka-${release}"
-	icon="weka/src/main/java/weka/gui/weka_icon_new.icns"
-        identifier="nz.ac.waikato.cms.Weka"
-        shortversion="${version}"
-        mainclassname="weka.gui.GUIChooser">
-      <runtime dir="${osx-arm-jre-home}">
-	<include name="conf/**" />
-      </runtime>
-      <classpath file="${temp}/weka-${release}/weka.jar"/>
-      <option value="-Xss20M"/>
-    </bundleapp>
-
-    <antcall target="dmg_${os}">
-      <param name="jvm_target" value="${jvm_target}-arm"/>
-    </antcall>
-  </target>
-
-  <target name="install_app_stub_osx_apple_jre">
-    <!-- jarbundler does this automatically if we are building under OS X with Apple JRE 1.6 -->
-    <copy file="installer/osx_app_resources/JavaApplicationStub" toDir="${temp}/weka-${release}-apple-jvm.app/Contents/MacOS/"/>
-    <chmod file="${temp}/weka-${release}-apple-jvm.app/Contents/MacOS/JavaApplicationStub" perm="ugo+rx"/>
-  </target>
-
-  <!-- build the Mac application suitable for running under Apple Java 1.6 -->
-  <target name="osx_app_apple" if="${osx_jre_apple}">
-    <taskdef name="jarbundler" 
-             classname="net.sourceforge.jarbundler.JarBundler" />
-    <jarbundler dir="${temp}"
-                name="weka-${release}-apple-jvm"
-                mainclass="weka.gui.GUIChooser"
-                icon="weka/src/main/java/weka/gui/weka_icon_new.icns"
-                version="${release}"
-                verbose="true"
-                VMOptions="-Xss20M"
-                shortname="Weka-${release}"
-                arguments=""
-                workingdirectory="/Users"
-                jvmversion="1.6+">
-      <javaproperty name="java.library.path" value="$APP_PACKAGE/Contents/Resources"/>
-      <jarfileset dir="${temp}/weka-${release}/">
-        <include name="weka.jar"/>
-      </jarfileset>     
-      <documenttype name="Attribute Relation File Format (ARFF)"
-                    extensions="arff xrff" 
-                    iconFile="weka/src/main/java/weka/gui/weka_icon_new.icns"
-                    role="Editor"/> 
-      <documenttype name="Knowledge Flow layout"
-                    extensions="kf kfml" 
-                    iconFile="weka/src/main/java/weka/gui/weka_icon_new.icns"
-                    role="Editor"/> 
-    </jarbundler>
-
-    <antcall target="install_app_stub_osx_apple_jre"/>
-
-    <antcall target="dmg_${os}">
-      <param name="jvm_target" value="${jvm_target}"/>
-    </antcall>
-  </target>
-
   <target name="dmg_osx">
     <!-- Make a .dmg disk image under Mac OSX -->
     <exec executable="/usr/bin/hdiutil" os="Mac OS X">
@@ -346,31 +262,75 @@
     <delete dir="${temp}/weka-${release}-${jvm_target}.app"/>
   </target>
 
-  <target name="osx_installer" description="Make an OS X application(s).  Run with -Drelease=&lt;number of release (eg. 3-4-1)&gt;, the name of the JVM vendor (e.g. -Djvm-vendor=azul-zulu) and the location of the OSX JRE to embed (e.g. -Dosx-jre-home=path to JRE).">
+  <target name="osx_jpackage_x64" depends="installer_init" description="Make an OS X application(s). Run with -Drelease=&lt;number of release (eg. 3-4-1)&gt;, -Dversion=&lt;number of version (eg. 3.4.1)&gt;, the name of the JVM vendor (e.g. -Djvm-vendor=azul-zulu) and the path to an OSX x64 JDK (NOT JRE!!) (e.g. -Djdk-osx-x64=path-to-azul-jdk-install/zulu-x.jdk). This target must be run after one of the release_base_* targets.">
+    <copy file="${weka}/src/main/java/weka/gui/weka_icon_new.icns" toFile="${temp}/weka_icon_new.icns"/>
 
-    <delete dir="${temp}/nsis"/>
-    <delete dir="${temp}/weka-${release}/jre"/>
-
-    <antcall target="osx_app_oracle">
-      <param name="jvm_target" value="${jvm-vendor}"/>
-    </antcall>
-    <antcall target="osx_app_apple">
-      <param name="jvm_target" value="apple-jvm"/>
-    </antcall>
+    <!-- Make the app -->
+    <exec executable="jpackage">
+      <arg value="--verbose"/>
+      <arg value="--description"/>
+      <arg value="Waikato Environment For Knowledge Analysis"/>
+      <arg value="--vendor"/>
+      <arg value="University of Waikato"/>
+      <arg value="--app-version"/>
+      <arg value="${version}"/>
+      <arg value="--copyright"/>
+      <arg value="Copyright (C) 1999-2021 University of Waikato, Hamilton, New Zealand"/>
+      <arg value="-i"/>
+      <arg value="${temp}/weka-${release}"/>
+      <arg value="-d"/>
+      <arg value="${temp}"/>
+      <arg value="-n"/>
+      <arg value="weka-${version}"/>
+      <arg value="--icon"/>
+      <arg value="${temp}/weka_icon_new.icns"/>
+      <arg value="--main-class"/>
+      <arg value="weka.gui.GUIChooser"/>
+      <arg value="--main-jar"/>
+      <arg value="weka.jar"/>
+      <arg value="--runtime-image"/>
+      <arg value="${jdk-osx-x64}"/>
+      <arg value="--java-options"/>
+      <arg value="--add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.annotation=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED --add-opens=java.base/java.lang.module=ALL-UNNAMED --add-opens=java.base/java.lang.ref=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.math=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.net.spi=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.nio.channels=ALL-UNNAMED --add-opens=java.base/java.nio.channels.spi=ALL-UNNAMED --add-opens=java.base/java.nio.charset=ALL-UNNAMED --add-opens=java.base/java.nio.charset.spi=ALL-UNNAMED --add-opens=java.base/java.nio.file=ALL-UNNAMED --add-opens=java.base/java.nio.file.attribute=ALL-UNNAMED --add-opens=java.base/java.nio.file.spi=ALL-UNNAMED --add-opens=java.base/java.security=ALL-UNNAMED --add-opens=java.base/java.security.acl=ALL-UNNAMED --add-opens=java.base/java.security.cert=ALL-UNNAMED --add-opens=java.base/java.security.interfaces=ALL-UNNAMED --add-opens=java.base/java.security.spec=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.base/java.text.spi=ALL-UNNAMED --add-opens=java.base/java.time=ALL-UNNAMED --add-opens=java.base/java.time.chrono=ALL-UNNAMED --add-opens=java.base/java.time.format=ALL-UNNAMED --add-opens=java.base/java.time.temporal=ALL-UNNAMED --add-opens=java.base/java.time.zone=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.locks=ALL-UNNAMED --add-opens=java.base/java.util.function=ALL-UNNAMED --add-opens=java.base/java.util.jar=ALL-UNNAMED --add-opens=java.base/java.util.regex=ALL-UNNAMED --add-opens=java.base/java.util.spi=ALL-UNNAMED --add-opens=java.base/java.util.stream=ALL-UNNAMED --add-opens=java.base/java.util.zip=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.datatransfer/java.awt.datatransfer=ALL-UNNAMED --add-opens=java.desktop/java.applet=ALL-UNNAMED --add-opens=java.desktop/java.awt=ALL-UNNAMED --add-opens=java.desktop/java.awt.color=ALL-UNNAMED --add-opens=java.desktop/java.awt.desktop=ALL-UNNAMED --add-opens=java.desktop/java.awt.dnd=ALL-UNNAMED --add-opens=java.desktop/java.awt.dnd.peer=ALL-UNNAMED --add-opens=java.desktop/java.awt.event=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED --add-opens=java.desktop/java.awt.geom=ALL-UNNAMED --add-opens=java.desktop/java.awt.im=ALL-UNNAMED --add-opens=java.desktop/java.awt.im.spi=ALL-UNNAMED --add-opens=java.desktop/java.awt.image=ALL-UNNAMED --add-opens=java.desktop/java.awt.image.renderable=ALL-UNNAMED --add-opens=java.desktop/java.awt.peer=ALL-UNNAMED --add-opens=java.desktop/java.awt.print=ALL-UNNAMED --add-opens=java.desktop/java.beans=ALL-UNNAMED --add-opens=java.desktop/java.beans.beancontext=ALL-UNNAMED --add-opens=java.instrument/java.lang.instrument=ALL-UNNAMED --add-opens=java.logging/java.util.logging=ALL-UNNAMED --add-opens=java.management/java.lang.management=ALL-UNNAMED --add-opens=java.prefs/java.util.prefs=ALL-UNNAMED --add-opens=java.rmi/java.rmi=ALL-UNNAMED --add-opens=java.rmi/java.rmi.activation=ALL-UNNAMED --add-opens=java.rmi/java.rmi.dgc=ALL-UNNAMED --add-opens=java.rmi/java.rmi.registry=ALL-UNNAMED --add-opens=java.rmi/java.rmi.server=ALL-UNNAMED --add-opens=java.sql/java.sql=ALL-UNNAMED --add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.desktop/javax.swing.border=ALL-UNNAMED --add-opens=java.desktop/javax.swing.text=ALL-UNNAMED --add-opens=java.desktop/javax.swing.text.html=ALL-UNNAMED --add-opens=java.desktop/sun.awt=ALL-UNNAMED --add-opens=java.desktop/sun.java2d=ALL-UNNAMED --add-opens=java.desktop/sun.font=ALL-UNNAMED --add-opens=java.desktop/sun.awt=ALL-UNNAMED --add-opens=java.desktop/sun.java2d=ALL-UNNAMED --add-opens=javafx.graphics/com.sun.javafx.tk=ALL-UNNAMED --add-opens=javafx.graphics/com.sun.javafx.tk.quantum=ALL-UNNAMED --add-opens=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED"/>
+    </exec>
+    <!-- Irritatingly, jpackage adds the specified version number on to the app name when making the dmg -->
+    <move file="${temp}/weka-${version}-${version}.dmg" tofile="${dist}/weka-${release}-${jvm-vendor}-osx.dmg"/>
   </target>
 
-      <target name="osx_installer_arm" description="Make an OS X application (and installer) for ARM architecture. Must be run as a separate target after other installers have been made (or at least one of the release_base_zip targets). Run with -Drelease=&lt;number of release (eg. 3-4-1)&gt; and the name of the JVM vendor (e.g. -Djvm-vendor=azul-zulu). Also Requires -Dosx-arm-jre-home to point to an unpacked ARM jre to embed - e.g. -Dosx-arm-jre-home=/Users/mhall/wekaRelease/jre/zulu11.45.27-ca-fx-jre11.0.10-macosx_aarch64/zulu-11.jre/Contents/Home/. IMPORTANT: appbundler-arm-1.1.0.jar MUST be in the classpath before/or replace the standard x64 appbundler jar">
+  <target name="osx_jpackage_aarch64" depends="installer_init" description="Make an OS X application(s).  Run with -Drelease=&lt;number of release (eg. 3-4-1)&gt;, -Dversion=&lt;number of release (eg. 3.4.1)&gt;, the name of the JVM vendor (e.g. -Djvm-vendor=azul-zulu), and the path to an OSX aarch64 JDK (NOT JRE!!) (e.g. -Djdk-osx-aarch64=path-to-azul-jdk-aarch64-install/zulu-x.jdk). This target must be run after one of the release_base_* targets.">
+    <copy file="${weka}/src/main/java/weka/gui/weka_icon_new.icns" toFile="${temp}/weka_icon_new.icns"/>
 
-    <delete dir="${temp}/nsis"/>
-    <delete dir="${temp}/weka-${release}/jre"/>
-
-    <antcall target="osx_app_arm">      
-      <param name="jvm_target" value="${jvm-vendor}"/>
-    </antcall>
-    <echo message="Cleaning up..."/>
-    <delete dir="${temp}"/>
-  </target>
-  
+    <!-- Make the app -->
+    <exec executable="jpackage">
+      <arg value="--verbose"/>
+      <arg value="--description"/>
+      <arg value="Waikato Environment For Knowledge Analysis"/>
+      <arg value="--vendor"/>
+      <arg value="University of Waikato"/>
+      <arg value="--app-version"/>
+      <arg value="${version}"/>
+      <arg value="--copyright"/>
+      <arg value="Copyright (C) 1999-2021 University of Waikato, Hamilton, New Zealand"/>
+      <arg value="-i"/>
+      <arg value="${temp}/weka-${release}"/>
+      <arg value="-d"/>
+      <arg value="${temp}"/>
+      <arg value="-n"/>
+      <arg value="weka-${version}"/>
+      <arg value="--icon"/>
+      <arg value="${temp}/weka_icon_new.icns"/>
+      <arg value="--main-class"/>
+      <arg value="weka.gui.GUIChooser"/>
+      <arg value="--main-jar"/>
+      <arg value="weka.jar"/>
+      <arg value="--runtime-image"/>
+      <arg value="${jdk-osx-aarch64}"/>
+      <arg value="--java-options"/>
+      <arg value="--add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.annotation=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED --add-opens=java.base/java.lang.module=ALL-UNNAMED --add-opens=java.base/java.lang.ref=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.math=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.net.spi=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.nio.channels=ALL-UNNAMED --add-opens=java.base/java.nio.channels.spi=ALL-UNNAMED --add-opens=java.base/java.nio.charset=ALL-UNNAMED --add-opens=java.base/java.nio.charset.spi=ALL-UNNAMED --add-opens=java.base/java.nio.file=ALL-UNNAMED --add-opens=java.base/java.nio.file.attribute=ALL-UNNAMED --add-opens=java.base/java.nio.file.spi=ALL-UNNAMED --add-opens=java.base/java.security=ALL-UNNAMED --add-opens=java.base/java.security.acl=ALL-UNNAMED --add-opens=java.base/java.security.cert=ALL-UNNAMED --add-opens=java.base/java.security.interfaces=ALL-UNNAMED --add-opens=java.base/java.security.spec=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.base/java.text.spi=ALL-UNNAMED --add-opens=java.base/java.time=ALL-UNNAMED --add-opens=java.base/java.time.chrono=ALL-UNNAMED --add-opens=java.base/java.time.format=ALL-UNNAMED --add-opens=java.base/java.time.temporal=ALL-UNNAMED --add-opens=java.base/java.time.zone=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.locks=ALL-UNNAMED --add-opens=java.base/java.util.function=ALL-UNNAMED --add-opens=java.base/java.util.jar=ALL-UNNAMED --add-opens=java.base/java.util.regex=ALL-UNNAMED --add-opens=java.base/java.util.spi=ALL-UNNAMED --add-opens=java.base/java.util.stream=ALL-UNNAMED --add-opens=java.base/java.util.zip=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.datatransfer/java.awt.datatransfer=ALL-UNNAMED --add-opens=java.desktop/java.applet=ALL-UNNAMED --add-opens=java.desktop/java.awt=ALL-UNNAMED --add-opens=java.desktop/java.awt.color=ALL-UNNAMED --add-opens=java.desktop/java.awt.desktop=ALL-UNNAMED --add-opens=java.desktop/java.awt.dnd=ALL-UNNAMED --add-opens=java.desktop/java.awt.dnd.peer=ALL-UNNAMED --add-opens=java.desktop/java.awt.event=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED --add-opens=java.desktop/java.awt.geom=ALL-UNNAMED --add-opens=java.desktop/java.awt.im=ALL-UNNAMED --add-opens=java.desktop/java.awt.im.spi=ALL-UNNAMED --add-opens=java.desktop/java.awt.image=ALL-UNNAMED --add-opens=java.desktop/java.awt.image.renderable=ALL-UNNAMED --add-opens=java.desktop/java.awt.peer=ALL-UNNAMED --add-opens=java.desktop/java.awt.print=ALL-UNNAMED --add-opens=java.desktop/java.beans=ALL-UNNAMED --add-opens=java.desktop/java.beans.beancontext=ALL-UNNAMED --add-opens=java.instrument/java.lang.instrument=ALL-UNNAMED --add-opens=java.logging/java.util.logging=ALL-UNNAMED --add-opens=java.management/java.lang.management=ALL-UNNAMED --add-opens=java.prefs/java.util.prefs=ALL-UNNAMED --add-opens=java.rmi/java.rmi=ALL-UNNAMED --add-opens=java.rmi/java.rmi.activation=ALL-UNNAMED --add-opens=java.rmi/java.rmi.dgc=ALL-UNNAMED --add-opens=java.rmi/java.rmi.registry=ALL-UNNAMED --add-opens=java.rmi/java.rmi.server=ALL-UNNAMED --add-opens=java.sql/java.sql=ALL-UNNAMED --add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.desktop/javax.swing.border=ALL-UNNAMED --add-opens=java.desktop/javax.swing.text=ALL-UNNAMED --add-opens=java.desktop/javax.swing.text.html=ALL-UNNAMED --add-opens=java.desktop/sun.awt=ALL-UNNAMED --add-opens=java.desktop/sun.java2d=ALL-UNNAMED --add-opens=java.desktop/sun.font=ALL-UNNAMED --add-opens=java.desktop/sun.awt=ALL-UNNAMED --add-opens=java.desktop/sun.java2d=ALL-UNNAMED --add-opens=javafx.graphics/com.sun.javafx.tk=ALL-UNNAMED --add-opens=javafx.graphics/com.sun.javafx.tk.quantum=ALL-UNNAMED --add-opens=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED"/>
+    </exec>
+     <!-- Irritatingly, jpackage adds the specified version number on to the app name when making the dmg -->
+    <move file="${temp}/weka-${version}-${version}.dmg" tofile="${dist}/weka-${release}-${jvm-vendor}-arm-osx.dmg"/>
+  </target>  
 
   <target name="installer_init">
     <unzip src="${dist}/weka-${release}.zip" dest="${temp}"/>
@@ -434,7 +394,7 @@
       fork="yes"
       destdir="${temp}/nsis"
       includeantruntime="false"
-      source="1.6" target="1.6">
+      source="1.7" target="1.7">
       <include name="GenerateSetup.java"/>
     </javac>
 
@@ -442,22 +402,13 @@
       fork="yes"
       destdir="${temp}/nsis/templates"
       includeantruntime="false"
-      source="1.6" target="1.6">
+      source="1.7" target="1.7">
       <include name="RunWeka.java"/>
     </javac>
 
     <delete dir="${temp}/weka-${release}/jre"/>
     <mkdir dir="${temp}/weka-${release}/jre"/>
     <unzip src="${jre}" dest="${temp}/weka-${release}/jre"/>
-    <!-- non-jre installer - 32 bit
-    <echo message="Creating nsis script for 32 bit installer"/>
-    <java dir="${temp}/nsis" classname="GenerateSetup" fork="true">
-      <arg line="-version ${version} -input-dir ../weka-${release} -output-dir ./output -dir Weka-${release} -link-prefix 'Weka ${version}'"/>
-      <classpath>
-        <pathelement location="${temp}/nsis"/>
-        <pathelement path="${java.class.path}"/>
-      </classpath>
-    </java> -->
 
     <!-- jre installer - 64 bit -->
     <echo message="Creating nsis script for 64 bit installer"/>
@@ -481,21 +432,14 @@
 
     <!-- rename installer file -->
     <move file="${temp}/nsis/output/weka-${release}-x64.exe" tofile="${dist}/weka-${release}-${jvm-vendor}-windows.exe"/>
-
-    <!-- copy all exe installers to dist
-    <copy todir="${dist}">
-      <fileset dir="${temp}/nsis/output/">
-        <include name="**/*.exe"/>
-        </fileset>
-    </copy>    -->
   </target>
 
-  <target name="installers_no_junit" depends="clean, release_base_zip_no_junit, win_installers, osx_installer, linux_archive" description="Make a release and create installers without running unit tests. Default OS is OSX (add -Dos=linux to build Mac dmg file under Linux with genisoimage). Run with -Drelease=X-Y-Z -Dversion=X.Y.Z -Djre=&lt;path to JRE zip to unpack in Weka windows install directory&gt; -Djre-linux=&lt;path to a linux JRE tgz to include in the linux archive -Djvm-vendor=JVM vendor (e.g. -Djvm-vendor=azul-zulu) -Dmakensis=&lt;absolute path to the makensis executable&gt; (only needed if makensis is not in the PATH). Note that Mac application for oracle requires Java >=1.8 and the bundleapp taskdef at the beginning of this build script to be uncommented. Also supply the location of the OSX JRE to embed (e.g. -Dosx-jre-home=path to JRE). Note that the OSX JRE needs to be in Mac application format (i.e. has a ./Contents/... directory structure including Info.plist file)">
+  <target name="installers_no_junit" depends="clean, release_base_zip_no_junit, win_installers, linux_archive" description="Make a release and create windows and linux installers without running unit tests. Run with -Drelease=X-Y-Z -Dversion=X.Y.Z -Djre=&lt;path to JRE zip to unpack in Weka windows install directory&gt; -Djre-linux=&lt;path to a linux JRE tgz to include in the linux archive -Djvm-vendor=JVM vendor (e.g. -Djvm-vendor=azul-zulu) -Dmakensis=&lt;absolute path to the makensis executable&gt; (only needed if makensis is not in the PATH). Note that one of the osx_jpackage targets (depending on Mac architecture) should be run after this.">
     <echo message="Cleaning up..."/>
     <delete dir="${temp}"/>
   </target>
 
-  <target name="installers" depends="clean, release_base_zip, win_installers, osx_installer, linux_archive" description="Make a release and create installers. Default OS is OSX (add -Dos=linux to build Mac dmg file under Linux with genisoimage). Run with -Drelease=X-Y-Z -Dversion=X.Y.Z -Djre=&lt;path to JRE zip to unpack in Weka windows install directory&gt; -Dlinux-jre=&lt;path to a linux JRE tgz to include in the linux archive -Djvm-vendor=JVM vendor (e.g. -Djvm-vendor=azul-zulu) -Dmakensis=&lt;absolute path to the makensis executable&gt; (only needed if makensis is not in the PATH). Note that Mac application for oracle requires Java >=1.8 and the bundleapp taskdef at the beginning of this build script to be uncommented. Also supply the location of the OSX JRE to embed (e.g. -Dosx-jre-home=path to JRE). Note that the OSX JRE needs to be in Mac application format (i.e. has a ./Contents/... directory structure including Info.plist file)">
+  <target name="installers" depends="clean, release_base_zip, win_installers, linux_archive" description="Make a release and create windows and linux installers. Run with -Drelease=X-Y-Z -Dversion=X.Y.Z -Djre=&lt;path to JRE zip to unpack in Weka windows install directory&gt; -Dlinux-jre=&lt;path to a linux JRE tgz to include in the linux archive -Djvm-vendor=JVM vendor (e.g. -Djvm-vendor=azul-zulu) -Dmakensis=&lt;absolute path to the makensis executable&gt; (only needed if makensis is not in the PATH). Note that one of the osx_jpackage targets (depending on Mac architecture) should be run after this.">
     <echo message="Cleaning up..."/>
     <delete dir="${temp}"/>
   </target>
