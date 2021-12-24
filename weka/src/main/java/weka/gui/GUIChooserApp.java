@@ -143,7 +143,7 @@ public class GUIChooserApp extends JFrame {
   /** The weka image */
   Image m_weka = Toolkit.getDefaultToolkit().getImage(
     GUIChooserApp.class.getClassLoader().getResource(
-      "weka/gui/images/weka_background.gif"));
+      "weka/gui/images/weka_background_new.png"));
 
   /** filechooser for the TreeVisualizer */
   protected WekaFileChooser m_FileChooserTreeVisualizer = new WekaFileChooser(
@@ -283,6 +283,9 @@ public class GUIChooserApp extends JFrame {
     wekaPan.setToolTipText("Weka, a native bird of New Zealand");
     ImageIcon wii = new ImageIcon(m_weka);
     JLabel wekaLab = new JLabel(wii);
+    wekaLab.setToolTipText("Western Weka, Gallirallus australis australis, "
+      + "collected 16 April 1987, Addison's Flat, Westport, New Zealand. "
+      + "Field collection 1978 - 2004. CC BY 4.0. Te Papa");
     wekaPan.add(wekaLab, BorderLayout.CENTER);
     String infoString =
       "<html>" + "<font size=-2>"
@@ -1622,7 +1625,7 @@ public class GUIChooserApp extends JFrame {
 
     /** Default value for LAF */
     protected static final String LAF =
-      "javax.swing.plaf.nimbus.NimbusLookAndFeel";
+      "com.formdev.flatlaf.FlatLightLaf";
 
     private static final long serialVersionUID = -8524894440289936685L;
 
