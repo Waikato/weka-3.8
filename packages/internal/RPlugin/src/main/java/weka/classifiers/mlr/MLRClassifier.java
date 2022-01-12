@@ -35,7 +35,7 @@ import java.util.Enumeration;
  * so has to be injected into the root class loader.
  * 
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
- * @version $Revision: 15548 $
+ * @version $Revision: 15900 $
  */
 public class MLRClassifier extends RandomizableClassifier
   implements OptionHandler, CapabilitiesHandler, BatchPredictor,
@@ -57,7 +57,7 @@ public class MLRClassifier extends RandomizableClassifier
   // Classification
   // public static final int R_CLASSIF_AVNNET = 1;  dropped in 2.11(?)
   // public static final int R_CLASSIF_BDK = 1; dropped in 2.12(?)
-  // public static final int R_CLASSIF_BARTMACHINE = 1; // takes down the JVM
+  // public static final int R_CLASSIF_BARTMACHINE = 1; // takes down the JVM - IS A JAVA PROGRAM: PROBLEMATIC
   // public static final int R_CLASSIF_HDRDA = 28;  new in 2.4(?): sparsediscrim, hdrda; Removed from CRAN 4/2017
   // public static final int R_CLASSIF_RANDOM_FOREST_SRC_SYN = 60; // dropped in 2.11(?)
   // public static final int R_CLASSIF_XYF = 75; dropped in 2.12(?)
@@ -983,7 +983,7 @@ public class MLRClassifier extends RandomizableClassifier
    */
   @Override
   public String getRevision() {
-    return RevisionUtils.extract("$Revision: 15548 $");
+    return RevisionUtils.extract("$Revision: 15900 $");
   }
 
   /**

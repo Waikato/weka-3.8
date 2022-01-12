@@ -38,14 +38,13 @@ import com.sun.jna.platform.win32.Advapi32Util;
 import static com.sun.jna.platform.win32.WinReg.HKEY_LOCAL_MACHINE;
 import static com.sun.jna.platform.win32.WinReg.HKEY_CURRENT_USER;
 
-
 /**
  * Class that makes sure that key JRI classes and the native library are all
  * loaded by the root class loader.
  * 
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
  * @author Eibe Frank
- * @version $Revision: 15612 $
+ * @version $Revision: 15908 $
  */
 public class JRILoader {
 
@@ -57,6 +56,8 @@ public class JRILoader {
 
   private static String s_rHome;
 
+  private static boolean s_debug;
+
   /**
    * Get environment variable. Try Java's cache of environment first. If that fails (i.e. value is empty
    * string or null, retrieve from actual current process environment using JNA if possible.
@@ -66,13 +67,17 @@ public class JRILoader {
     String value = System.getenv(name);
     if (value == null || value.length() == 0) {
       value = SetEnvironmentVariables.INSTANCE.getenv(name);
-      if (value != null) {
-        System.err.println("Found variable " + name + " with value " + value + " in process environment.");
-      } else {
-        System.err.println("Did not find variable " + name + " in Java cache or process environment.");
+      if (s_debug) {
+        if (value != null) {
+          System.err.println("Found variable " + name + " with value " + value + " in process environment.");
+        } else {
+          System.err.println("Did not find variable " + name + " in Java cache or process environment.");
+        }
       }
     } else {
-      System.err.println("Found variable " + name + " with value " + value + " in Java cache of environment.");
+      if (s_debug) {
+        System.err.println("Found variable " + name + " with value " + value + " in Java cache of environment.");
+      }
     }
     return value;
   }
@@ -89,13 +94,13 @@ public class JRILoader {
    *
    * Does the same for R_LIBS_USER and r.libs.user respectively.
    *
-   * Tries to install rJava if it is not installed already.
+   * Sets the JAVA_HOME environment variable to the value in the java.home property if
+   * JAVA_HOME is not set to a seemingly appropriate value already.
+   *
+   * Tries to install rJava and JavaGD if they are not installed already.
    *
    * If the class java.gui.GUIChooser occurs in the method call stack, the Java property weka.started.via.GUIChooser
    * is set to the value true. Otherwise, the property is set to value false.
-   *
-   * On Windows only, this method also sets the JAVA_HOME environment variable to the value in the java.home property if
-   * JAVA_HOME is not set to a seemingly appropriate value already.
    *
    * Finally, this method sets the system property jri.ignore.ule to value "yes", so that Rengine in the JRI
    * library will not terminate the JVM.
@@ -120,21 +125,27 @@ public class JRILoader {
 
       // Set JAVA_HOME for rJava and JavaGD if it is not set already
       String osType = System.getProperty("os.name");
+      String javaExecutableName = "java";
       if ((osType != null) && (osType.contains("Windows"))) {
-        String javaHome = getenv("JAVA_HOME");
-        if ((javaHome != null) && (!(new File(javaHome)).exists() ||
-                !(new File(javaHome + File.separator + "bin" + File.separator + "java.exe").exists()))) {
+        javaExecutableName = "java.exe";
+      }
+      String javaHome = getenv("JAVA_HOME");
+      if ((javaHome != null) && (!(new File(javaHome)).exists() ||
+              !(new File(javaHome + File.separator + "bin" + File.separator + javaExecutableName).exists()))) {
+        if (s_debug) {
           System.err.println("JAVA_HOME " + javaHome + " does not appear to be a valid home of Java.");
-          javaHome = null;
         }
-        if (javaHome == null) {
-          javaHome = System.getProperty("java.home");
+        javaHome = null;
+      }
+      if (javaHome == null) {
+        javaHome = System.getProperty("java.home");
+        if (s_debug) {
           System.err.println("Setting JAVA_HOME to " + javaHome);
-          if (SetEnvironmentVariables.INSTANCE.setenv("JAVA_HOME", javaHome, 0) != 0) {
-            System.err.println("Failed to set JAVA_HOME.");
-            s_rHome = null;
-            return false;
-          }
+        }
+        if (SetEnvironmentVariables.INSTANCE.setenv("JAVA_HOME", javaHome, 0) != 0) {
+          System.err.println("Failed to set JAVA_HOME.");
+          s_rHome = null;
+          return false;
         }
       }
 
@@ -168,7 +179,9 @@ public class JRILoader {
                           registryGetStringValue(HKEY_LOCAL_MACHINE, "Software\\Wow6432Node\\R-core\\R", "InstallPath");
                 }
               } catch (Exception ex) {
-                System.err.println("Could not find system-wide install location for R in registry.");
+                if (s_debug) {
+                  System.err.println("Could not find system-wide install location for R in registry.");
+                }
                 try {
                   if (System.getenv("ProgramFiles(x86)") != null) {
                     s_rHome = Advapi32Util.
@@ -191,7 +204,9 @@ public class JRILoader {
             return false;
           }
         }
-        System.err.println("Setting R_HOME to " + s_rHome);
+        if (s_debug) {
+          System.err.println("Setting R_HOME to " + s_rHome);
+        }
         if (SetEnvironmentVariables.INSTANCE.setenv("R_HOME", s_rHome, 0) != 0) {
           System.err.println("Failed to set R_HOME.");
           s_rHome = null;
@@ -214,7 +229,9 @@ public class JRILoader {
 
           // Could not run process, so let's add the x64/i386 folder to the path
           String PATH = getenv("PATH");
-          System.err.println("Adding appropriate folder in R's home to PATH.");
+          if (s_debug) {
+            System.err.println("Adding appropriate folder in R's home to PATH.");
+          }
           String subFolderName = "i386";
           if (System.getenv("ProgramFiles(x86)") != null) {
             subFolderName = "x64";
@@ -226,7 +243,9 @@ public class JRILoader {
             s_rHome = null;
             return false;
           }
-          System.err.println(SetEnvironmentVariables.INSTANCE.getenv("PATH")); // Debugging output.
+          if (s_debug) {
+            System.err.println(SetEnvironmentVariables.INSTANCE.getenv("PATH")); // Debugging output.
+          }
         }
       }
 
@@ -284,7 +303,9 @@ public class JRILoader {
             return false;
           }
         }
-        System.err.println("Setting R_LIBS_USER to " + rLibsUser);
+        if (s_debug) {
+          System.err.println("Setting R_LIBS_USER to " + rLibsUser);
+        }
         if (SetEnvironmentVariables.INSTANCE.setenv("R_LIBS_USER", rLibsUser, 0) != 0) {
           System.err.println("Failed to set R_LIBS_USER.");
           s_rHome = null;
@@ -292,7 +313,9 @@ public class JRILoader {
         }
       }
       if (!(new File(rLibsUser).exists())) {
-        System.err.println("Folder " + rLibsUser + " does not exist. Trying to create.");
+        if (s_debug) {
+          System.err.println("Folder " + rLibsUser + " does not exist. Trying to create.");
+        }
         if (!(new File(rLibsUser)).mkdirs()) {
           System.err.println("Failed to create folder " + rLibsUser);
           s_rHome = null;
@@ -321,9 +344,13 @@ public class JRILoader {
 
     File libraryF = new File(rLibsUser + File.separator + libraryName);
     if (libraryF.exists()) {
-      System.err.println("Found " + libraryName + " installed in " + libraryF.getPath());
+      if (s_debug) {
+        System.err.println("Found " + libraryName + " installed in " + libraryF.getPath());
+      }
     } else {
-      System.err.println("Did not find " + libraryName + " installed in " + libraryF.getPath() + " -- trying to install.");
+      if (s_debug) {
+        System.err.println("Did not find " + libraryName + " installed in " + libraryF.getPath() + " -- trying to install.");
+      }
       try {
         String[] cmd = new String[]{s_rHome + File.separator + "bin" + File.separator + rScriptExeString, "-e",
                 "local(options(install.packages.compile.from.source='never'));" + // No spaces!
@@ -437,7 +464,9 @@ public class JRILoader {
   private static ClassLoader getRootClassLoader() {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     while (cl.getParent() != null) {
-      System.err.println("Getting parent classloader....");
+      if (s_debug) {
+        System.err.println("Getting parent classloader....");
+      }
       cl = cl.getParent();
     }
     return cl;
@@ -580,7 +609,9 @@ public class JRILoader {
     try {
 
       // Create a new class using a ClassLoader#defineClass
-      System.err.println("Injecting JRI classes into the root class loader...");
+      if (s_debug) {
+        System.err.println("Injecting JRI classes into the root class loader...");
+      }
       // Define dependent classes in the root class loader
       for (int i = 0; i < PRELOAD.length; ++i) {
         // System.err.println(PRELOAD[i]);

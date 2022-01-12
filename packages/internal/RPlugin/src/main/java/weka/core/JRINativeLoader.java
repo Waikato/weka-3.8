@@ -31,7 +31,7 @@ import org.rosuda.JRI.Rengine;
  * ensure that the native library is visible to all child class loaders.
  * 
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
- * @version $Revision: 14952 $
+ * @version $Revision: 15908 $
  */
 public class JRINativeLoader {
 
@@ -42,6 +42,8 @@ public class JRINativeLoader {
    */
   private static String s_jriLibrary = null;
 
+  public static boolean s_debug;
+
   /**
    * This method will try to load a JRI library that is in the accessible
    * library path. If anything goes wrong, an exception is thrown and
@@ -50,13 +52,17 @@ public class JRINativeLoader {
   public static void loadLibrary() throws UnsatisfiedLinkError,
     SecurityException {
     // loadLibrary(new File("jri"));
-    System.err.println("Trying to load R library from java.library.path");
-    System.err.println("Engine class: " + Rengine.class + " ClassLoader:"
-      + Rengine.class.getClassLoader());
+    if (s_debug) {
+      System.err.println("Trying to load R library from java.library.path");
+      System.err.println("Engine class: " + Rengine.class + " ClassLoader:"
+              + Rengine.class.getClassLoader());
+    }
     s_jriLoaded = false;
     s_jriLibrary = "jri";
     System.loadLibrary(s_jriLibrary);
-    System.err.println("Successfully loaded R library from java.library.path");
+    if (s_debug) {
+      System.err.println("Successfully loaded R library from java.library.path");
+    }
   }
 
   /**
@@ -69,15 +75,19 @@ public class JRINativeLoader {
    */
   public static void loadLibrary(String libraryFile)
     throws UnsatisfiedLinkError, SecurityException {
-    System.err.println("Trying to load R library from " + libraryFile);
-    System.err.println("Engine class: " + Rengine.class + " ClassLoader:"
-      + Rengine.class.getClassLoader());
+    if (s_debug) {
+      System.err.println("Trying to load R library from " + libraryFile);
+      System.err.println("Engine class: " + Rengine.class + " ClassLoader:"
+              + Rengine.class.getClassLoader());
+    }
     s_jriLoaded = false;
     s_jriLibrary = libraryFile;
     try {
       System.load(s_jriLibrary);
       s_jriLoaded = true;
-      System.err.println("Successfully loaded R library from " + s_jriLibrary);
+      if (s_debug) {
+        System.err.println("Successfully loaded R library from " + s_jriLibrary);
+      }
     } catch (UnsatisfiedLinkError e) {
       System.err.println("Unable to load R library from " + s_jriLibrary + ": "
         + e.getMessage());

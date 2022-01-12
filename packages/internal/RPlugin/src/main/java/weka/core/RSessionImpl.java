@@ -62,7 +62,7 @@ import org.rosuda.REngine.REngineOutputInterface;
  *
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
  * @author Eibe Frank
- * @version $Revision: 15631 $
+ * @version $Revision: 15908 $
  */
 public class RSessionImpl implements RSessionAPI, REngineCallbacks,
                                      REngineOutputInterface {
@@ -90,6 +90,8 @@ public class RSessionImpl implements RSessionAPI, REngineCallbacks,
   /** The CWD when an R session is acquired. We reset the CWD to this when the R session is dropped. */
   private static String s_CWD;
 
+  private static boolean s_debug;
+
   /**
    * Create a new REngine instance to use (if necessary)
    */
@@ -107,7 +109,9 @@ public class RSessionImpl implements RSessionAPI, REngineCallbacks,
 
         // install a default mirror to use for package downloads so that R
         // does not try and start a tcl/tk interface for mirror selection!
-        System.err.println("Setting a default package mirror in R...");
+        if (s_debug) {
+          System.err.println("Setting a default package mirror in R...");
+        }
         s_engine.parseAndEval("local({r <- getOption(\"repos\"); "
           + "r[\"CRAN\"] <- \"https://cloud.r-project.org\"; "
           + "options(repos=r)})");
@@ -171,10 +175,12 @@ public class RSessionImpl implements RSessionAPI, REngineCallbacks,
               is64bit = (System.getProperty("os.arch").indexOf("64") != -1);
             }
 
-            if (is64bit) {
-              System.err.println("Detected Windows 64 bit OS");
-            } else {
-              System.err.println("Windows 32 bit OS");
+            if (s_debug) {
+              if (is64bit) {
+                System.err.println("Detected Windows 64 bit OS");
+              } else {
+                System.err.println("Windows 32 bit OS");
+              }
             }
 
             libraryLocation = rJavaF.getPath() + File.separator + "jri";
@@ -211,13 +217,17 @@ public class RSessionImpl implements RSessionAPI, REngineCallbacks,
 
       // System.err.println("RSessionImp - classloader " +
       // RSessionImpl.class.getClassLoader());
-      System.err.println("Getting REngine....");
+      if (s_debug) {
+        System.err.println("Getting REngine....");
+      }
       s_engine = REngine.getLastEngine();
     }
 
     createREngine();
 
-    System.err.println("Finished creating engine.");
+    if (s_debug) {
+      System.err.println("Finished creating engine.");
+    }
 
     return s_sessionSingleton;
   }
@@ -405,55 +415,6 @@ public class RSessionImpl implements RSessionAPI, REngineCallbacks,
     s_sessionSingleton.dropSession(requester);
   }
 
-
-  /**
-   * Mac-specific method to try to fix up location of libjvm.dylib in native Java-related library.
-   */
-  private static void fixUpJavaRLibraryOnOSX(String name) throws Exception {
-
-    String osType = System.getProperty("os.name");
-    if ((osType != null) && (osType.contains("Mac OS X"))) {
-
-      // Get name embedded in native library
-      String[] cmd = { // Need to use string array solution to make piping work
-              "/bin/sh",
-              "-c",
-              "/usr/bin/otool -L " + System.getProperty("r.libs.user") + "/" + name + "/libs/" + name + ".so | /usr/bin/grep libjvm.dylib | " +
-                      "/usr/bin/sed 's/^[[:space:]]*//g' | /usr/bin/sed 's/ (.*//g'"
-      };
-      Process p = Runtime.getRuntime().exec(cmd);
-      int execResult = p.waitFor();
-      if (execResult != 0) {
-        BufferedReader bf = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-        String line;
-        while ((line = bf.readLine()) != null) {
-          System.err.println(line);
-        }
-      } else {
-        String javaHome = System.getProperty("java.home");
-        BufferedReader bf = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String firstLine = bf.readLine();
-        if (firstLine.equals(javaHome + "/lib/server/libjvm.dylib")) {
-          System.err.println("Location embedded in " + name + ".so seems to be correct!");
-        } else {
-          System.err.println("Trying to use /usr/bin/install_name_tool to fix up location of libjvm.dylib in " + name + ".so");
-          p = Runtime.getRuntime().exec("/usr/bin/install_name_tool -change " + firstLine + " " +
-                  javaHome + "/lib/server/libjvm.dylib " +
-                  System.getProperty("r.libs.user") + "/" + name + "/libs/" + name + ".so");
-          execResult = p.waitFor();
-          if (execResult != 0) {
-            bf = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-            String line;
-            while ((line = bf.readLine()) != null) {
-              System.err.println(line);
-            }
-          }
-        }
-      }
-    }
-  }
-
-
   /**
    * Convenience method for getting R to load a named library.
    * 
@@ -473,12 +434,6 @@ public class RSessionImpl implements RSessionAPI, REngineCallbacks,
     checkSessionHolder(requester);
 
     try {
-
-      // Fix up library on macOS if necessary
-      try {
-        fixUpJavaRLibraryOnOSX(libraryName);
-      } catch (Exception ex) { // Stay silent here
-      }
 
       // Now try to load library
       REXP result = parseAndEval(requester, "library(" + libraryName + ", logical.return = TRUE)");
@@ -524,10 +479,14 @@ public class RSessionImpl implements RSessionAPI, REngineCallbacks,
     String text = "Please wait while R package " + libraryName + " is being installed.";
     System.err.println(text);
     if (!GraphicsEnvironment.isHeadless() && System.getProperty("weka.started.via.GUIChooser").equals("true")) {
-        frame = new javax.swing.JFrame("RPlugin Notification: " + text);
-        frame.setPreferredSize(new java.awt.Dimension(800, 0));
-        frame.pack();
+        frame = new javax.swing.JFrame("RPlugin Notification");
+        javax.swing.JPanel panel = new javax.swing.JPanel();
+        javax.swing.JLabel label = new javax.swing.JLabel(text);
+        panel.add(label);
+        frame.add(panel);
+        frame.setPreferredSize(new java.awt.Dimension(800, 50));
         frame.setLocationRelativeTo(null);
+        frame.pack();
         frame.setVisible(true);
     }
 

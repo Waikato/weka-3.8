@@ -82,7 +82,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 
  * @author Mark Hall (mhall{[at]}pentaho{[dot]}com)
  * @author Eibe Frank
- * @version $Revision: 15547 $
+ * @version $Revision: 15900 $
  */
 public class MLRClassifierImpl implements BatchPredictor, OptionHandler,
   CapabilitiesHandler, RevisionHandler, Serializable {
@@ -1101,8 +1101,7 @@ public class MLRClassifierImpl implements BatchPredictor, OptionHandler,
 
     if (m_Debug) {
       eng.clearConsoleBuffer(this);
-      eng.parseAndEval(this,
-        "print(weka_r_model" + m_modelHash + "@learner.model)");
+      eng.parseAndEval(this, "print(getLearnerModel(weka_r_model" + m_modelHash + "))");
       System.err.println("Printing pushed model....");
       System.err.println(eng.getConsoleBuffer(this));
     }
@@ -1298,6 +1297,11 @@ public class MLRClassifierImpl implements BatchPredictor, OptionHandler,
     eng.setLog(this, m_logger);
 
     try {
+
+      // Change to a temporary directory where we have write access
+      // in case an mlr scheme tries to write a local file
+      eng.parseAndEval(this, "setwd(tempdir())");
+
       if (m_Debug) {
         System.err.println("Pushing serialized model to R...");
       }
@@ -1316,7 +1320,7 @@ public class MLRClassifierImpl implements BatchPredictor, OptionHandler,
         "p" + m_modelHash + " <- predict(weka_r_model" + m_modelHash + ", newdata = weka_r_test" + m_modelHash + ")";
 
       if (m_Debug) {
-        System.err.println("Excuting prediction: ");
+        System.err.println("Executing prediction: ");
         System.err.println(testB);
       }
 
@@ -1415,6 +1419,6 @@ public class MLRClassifierImpl implements BatchPredictor, OptionHandler,
    */
   @Override
   public String getRevision() {
-    return RevisionUtils.extract("$Revision: 15547 $");
+    return RevisionUtils.extract("$Revision: 15900 $");
   }
 }
