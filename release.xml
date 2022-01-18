@@ -265,6 +265,10 @@
   <target name="osx_jpackage_x64" depends="installer_init" description="Make an OS X application(s). Run with -Drelease=&lt;number of release (eg. 3-4-1)&gt;, -Dversion=&lt;number of version (eg. 3.4.1)&gt;, the name of the JVM vendor (e.g. -Djvm-vendor=azul-zulu) and the path to an OSX x64 JDK (NOT JRE!!) (e.g. -Djdk-osx-x64=path-to-azul-jdk-install/zulu-x.jdk). This target must be run after one of the release_base_* targets.">
     <copy file="${weka}/src/main/java/weka/gui/weka_icon_new.icns" toFile="${temp}/weka_icon_new.icns"/>
 
+    <!-- include the weka.sh file in the app -->
+    <copy file="${weka}/src/main/scripts/weka.sh" tofile="${temp}/weka-${release}/weka.sh"/>
+    <chmod file="${temp}/weka-${release}/weka.sh" perm="ugo+rx"/>
+
     <!-- Make the app -->
     <exec executable="jpackage">
       <arg value="--verbose"/>
@@ -299,6 +303,10 @@
 
   <target name="osx_jpackage_aarch64" depends="installer_init" description="Make an OS X application(s).  Run with -Drelease=&lt;number of release (eg. 3-4-1)&gt;, -Dversion=&lt;number of release (eg. 3.4.1)&gt;, the name of the JVM vendor (e.g. -Djvm-vendor=azul-zulu), and the path to an OSX aarch64 JDK (NOT JRE!!) (e.g. -Djdk-osx-aarch64=path-to-azul-jdk-aarch64-install/zulu-x.jdk). This target must be run after one of the release_base_* targets.">
     <copy file="${weka}/src/main/java/weka/gui/weka_icon_new.icns" toFile="${temp}/weka_icon_new.icns"/>
+
+    <!-- include the weka.sh file in the app -->
+    <copy file="${weka}/src/main/scripts/weka.sh" tofile="${temp}/weka-${release}/weka.sh"/>
+    <chmod file="${temp}/weka-${release}/weka.sh" perm="ugo+rx"/>
 
     <!-- Make the app -->
     <exec executable="jpackage">
