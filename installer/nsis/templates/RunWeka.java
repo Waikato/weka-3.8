@@ -22,10 +22,7 @@
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Properties;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * A simple class for starting Weka under Windows with parameters from
@@ -60,19 +57,23 @@ import java.util.Vector;
  */
 public class RunWeka {
 
-  /** the props file to read */
+  /**
+   * the props file to read
+   */
   public static final String PROPERTIES_FILE = "RunWeka.ini";
 
-  /** the wekajar placeholder */
+  /**
+   * the wekajar placeholder
+   */
   public static final String PLACEHOLDER_WEKAJAR = "wekajar";
 
   /**
    * returns the value of the given option from the option array, empty
    * string if not found.
    *
-   * @param option    the option to look for
-   * @param options   the options array
-   * @return          the value of the option, if found
+   * @param option  the option to look for
+   * @param options the options array
+   * @return the value of the option, if found
    */
   protected static String getOption(String option, String[] options) {
     return getOption(option, options, "");
@@ -80,26 +81,29 @@ public class RunWeka {
 
   /**
    * returns the value of the given option from the option array, the default
-   * string if not found.
+   * string if not found. Options after a double-hyphen are ignored.
    *
-   * @param option    the option to look for
-   * @param options   the options array
-   * @param defValue  the default value if not found
-   * @return          the value of the option, if found
+   * @param option   the option to look for
+   * @param options  the options array
+   * @param defValue the default value if not found
+   * @return the value of the option, if found
    */
   protected static String getOption(
-    String option, String[] options, String defValue) {
+          String option, String[] options, String defValue) {
 
-    String      result;
-    int         i;
+    String result;
+    int i;
 
     result = defValue;
 
     for (i = 0; i < options.length; i++) {
+      if (options[i].equals("--")) {
+        break; // Further arguments are not for RunWeka.
+      }
       if (options[i].equals(option)) {
         if (i < options.length - 1) {
-          result         = options[i + 1];
-          options[i]     = "";
+          result = options[i + 1];
+          options[i] = "";
           options[i + 1] = "";
         }
         break;
@@ -110,21 +114,37 @@ public class RunWeka {
   }
 
   /**
-   * returns true if the flag was found in the options.
+   * Replace first double-hyphen with an empty string if there is at least one double-hyphen.
+   */
+  protected static void replaceDoubleHyphen(String[] options) {
+
+    for (int i = 0; i < options.length; i++) {
+      if (options[i].equals("--")) {
+        options[i] = "";
+        return;
+      }
+    }
+  }
+
+  /**
+   * returns true if the flag was found in the options. Options after a double-hyphen are ignored.
    *
-   * @param option    the flag to look for
-   * @param options   the options array
-   * @return          true if the flag was found
+   * @param option  the flag to look for
+   * @param options the options array
+   * @return true if the flag was found
    */
   protected static boolean getFlag(String option, String[] options) {
-    boolean     result;
-    int         i;
+    boolean result;
+    int i;
 
     result = false;
 
     for (i = 0; i < options.length; i++) {
+      if (options[i].equals("--")) {
+        break; // Further arguments are not for RunWeka.
+      }
       if (options[i].equals(option)) {
-        result     = true;
+        result = true;
         options[i] = "";
         break;
       }
@@ -137,31 +157,30 @@ public class RunWeka {
    * Replaces all occurring environment variables in the given string and
    * returns the result.
    *
-   * @param s         the string to work on
-   * @return          the processed string
+   * @param s the string to work on
+   * @return the processed string
    */
   protected static String replaceEnv(String s) {
-    Vector      envs;
-    String      tmp;
-    String      result;
-    String      key;
-    String      value;
-    String      env;
-    int         i;
+    Vector envs;
+    String tmp;
+    String result;
+    String key;
+    String value;
+    String env;
+    int i;
 
     result = s;
 
     // determine any environment variables
     envs = new Vector();
-    tmp  = s;
+    tmp = s;
     while (tmp.indexOf("%") > -1) {
       tmp = tmp.substring(tmp.indexOf("%") + 1);
       if (tmp.indexOf("%") > -1) {
         env = tmp.substring(0, tmp.indexOf("%"));
         tmp = tmp.substring(tmp.indexOf("%") + 1);
         envs.add(env);
-      }
-      else {
+      } else {
         System.err.println("Environment variable '" + tmp + "' not closed with '%'!");
         break;
       }
@@ -171,11 +190,10 @@ public class RunWeka {
     for (i = 0; i < envs.size(); i++) {
       key = (String) envs.get(i);
       if (System.getenv().containsKey(key)) {
-        value  = System.getenv(key);
-        value  = value.replaceAll("\\\\", "/");
+        value = System.getenv(key);
+        value = value.replaceAll("\\\\", "/");
         result = result.replaceAll("%" + key + "%", value);
-      }
-      else {
+      } else {
         System.err.println("Environment variable '" + key + "' does not exist!");
         result = result.replaceAll("%" + key + "%", "");
       }
@@ -187,8 +205,8 @@ public class RunWeka {
   /**
    * runs Weka, "-h" displays all the available commands in RunWeka.ini
    *
-   * @param args        the command line parameters
-   * @throws Exception  if something goes wrong
+   * @param args the command line parameters
+   * @throws Exception if something goes wrong
    */
   public static void main(String[] args) throws Exception {
     boolean debug = getFlag("-d", args);
@@ -207,21 +225,25 @@ public class RunWeka {
 
     // read parameters
     String inifile = getOption(
-                        "-i", args, 
-                        new File(".").getAbsolutePath() + "/" + PROPERTIES_FILE);
+            "-i", args,
+            new File(".").getAbsolutePath() + "/" + PROPERTIES_FILE);
 
     // jre path
     String jrePath = getOption("-jre-path", args);
     if (jrePath.length() == 0) {
-	throw new Exception("Must have a path to the embedded JRE");
-    }    
+      throw new Exception("Must have a path to the embedded JRE");
+    }
+
+    // Finished processing options for RunWeka: remove first double-hyphen separator if there is one.
+    replaceDoubleHyphen(args);
 
     if (debug)
       System.out.println("inifile: " + inifile);
-    Properties props = new Properties();;
+    Properties props = new Properties();
+    ;
     props.load(new FileInputStream(inifile));
     props.setProperty(PLACEHOLDER_WEKAJAR, wekajar);
-    
+
     // help? -> output all commands
     if (help) {
       System.out.println("\nAvailable commands:");
@@ -243,7 +265,7 @@ public class RunWeka {
     String cmd = props.getProperty("cmd_" + command, "");
     if (cmd.length() == 0) {
       System.err.println(
-          "Command '" + command + "' is not valid or empty, using 'default'!");
+              "Command '" + command + "' is not valid or empty, using 'default'!");
       cmd = props.getProperty("cmd_default");
     }
     if (debug)
@@ -267,10 +289,10 @@ public class RunWeka {
     String key;
     String value;
     for (int i = 0; i < placeholders.size(); i++) {
-      key   = (String) placeholders.get(i);
+      key = (String) placeholders.get(i);
       value = props.getProperty(key, "");
       value = replaceEnv(value);
-      cmd   = cmd.replaceAll("#" + key + "#", value);
+      cmd = cmd.replaceAll("#" + key + "#", value);
     }
     for (int i = 0; i < args.length; i++) {
       if (args[i].length() != 0)
@@ -278,18 +300,20 @@ public class RunWeka {
     }
 
     if (cmd.contains("javaw")) {
-	String temp = "\"" + jrePath + "\\bin\\javaw\"";
-	cmd = cmd.replace("javaw", temp); 
+      String temp = "\"" + jrePath + "\\bin\\javaw\"";
+      cmd = cmd.replace("javaw", temp);
     } else {
-	String temp = "\"" + jrePath + "\\bin\\java\" ";
-	cmd = cmd.replace("java ", temp); 
+      String temp = "\"" + jrePath + "\\bin\\java\" ";
+      cmd = cmd.replace("java ", temp);
     }
 
     if (debug)
       System.out.println("processed command: " + cmd);
 
     // start Weka
-    Runtime rt = Runtime.getRuntime();
-    rt.exec(cmd);
+    List<String> list = new ArrayList<>();
+    new StringTokenizer(cmd).asIterator().forEachRemaining(str -> list.add((String) str));
+    Process p = new ProcessBuilder(list).inheritIO().start();
+    p.waitFor();
   }
 }

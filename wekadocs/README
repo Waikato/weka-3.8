@@ -4,12 +4,12 @@
                               README                                   
                               ======                                   
                                                                        
-                            WEKA 3.8.5
-                           21 Dec 2020
+                            WEKA 3.8.6
+                           22 Jan 2022
                                                                        
                  Java Programs for Machine Learning 
 
-           Copyright (C) 1998-2020  University of Waikato
+           Copyright (C) 1998-2022  University of Waikato
 
               web: http://www.cs.waikato.ac.nz/~ml/weka            
                                                                        
@@ -55,7 +55,7 @@ This assumes that the Weka archive that you have downloaded has been
 extracted into a directory containing this README and that you haven't
 used an automatic installer (e.g. the one provided for Windows).
 
-Weka 3.7 requires Java 1.6 or higher. Depending on your platform you
+Weka 3.7 requires Java 8 or higher. Depending on your platform you
 may be able to just double-click on the weka.jar icon to run the
 graphical user interfaces for Weka. Otherwise, from a command-line
 (assuming you are in the directory containing weka.jar), type
@@ -384,7 +384,7 @@ archiver that can handle ZIP files).
 
 Refer to the web page for a list of contributors:
 
-http://www.cs.waikato.ac.nz/~ml/weka/
+https://www.cs.waikato.ac.nz/~ml/weka/
 
 ----------------------------------------------------------------------
 

@@ -947,10 +947,10 @@ public class MultilayerPerceptron extends AbstractClassifier implements
   private int m_numAttributes = 0; // note the number doesn't include the class.
 
   /** The panel the nodes are displayed on. */
-  private NodePanel m_nodePanel;
+  private transient NodePanel m_nodePanel;
 
   /** The control panel. */
-  private ControlPanel m_controlPanel;
+  private transient ControlPanel m_controlPanel;
 
   /** The next id number available for default naming. */
   private int m_nextId;
@@ -970,7 +970,7 @@ public class MultilayerPerceptron extends AbstractClassifier implements
   /** a flag to state that the network should be accepted the way it is. */
   private boolean m_accepted;
   /** The window for the network. */
-  private JFrame m_win;
+  private transient JFrame m_win;
 
   /**
    * A flag to tell the build classifier to automatically build a neural net.

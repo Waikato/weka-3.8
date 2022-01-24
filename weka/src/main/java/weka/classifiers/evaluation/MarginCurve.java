@@ -21,8 +21,6 @@
 
 package weka.classifiers.evaluation;
 
-import java.util.ArrayList;
-
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
@@ -30,6 +28,8 @@ import weka.core.Instances;
 import weka.core.RevisionHandler;
 import weka.core.RevisionUtils;
 import weka.core.Utils;
+
+import java.util.ArrayList;
 
 /**
  * Generates points illustrating the prediction margin. The margin is defined as

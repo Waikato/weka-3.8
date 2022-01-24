@@ -301,8 +301,9 @@ public class ArffTable extends JTable {
             }
             combo.addItem(o);
           }
-          getColumnModel().getColumn(i).setCellEditor(
-            new DefaultCellEditor(combo));
+          DefaultCellEditor editor = new DefaultCellEditor(combo);
+          editor.setClickCountToStart(2);
+          getColumnModel().getColumn(i).setCellEditor(editor);
         } else {
           getColumnModel().getColumn(i).setCellEditor(null);
         }

@@ -24,6 +24,7 @@ package weka.gui;
 import weka.core.Environment;
 import weka.core.Settings;
 import weka.core.Utils;
+import weka.core.WekaPackageClassLoaderManager;
 
 import javax.swing.JOptionPane;
 import javax.swing.UIDefaults;
@@ -56,6 +57,16 @@ public class LookAndFeel {
   protected static Properties LOOKANDFEEL_PROPERTIES;
 
   static {
+    try {
+      WekaPackageClassLoaderManager.forName("com.formdev.flatlaf.FlatLightLaf");
+      UIManager.installLookAndFeel("Flat Light", "com.formdev.flatlaf.FlatLightLaf");
+      UIManager.installLookAndFeel("Flat Dark", "com.formdev.flatlaf.FlatDarkLaf");
+      UIManager.installLookAndFeel("Flat IntelliJ", "com.formdev.flatlaf.FlatIntelliJLaf");
+      UIManager.installLookAndFeel("Flat Darcula", "com.formdev.flatlaf.FlatDarculaLaf");
+    } catch (Exception ex) {
+      JOptionPane.showMessageDialog(null,
+              "LookAndFeel: failed to install FlatLaf.", "LookAndFeel", JOptionPane.ERROR_MESSAGE);
+    }
     try {
       LOOKANDFEEL_PROPERTIES = Utils.readProperties(PROPERTY_FILE);
     } catch (Exception ex) {
@@ -100,7 +111,8 @@ public class LookAndFeel {
       result = true;
 
       if (System.getProperty("os.name").toLowerCase().contains("mac os x")
-        && !classname.contains("com.apple.laf")) {
+        && (classname.equals("javax.swing.plaf.metal.MetalLookAndFeel") ||
+              classname.equals("javax.swing.plaf.nimbus.NimbusLookAndFeel"))) {
         KeyboardFocusManager.getCurrentKeyboardFocusManager()
           .addKeyEventDispatcher(new KeyEventDispatcher() {
             @Override
@@ -118,14 +130,6 @@ public class LookAndFeel {
               return false;
             }
           });
-      }
-
-      // workaround for scrollbar handle disappearing bug in Nimbus LAF:
-      // https://bugs.openjdk.java.net/browse/JDK-8134828
-      if (classname.toLowerCase().contains("nimbus")) {
-        javax.swing.LookAndFeel lookAndFeel = UIManager.getLookAndFeel();
-        UIDefaults defaults = lookAndFeel.getDefaults();
-        defaults.put("ScrollBar.minimumThumbSize", new Dimension(30, 30));
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -168,14 +172,7 @@ public class LookAndFeel {
 
     classname = LOOKANDFEEL_PROPERTIES.getProperty("Theme", "");
     if (classname.equals("")) {
-      // Java 1.5 crashes under Gnome if one sets it to the GTKLookAndFeel
-      // theme, hence we don't set any theme by default if we're on a Linux
-      // box.
-      if (System.getProperty("os.name").equalsIgnoreCase("linux")) {
-        return true;
-      } else {
         classname = getSystemLookAndFeel();
-      }
     }
 
     return setLookAndFeel(classname);

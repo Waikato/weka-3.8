@@ -26,22 +26,13 @@
 
 package weka.gui;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Frame;
-import java.awt.Graphics;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Image;
-import java.awt.MediaTracker;
-import java.awt.Toolkit;
-import java.awt.Window;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.List;
 
@@ -126,9 +117,8 @@ public class SplashWindow extends Window {
     GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     if (ge.getDefaultScreenDevice().isWindowTranslucencySupported(
       GraphicsDevice.WindowTranslucency.PERPIXEL_TRANSLUCENT)) {
-      // TODO this is if we are going to move to the big blue circular icon
-      // for the splash window
-      setShape(new Ellipse2D.Double(0, 0, getWidth(), getHeight()));
+      // for the splash window: cut off some pixels for better appearance
+      setShape(new Ellipse2D.Double(2, 2, getWidth() - 4, getHeight() - 4));
     }
     Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
     setLocation((screenDim.width - imgWidth) / 2,
@@ -287,8 +277,18 @@ public class SplashWindow extends Window {
         .getMethod(methodName, new Class[] { String[].class })
         .invoke(null, new Object[] { args });
     } catch (Exception e) {
-      InternalError error =
-        new InternalError("Failed to invoke method: " + methodName);
+      StringWriter sw = new StringWriter();
+      e.printStackTrace(new PrintWriter(sw));
+      JTextArea jta = new JTextArea(sw.toString());
+      JScrollPane jsp = new JScrollPane(jta){
+        @Override
+        public Dimension getPreferredSize() {
+          return new Dimension(1024, 768);
+        }
+      };
+      JOptionPane.showMessageDialog(m_instance, jsp, "WEKA Error", JOptionPane.ERROR_MESSAGE);
+      disposeSplash();
+      Error error = new Error("Failed to invoke method: " + methodName);
       error.initCause(e);
       throw error;
     }
@@ -305,7 +305,18 @@ public class SplashWindow extends Window {
       Class.forName(className).getMethod("main", new Class[] { String[].class })
         .invoke(null, new Object[] { args });
     } catch (Exception e) {
-      InternalError error = new InternalError("Failed to invoke main method");
+      StringWriter sw = new StringWriter();
+      e.printStackTrace(new PrintWriter(sw));
+      JTextArea jta = new JTextArea(sw.toString());
+      JScrollPane jsp = new JScrollPane(jta){
+        @Override
+        public Dimension getPreferredSize() {
+          return new Dimension(1024, 768);
+        }
+      };
+      JOptionPane.showMessageDialog(m_instance, jsp, "WEKA Error", JOptionPane.ERROR_MESSAGE);
+      disposeSplash();
+      Error error = new Error("Failed to invoke main method");
       error.initCause(e);
       throw error;
     }

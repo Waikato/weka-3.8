@@ -695,7 +695,7 @@ public class DefaultPackage extends Package implements Serializable {
     if (dependencies == null) {
       return true;
     }
-
+    
     boolean ok = true;
     StringTokenizer tok = new StringTokenizer(dependencies, ",");
     while (tok.hasMoreTokens()) {
