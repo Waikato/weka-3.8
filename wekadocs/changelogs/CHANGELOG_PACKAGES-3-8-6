@@ -1,0 +1,741 @@
+------------------------------------------------------------------------
+r15759 | mhall | 2021-01-06 13:57:16 +1300 (Wed, 06 Jan 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/build_package.xml
+   M /trunk/packages/internal/hotSpot/src/main/java/weka/associations/HotSpot.java
+
+Capabilities now allows a class attribute to be set in the data
+------------------------------------------------------------------------
+r15760 | mhall | 2021-01-06 13:59:26 +1300 (Wed, 06 Jan 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/Description.props
+
+Updated Description.props
+------------------------------------------------------------------------
+r15761 | mhall | 2021-01-06 14:00:22 +1300 (Wed, 06 Jan 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+Updated version in pom
+------------------------------------------------------------------------
+r15764 | fracpete | 2021-01-15 09:27:17 +1300 (Fri, 15 Jan 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/WekaExcel/Description.props
+   M /trunk/packages/internal/WekaExcel/lib/README
+   A /trunk/packages/internal/WekaExcel/lib/commons-codec-1.10.jar
+   A /trunk/packages/internal/WekaExcel/lib/commons-collections4-4.1.jar
+   A /trunk/packages/internal/WekaExcel/lib/commons-logging-1.2.jar
+   A /trunk/packages/internal/WekaExcel/lib/curvesapi-1.04.jar
+   D /trunk/packages/internal/WekaExcel/lib/dom4j-1.6.1.jar
+   D /trunk/packages/internal/WekaExcel/lib/geronimo-stax-api_1.0_spec-1.0.jar
+   A /trunk/packages/internal/WekaExcel/lib/log4j-1.2.17.jar
+   A /trunk/packages/internal/WekaExcel/lib/poi-3.17.jar
+   D /trunk/packages/internal/WekaExcel/lib/poi-3.8-20120326.jar
+   A /trunk/packages/internal/WekaExcel/lib/poi-excelant-3.17.jar
+   A /trunk/packages/internal/WekaExcel/lib/poi-ooxml-3.17.jar
+   D /trunk/packages/internal/WekaExcel/lib/poi-ooxml-3.8-20120326.jar
+   A /trunk/packages/internal/WekaExcel/lib/poi-ooxml-schemas-3.17.jar
+   D /trunk/packages/internal/WekaExcel/lib/poi-ooxml-schemas-3.8-20120326.jar
+   A /trunk/packages/internal/WekaExcel/lib/poi-scratchpad-3.17.jar
+   D /trunk/packages/internal/WekaExcel/lib/xmlbeans-2.3.0.jar
+   A /trunk/packages/internal/WekaExcel/lib/xmlbeans-2.6.0.jar
+   M /trunk/packages/internal/WekaExcel/pom.xml
+
+upgraded Apache POI to 3.17 to address vulnerability https://github.com/advisories/GHSA-523c-xh4g-mh5m
+------------------------------------------------------------------------
+r15765 | mhall | 2021-01-15 10:42:22 +1300 (Fri, 15 Jan 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/WekaExcel/pom.xml
+
+[maven-release-plugin] prepare release WekaExcel-1.0.8
+------------------------------------------------------------------------
+r15767 | mhall | 2021-01-15 10:42:25 +1300 (Fri, 15 Jan 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/WekaExcel/pom.xml
+
+[maven-release-plugin] prepare for next development iteration
+------------------------------------------------------------------------
+r15773 | eibe | 2021-03-26 10:54:45 +1300 (Fri, 26 Mar 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/netlibNativeLinux/Description.props
+   M /trunk/packages/internal/netlibNativeOSX/Description.props
+   A /trunk/packages/internal/netlibNativeOSXarm
+   A /trunk/packages/internal/netlibNativeOSXarm/Description.props
+   A /trunk/packages/internal/netlibNativeOSXarm/build_package.xml
+   A /trunk/packages/internal/netlibNativeOSXarm/lib
+   A /trunk/packages/internal/netlibNativeOSXarm/lib/jniloader-1.2-SNAPSHOT.jar
+   A /trunk/packages/internal/netlibNativeOSXarm/lib/native_ref-java-1.2-SNAPSHOT-natives.jar
+   A /trunk/packages/internal/netlibNativeOSXarm/lib/native_ref-java-1.2-SNAPSHOT.jar
+   A /trunk/packages/internal/netlibNativeOSXarm/lib/native_system-java-1.2-SNAPSHOT-natives.jar
+   A /trunk/packages/internal/netlibNativeOSXarm/lib/native_system-java-1.2-SNAPSHOT.jar
+   A /trunk/packages/internal/netlibNativeOSXarm/lib/netlib-native_ref-osx-aarch64-1.2-SNAPSHOT-natives.jar
+   A /trunk/packages/internal/netlibNativeOSXarm/lib/netlib-native_system-osx-aarch64-1.2-SNAPSHOT-natives.jar
+   M /trunk/packages/internal/netlibNativeWindows/Description.props
+
+New netlib-java native library package for macOS on ARM. This was built using the modified netlib-java and jniloader code stored in the top-level directory of the weka SVN repository. The Description.props files in the other three netlib-java native packages were updated to add this new package to the list of of precluded packages.
+------------------------------------------------------------------------
+r15776 | mhall | 2021-06-02 14:17:03 +1200 (Wed, 02 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/external/prefuseTree/src/main/java/weka/gui/visualize/plugins/PrefuseTree.java
+
+Updated the URL for the treeml dtd, because the orginal one has an issue
+------------------------------------------------------------------------
+r15777 | mhall | 2021-06-02 14:18:27 +1200 (Wed, 02 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/external/prefuseTree/Description.props
+
+Updated Description.props
+------------------------------------------------------------------------
+r15778 | eibe | 2021-06-02 17:43:09 +1200 (Wed, 02 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/discriminantAnalysis/src/main/java/weka/filters/supervised/attribute/MultiClassFLDA.java
+
+New version of MultiClassFLDA that is substantially faster. Also, the ridge parameter is now added to *both* scatter matrices.
+------------------------------------------------------------------------
+r15779 | mhall | 2021-06-03 10:52:06 +1200 (Thu, 03 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/build_package.xml
+
+Updated javadoc target
+------------------------------------------------------------------------
+r15780 | mhall | 2021-06-03 10:58:37 +1200 (Thu, 03 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+Javadoc target update
+------------------------------------------------------------------------
+r15781 | mhall | 2021-06-03 11:00:17 +1200 (Thu, 03 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+Javadoc target update
+------------------------------------------------------------------------
+r15782 | mhall | 2021-06-03 11:01:10 +1200 (Thu, 03 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare release hotSpot-1.0.6
+------------------------------------------------------------------------
+r15784 | mhall | 2021-06-03 11:01:14 +1200 (Thu, 03 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare for next development iteration
+------------------------------------------------------------------------
+r15785 | mhall | 2021-06-03 11:02:40 +1200 (Thu, 03 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] rollback the release of hotSpot-1.0.6
+------------------------------------------------------------------------
+r15786 | mhall | 2021-06-03 11:03:58 +1200 (Thu, 03 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare release hotSpot-1.0.6
+------------------------------------------------------------------------
+r15788 | mhall | 2021-06-03 11:04:01 +1200 (Thu, 03 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare for next development iteration
+------------------------------------------------------------------------
+r15789 | eibe | 2021-06-04 23:37:36 +1200 (Fri, 04 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/discriminantAnalysis/src/main/java/weka/filters/supervised/attribute/MultiClassFLDA.java
+
+Fixed bug introduced in previous commit. Also, ridge is added only to the within-class scatter matrix again.
+------------------------------------------------------------------------
+r15790 | eibe | 2021-06-04 23:41:32 +1200 (Fri, 04 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/discriminantAnalysis/Description.props
+
+Update for new package release.
+------------------------------------------------------------------------
+r15795 | mhall | 2021-06-07 11:33:46 +1200 (Mon, 07 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/discriminantAnalysis/pom.xml
+
+Updated javadoc target
+------------------------------------------------------------------------
+r15796 | mhall | 2021-06-07 11:34:09 +1200 (Mon, 07 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/discriminantAnalysis/pom.xml
+
+[maven-release-plugin] prepare release discriminantAnalysis-1.0.4
+------------------------------------------------------------------------
+r15798 | mhall | 2021-06-07 11:34:12 +1200 (Mon, 07 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/discriminantAnalysis/pom.xml
+
+[maven-release-plugin] prepare for next development iteration
+------------------------------------------------------------------------
+r15802 | mhall | 2021-06-09 10:50:04 +1200 (Wed, 09 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/src/main/java/weka/associations/HotSpot.java
+
+Added an option to use sum as the aggregation for numeric targets. This mode can only consider nominal attributes for tests in the tree. The metric works by looking for nominal values where the sum of the target exceeds the expected sum.
+------------------------------------------------------------------------
+r15803 | mhall | 2021-06-09 10:53:34 +1200 (Wed, 09 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/Description.props
+
+Updated Description.props
+------------------------------------------------------------------------
+r15804 | mhall | 2021-06-09 11:07:18 +1200 (Wed, 09 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/src/main/java/weka/associations/HotSpot.java
+
+Removed a TODO comment
+------------------------------------------------------------------------
+r15805 | mhall | 2021-06-09 11:13:53 +1200 (Wed, 09 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/src/main/java/weka/associations/HotSpot.java
+
+Updated javadoc
+------------------------------------------------------------------------
+r15806 | mhall | 2021-06-09 12:13:08 +1200 (Wed, 09 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare release hotSpot-1.0.7
+------------------------------------------------------------------------
+r15808 | mhall | 2021-06-09 12:13:12 +1200 (Wed, 09 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare for next development iteration
+------------------------------------------------------------------------
+r15809 | mhall | 2021-06-10 10:49:14 +1200 (Thu, 10 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/Description.props
+   M /trunk/packages/internal/hotSpot/src/main/java/weka/associations/HotSpot.java
+
+Fixed some of the textual and graph output pertaining to the new sum aggregation mode
+------------------------------------------------------------------------
+r15810 | mhall | 2021-06-10 11:12:10 +1200 (Thu, 10 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/src/main/java/weka/associations/HotSpot.java
+
+One more small bug fix in output
+------------------------------------------------------------------------
+r15811 | mhall | 2021-06-10 11:21:39 +1200 (Thu, 10 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/src/main/java/weka/associations/HotSpot.java
+
+Yet another small fix in textual output
+------------------------------------------------------------------------
+r15812 | mhall | 2021-06-10 11:30:34 +1200 (Thu, 10 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare release hotSpot-1.0.8
+------------------------------------------------------------------------
+r15814 | mhall | 2021-06-10 11:30:39 +1200 (Thu, 10 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare for next development iteration
+------------------------------------------------------------------------
+r15815 | mhall | 2021-06-10 11:31:08 +1200 (Thu, 10 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] rollback the release of hotSpot-1.0.8
+------------------------------------------------------------------------
+r15816 | mhall | 2021-06-10 11:31:48 +1200 (Thu, 10 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare release hotSpot-1.0.8
+------------------------------------------------------------------------
+r15818 | mhall | 2021-06-10 11:31:52 +1200 (Thu, 10 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare for next development iteration
+------------------------------------------------------------------------
+r15819 | eibe | 2021-06-18 16:33:02 +1200 (Fri, 18 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/RPlugin/Description.props
+   M /trunk/packages/internal/RPlugin/build_package.xml
+   M /trunk/packages/internal/RPlugin/libExternal/JRI.jar
+   M /trunk/packages/internal/RPlugin/libExternal/JRIEngine.jar
+   M /trunk/packages/internal/RPlugin/libExternal/REngine.jar
+   A /trunk/packages/internal/RPlugin/libExternal/javaGD-0.6-4.jar
+   A /trunk/packages/internal/RPlugin/libExternal/jna-5.8.0.jar
+   A /trunk/packages/internal/RPlugin/libExternal/jna-platform-5.8.0.jar
+   A /trunk/packages/internal/RPlugin/libExternal/xstream-1.4.17.jar
+   M /trunk/packages/internal/RPlugin/libExternalPreload/REngine.zip
+   M /trunk/packages/internal/RPlugin/libExternalPreload/rJavaClassLoader.zip
+
+Updated library .jar files (latest javaGD, xstream, and rJava .jar files) and .zip files for preload libraries. RPlugin works on ARM Mac as well now.
+------------------------------------------------------------------------
+r15820 | eibe | 2021-06-18 16:35:07 +1200 (Fri, 18 Jun 2021) | 1 line
+Changed paths:
+   D /trunk/packages/internal/RPlugin/libExternal/javagd-0.6.1.jar
+   D /trunk/packages/internal/RPlugin/libExternal/jna-4.5.2.jar
+   D /trunk/packages/internal/RPlugin/libExternal/jna-platform-4.5.2.jar
+   D /trunk/packages/internal/RPlugin/libExternal/xstream-1.4.11.1.jar
+
+Removed old versions of library files.
+------------------------------------------------------------------------
+r15822 | eibe | 2021-06-18 16:42:23 +1200 (Fri, 18 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/RPlugin/Description.props
+
+Fixed date in Description.props.
+------------------------------------------------------------------------
+r15823 | mhall | 2021-06-25 16:56:39 +1200 (Fri, 25 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/src/main/java/weka/associations/HotSpot.java
+
+Fixed a bug that affected reported subset sizes and numeric target averages when there were missing values in the target attribute
+------------------------------------------------------------------------
+r15825 | mhall | 2021-06-28 11:27:56 +1200 (Mon, 28 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/Description.props
+
+Updated Description.props
+------------------------------------------------------------------------
+r15826 | mhall | 2021-06-28 11:41:16 +1200 (Mon, 28 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare release hotSpot-1.0.9
+------------------------------------------------------------------------
+r15828 | mhall | 2021-06-28 11:41:19 +1200 (Mon, 28 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare for next development iteration
+------------------------------------------------------------------------
+r15830 | mhall | 2021-06-30 11:37:27 +1200 (Wed, 30 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/src/main/java/weka/associations/HotSpot.java
+
+Fixed a bug that caused an npe in the graphAsMap function when aggregation type sum is chosen and the data does not contain any nominal attributes
+------------------------------------------------------------------------
+r15832 | mhall | 2021-06-30 11:40:29 +1200 (Wed, 30 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/Description.props
+
+Updated Description.props
+------------------------------------------------------------------------
+r15834 | mhall | 2021-06-30 11:46:22 +1200 (Wed, 30 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare release hotSpot-1.0.10
+------------------------------------------------------------------------
+r15836 | mhall | 2021-06-30 11:46:26 +1200 (Wed, 30 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare for next development iteration
+------------------------------------------------------------------------
+r15837 | mhall | 2021-07-07 13:48:19 +1200 (Wed, 07 Jul 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/Description.props
+   M /trunk/packages/internal/hotSpot/src/main/java/weka/associations/HotSpot.java
+
+Added an optionto lookat the direct sum (rather than magnitude of sum relative to expected sum across categories) when using sum as the aggregation for numeric targets.
+------------------------------------------------------------------------
+r15838 | mhall | 2021-07-07 14:12:48 +1200 (Wed, 07 Jul 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare release hotSpot-1.0.11
+------------------------------------------------------------------------
+r15840 | mhall | 2021-07-07 14:12:52 +1200 (Wed, 07 Jul 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare for next development iteration
+------------------------------------------------------------------------
+r15841 | mhall | 2021-07-07 14:13:19 +1200 (Wed, 07 Jul 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] rollback the release of hotSpot-1.0.11
+------------------------------------------------------------------------
+r15842 | mhall | 2021-07-07 14:14:06 +1200 (Wed, 07 Jul 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare release hotSpot-1.0.11
+------------------------------------------------------------------------
+r15844 | mhall | 2021-07-07 14:14:10 +1200 (Wed, 07 Jul 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare for next development iteration
+------------------------------------------------------------------------
+r15845 | mhall | 2021-07-26 12:30:22 +1200 (Mon, 26 Jul 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/src/main/java/weka/associations/HotSpot.java
+
+Fixed a bug in minimise mode on a numeric target when using sum aggregation.
+------------------------------------------------------------------------
+r15846 | mhall | 2021-07-26 12:35:19 +1200 (Mon, 26 Jul 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/Description.props
+
+Updated Description.props
+------------------------------------------------------------------------
+r15847 | mhall | 2021-07-26 12:36:37 +1200 (Mon, 26 Jul 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/build_package.xml
+
+Made source and target 1.7 in build.xml
+------------------------------------------------------------------------
+r15848 | mhall | 2021-07-26 14:34:23 +1200 (Mon, 26 Jul 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+Updated source and target versions to 1.7 in pom
+------------------------------------------------------------------------
+r15849 | mhall | 2021-07-26 14:36:40 +1200 (Mon, 26 Jul 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare release hotSpot-1.0.12
+------------------------------------------------------------------------
+r15851 | mhall | 2021-07-26 14:36:43 +1200 (Mon, 26 Jul 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare for next development iteration
+------------------------------------------------------------------------
+r15862 | mhall | 2021-08-06 15:08:01 +1200 (Fri, 06 Aug 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/Description.props
+   M /trunk/packages/internal/hotSpot/src/main/java/weka/associations/HotSpot.java
+
+Improved textual output. Added an option to set minimum support for sum trees automatically
+------------------------------------------------------------------------
+r15864 | mhall | 2021-08-06 15:44:19 +1200 (Fri, 06 Aug 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare release hotSpot-1.0.13
+------------------------------------------------------------------------
+r15866 | mhall | 2021-08-06 15:44:22 +1200 (Fri, 06 Aug 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare for next development iteration
+------------------------------------------------------------------------
+r15867 | mhall | 2021-08-10 11:12:38 +1200 (Tue, 10 Aug 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/src/main/java/weka/associations/HotSpot.java
+
+Fixed a small bug in the graphAsMapRoutine
+------------------------------------------------------------------------
+r15868 | mhall | 2021-08-10 11:13:36 +1200 (Tue, 10 Aug 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/Description.props
+
+Updated Description.props
+------------------------------------------------------------------------
+r15869 | mhall | 2021-08-10 11:17:10 +1200 (Tue, 10 Aug 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare release hotSpot-1.0.14
+------------------------------------------------------------------------
+r15871 | mhall | 2021-08-10 11:17:14 +1200 (Tue, 10 Aug 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/hotSpot/pom.xml
+
+[maven-release-plugin] prepare for next development iteration
+------------------------------------------------------------------------
+r15872 | eibe | 2021-12-20 14:13:44 +1300 (Mon, 20 Dec 2021) | 1 line
+Changed paths:
+   M /trunk/packages/external/kfGroovy/Description.props
+   M /trunk/packages/external/kfGroovy/build_package.xml
+   A /trunk/packages/external/kfGroovy/groovy-all
+   A /trunk/packages/external/kfGroovy/groovy-all/pom.xml
+   D /trunk/packages/external/kfGroovy/lib/groovy-2.5.5.jar
+   D /trunk/packages/external/kfGroovy/lib/groovy-ant-2.5.5.jar
+   D /trunk/packages/external/kfGroovy/lib/groovy-cli-commons-2.5.5.jar
+   D /trunk/packages/external/kfGroovy/lib/groovy-cli-picocli-2.5.5.jar
+   D /trunk/packages/external/kfGroovy/lib/groovy-console-2.5.5.jar
+   D /trunk/packages/external/kfGroovy/lib/groovy-datetime-2.5.5.jar
+   D /trunk/packages/external/kfGroovy/lib/groovy-docgenerator-2.5.5.jar
+   D /trunk/packages/external/kfGroovy/lib/groovy-groovydoc-2.5.5.jar
+   D /trunk/packages/external/kfGroovy/lib/groovy-groovysh-2.5.5.jar
+   D /trunk/packages/external/kfGroovy/lib/groovy-jmx-2.5.5.jar
+   D /trunk/packages/external/kfGroovy/lib/groovy-json-2.5.5.jar
+   D /trunk/packages/external/kfGroovy/lib/groovy-jsr223-2.5.5.jar
+   D /trunk/packages/external/kfGroovy/lib/groovy-macro-2.5.5.jar
+   D /trunk/packages/external/kfGroovy/lib/groovy-nio-2.5.5.jar
+   D /trunk/packages/external/kfGroovy/lib/groovy-servlet-2.5.5.jar
+   D /trunk/packages/external/kfGroovy/lib/groovy-sql-2.5.5.jar
+   D /trunk/packages/external/kfGroovy/lib/groovy-swing-2.5.5.jar
+   D /trunk/packages/external/kfGroovy/lib/groovy-templates-2.5.5.jar
+   D /trunk/packages/external/kfGroovy/lib/groovy-test-2.5.5.jar
+   D /trunk/packages/external/kfGroovy/lib/groovy-test-junit5-2.5.5.jar
+   D /trunk/packages/external/kfGroovy/lib/groovy-testng-2.5.5.jar
+   D /trunk/packages/external/kfGroovy/lib/groovy-xml-2.5.5.jar
+   M /trunk/packages/external/kfGroovy/pom.xml
+
+Upgraded kfGroovy to Groovy 3.0.9. Build file downloads relevant .jar files using Maven now.
+------------------------------------------------------------------------
+r15885 | eibe | 2021-12-23 16:17:09 +1300 (Thu, 23 Dec 2021) | 1 line
+Changed paths:
+   M /trunk/packages/external/kfGroovy/build_package.xml
+
+Improved comment.
+------------------------------------------------------------------------
+r15886 | eibe | 2021-12-23 16:23:33 +1300 (Thu, 23 Dec 2021) | 1 line
+Changed paths:
+   M /trunk/packages/external/CLOPE/build_package.xml
+   M /trunk/packages/external/DMNBtext/build_package.xml
+   M /trunk/packages/external/DilcaDistance/build_package.xml
+   M /trunk/packages/external/EMImputation/build_package.xml
+   M /trunk/packages/external/GPAttributeGeneration/build_package.xml
+   M /trunk/packages/external/J48graft/build_package.xml
+   M /trunk/packages/external/LibLINEAR/build_package.xml
+   M /trunk/packages/external/LibSVM/build_package.xml
+   M /trunk/packages/external/NNge/build_package.xml
+   M /trunk/packages/external/SMOTE/build_package.xml
+   M /trunk/packages/external/associationRulesVisualizer/build_package.xml
+   M /trunk/packages/external/averagedOneDependenceEstimators/build_package.xml
+   M /trunk/packages/external/bayesianLogisticRegression/build_package.xml
+   M /trunk/packages/external/cascadeKMeans/build_package.xml
+   M /trunk/packages/external/citationKNN/build_package.xml
+   M /trunk/packages/external/classAssociationRules/build_package.xml
+   M /trunk/packages/external/classifierErrors/build_package.xml
+   M /trunk/packages/external/decorate/build_package.xml
+   M /trunk/packages/external/elasticNet/build_package.xml
+   M /trunk/packages/external/ensembleLibrary/build_package.xml
+   M /trunk/packages/external/fastCorrBasedFS/build_package.xml
+   M /trunk/packages/external/functionalTrees/build_package.xml
+   M /trunk/packages/external/fuzzyLaticeReasoning/build_package.xml
+   M /trunk/packages/external/fuzzyUnorderedRuleInduction/build_package.xml
+   M /trunk/packages/external/generalizedSequentialPatterns/build_package.xml
+   M /trunk/packages/external/hiddenNaiveBayes/build_package.xml
+   M /trunk/packages/external/kfKettle/build_package.xml
+   M /trunk/packages/external/kfPMMLClassifierScoring/build_package.xml
+   M /trunk/packages/external/latentSemanticAnalysis/build_package.xml
+   M /trunk/packages/external/lazyBayesianRules/build_package.xml
+   M /trunk/packages/external/levenshteinEditDistance/build_package.xml
+   M /trunk/packages/external/linearForwardSelection/build_package.xml
+   M /trunk/packages/external/multilayerPerceptronCS/build_package.xml
+   M /trunk/packages/external/normalize/build_package.xml
+   M /trunk/packages/external/optics_dbScan/build_package.xml
+   M /trunk/packages/external/ordinalLearningMethod/build_package.xml
+   M /trunk/packages/external/ordinalStochasticDominance/build_package.xml
+   M /trunk/packages/external/prefuseGraphViewer/build_package.xml
+   M /trunk/packages/external/prefuseTree/build_package.xml
+   M /trunk/packages/external/probabilisticSignificanceAE/build_package.xml
+   M /trunk/packages/external/rotationForest/build_package.xml
+   M /trunk/packages/external/scatterPlot3D/build_package.xml
+   M /trunk/packages/external/snowball-stemmers/build_package.xml
+   M /trunk/packages/external/stackingC/build_package.xml
+   M /trunk/packages/external/tabuAndScatterSearch/build_package.xml
+   M /trunk/packages/external/tertius/build_package.xml
+   M /trunk/packages/external/winnow/build_package.xml
+   M /trunk/packages/internal/DTNB/build_package.xml
+   M /trunk/packages/internal/RBFNetwork/build_package.xml
+   M /trunk/packages/internal/RPlugin/build_package.xml
+   M /trunk/packages/internal/SPegasos/build_package.xml
+   M /trunk/packages/internal/SVMAttributeEval/build_package.xml
+   M /trunk/packages/internal/WekaExcel/build_package.xml
+   M /trunk/packages/internal/WekaODF/build_package.xml
+   M /trunk/packages/internal/XMeans/build_package.xml
+   M /trunk/packages/internal/alternatingDecisionTrees/build_package.xml
+   M /trunk/packages/internal/alternatingModelTrees/build_package.xml
+   M /trunk/packages/internal/attributeSelectionSearchMethods/build_package.xml
+   M /trunk/packages/internal/bestFirstTree/build_package.xml
+   M /trunk/packages/internal/chiSquaredAttributeEval/build_package.xml
+   M /trunk/packages/internal/classificationViaClustering/build_package.xml
+   M /trunk/packages/internal/classificationViaRegression/build_package.xml
+   M /trunk/packages/internal/classifierBasedAttributeSelection/build_package.xml
+   M /trunk/packages/internal/clojureClassifier/build_package.xml
+   M /trunk/packages/internal/complementNaiveBayes/build_package.xml
+   M /trunk/packages/internal/conjunctiveRule/build_package.xml
+   M /trunk/packages/internal/consistencySubsetEval/build_package.xml
+   M /trunk/packages/internal/costSensitiveAttributeSelection/build_package.xml
+   M /trunk/packages/internal/dagging/build_package.xml
+   M /trunk/packages/internal/denormalize/build_package.xml
+   M /trunk/packages/internal/discriminantAnalysis/build_package.xml
+   M /trunk/packages/internal/distributedWekaHadoop/build_package.xml
+   M /trunk/packages/internal/distributedWekaHadoop2/build_package.xml
+   M /trunk/packages/internal/distributedWekaHadoop2Libs/build_package.xml
+   M /trunk/packages/internal/distributedWekaHadoopLibs/build_package.xml
+   M /trunk/packages/internal/dualPerturbAndCombine/build_package.xml
+   M /trunk/packages/internal/ensemblesOfNestedDichotomies/build_package.xml
+   M /trunk/packages/internal/extraTrees/build_package.xml
+   M /trunk/packages/internal/filteredAttributeSelection/build_package.xml
+   M /trunk/packages/internal/gaussianProcesses/build_package.xml
+   M /trunk/packages/internal/grading/build_package.xml
+   M /trunk/packages/internal/gridSearch/build_package.xml
+   M /trunk/packages/internal/hyperPipes/build_package.xml
+   M /trunk/packages/internal/isolationForest/build_package.xml
+   M /trunk/packages/internal/isotonicRegression/build_package.xml
+   M /trunk/packages/internal/iterativeAbsoluteErrorRegression/build_package.xml
+   M /trunk/packages/internal/javaFXScatter3D/build_package.xml
+   M /trunk/packages/internal/kerasZoo/build_package.xml
+   M /trunk/packages/internal/kernelLogisticRegression/build_package.xml
+   M /trunk/packages/internal/leastMedSquared/build_package.xml
+   M /trunk/packages/internal/localOutlierFactor/build_package.xml
+   M /trunk/packages/internal/logarithmicErrorMetrics/build_package.xml
+   M /trunk/packages/internal/massiveOnlineAnalysis/build_package.xml
+   M /trunk/packages/internal/metaCost/build_package.xml
+   M /trunk/packages/internal/multiBoostAB/build_package.xml
+   M /trunk/packages/internal/multiInstanceFilters/build_package.xml
+   M /trunk/packages/internal/multiInstanceLearning/build_package.xml
+   M /trunk/packages/internal/multiLayerPerceptrons/build_package.xml
+   M /trunk/packages/internal/naiveBayesTree/build_package.xml
+   M /trunk/packages/internal/newKnowledgeFlowStepExamples/build_package.xml
+   M /trunk/packages/internal/niftiLoader/build_package.xml
+   M /trunk/packages/internal/oneClassClassifier/build_package.xml
+   M /trunk/packages/internal/ordinalClassClassifier/build_package.xml
+   M /trunk/packages/internal/paceRegression/build_package.xml
+   M /trunk/packages/internal/partialLeastSquares/build_package.xml
+   M /trunk/packages/internal/percentageErrorMetrics/build_package.xml
+   M /trunk/packages/internal/predictiveApriori/build_package.xml
+   M /trunk/packages/internal/probabilityCalibrationTrees/build_package.xml
+   M /trunk/packages/internal/raceSearch/build_package.xml
+   M /trunk/packages/internal/racedIncrementalLogitBoost/build_package.xml
+   M /trunk/packages/internal/realAdaBoost/build_package.xml
+   M /trunk/packages/internal/regressionByDiscretization/build_package.xml
+   M /trunk/packages/internal/ridor/build_package.xml
+   M /trunk/packages/internal/scriptingClassifiers/build_package.xml
+   M /trunk/packages/internal/sequentialInformationalBottleneckClusterer/build_package.xml
+   M /trunk/packages/internal/simpleCART/build_package.xml
+   M /trunk/packages/internal/simpleEducationalLearningSchemes/build_package.xml
+   M /trunk/packages/internal/streamingUnivariateStats/build_package.xml
+   M /trunk/packages/internal/supervisedAttributeScaling/build_package.xml
+   M /trunk/packages/internal/thresholdSelector/build_package.xml
+   M /trunk/packages/internal/userClassifier/build_package.xml
+   M /trunk/packages/internal/votingFeatureIntervals/build_package.xml
+   M /trunk/packages/internal/wavelet/build_package.xml
+   M /trunk/packages/templates/build_package.xml
+   M /trunk/release.xml
+   M /trunk/tools/tests/conf/developer.build.xml
+   M /trunk/wiki/docs/files/build_package.xml
+
+Replaced source="1.6" target="1.6" with source="1.8" target="1.8" to make compilation with Java 17 possible.
+------------------------------------------------------------------------
+r15887 | eibe | 2021-12-23 16:47:25 +1300 (Thu, 23 Dec 2021) | 1 line
+Changed paths:
+   M /trunk/packages/external/prefuseGraph/build_package.xml
+   M /trunk/packages/internal/distributedWekaBase/build_package.xml
+   M /trunk/packages/internal/distributedWekaHadoopCore/build_package.xml
+   M /trunk/packages/internal/distributedWekaSpark/build_package.xml
+   M /trunk/packages/internal/distributedWekaSpark2Dev/build_package.xml
+   M /trunk/packages/internal/distributedWekaSpark3Dev/build_package.xml
+   M /trunk/packages/internal/distributedWekaSparkDev/build_package.xml
+   M /trunk/packages/internal/fourierTransform/build_package.xml
+   M /trunk/packages/internal/hotSpot/build_package.xml
+   M /trunk/packages/internal/timeseriesForecasting/build_package.xml
+   M /trunk/packages/internal/wekaServer/build_package.xml
+   M /trunk/wekaexamples/build.xml
+
+Replaced source="1.7" target="1.7" with source="1.8" target="1.8" for consistency.
+------------------------------------------------------------------------
+r15888 | eibe | 2021-12-23 17:04:54 +1300 (Thu, 23 Dec 2021) | 1 line
+Changed paths:
+   A /trunk/packages/external/associationRulesVisualizer/lib/j3dcore.jar (from /trunk/packages/external/scatterPlot3D/lib/j3dcore.jar:15871)
+   A /trunk/packages/external/associationRulesVisualizer/lib/j3dutils.jar (from /trunk/packages/external/scatterPlot3D/lib/j3dutils.jar:15871)
+   A /trunk/packages/external/associationRulesVisualizer/lib/jogamp-fat.jar (from /trunk/packages/external/scatterPlot3D/lib/jogamp-fat.jar:15871)
+   A /trunk/packages/external/associationRulesVisualizer/lib/vecmath.jar (from /trunk/packages/external/scatterPlot3D/lib/vecmath.jar:15871)
+
+Added Java3D .jar files to package lib folder to make associationRulesVisualizer build.
+------------------------------------------------------------------------
+r15889 | eibe | 2021-12-24 00:02:16 +1300 (Fri, 24 Dec 2021) | 1 line
+Changed paths:
+   M /trunk/add-opens-arguments-for-jvm.sh
+   M /trunk/installer/nsis/templates/RunWeka.ini
+   M /trunk/packages/external/associationRulesVisualizer/Description.props
+   M /trunk/packages/external/associationRulesVisualizer/lib/j3dcore.jar
+   M /trunk/packages/external/associationRulesVisualizer/lib/j3dutils.jar
+   M /trunk/packages/external/associationRulesVisualizer/lib/jogamp-fat.jar
+   M /trunk/packages/external/associationRulesVisualizer/lib/vecmath.jar
+   M /trunk/packages/external/scatterPlot3D/Description.props
+   M /trunk/packages/external/scatterPlot3D/lib/j3dcore.jar
+   M /trunk/packages/external/scatterPlot3D/lib/j3dutils.jar
+   M /trunk/packages/external/scatterPlot3D/lib/jogamp-fat.jar
+   M /trunk/packages/external/scatterPlot3D/lib/vecmath.jar
+   M /trunk/weka/src/main/scripts/weka.sh
+
+Added some additional --add-opens expressions for Java3D/Jogamp and one for the WEKA package manager (possibly only required for uninstallation of some packages).
+------------------------------------------------------------------------
+r15900 | eibe | 2021-12-31 13:05:08 +1300 (Fri, 31 Dec 2021) | 1 line
+Changed paths:
+   M /trunk/packages/internal/RPlugin/Description.props
+   M /trunk/packages/internal/RPlugin/build_package.xml
+   M /trunk/packages/internal/RPlugin/libExternal/JRI.jar
+   M /trunk/packages/internal/RPlugin/libExternal/JRIEngine.jar
+   M /trunk/packages/internal/RPlugin/libExternal/REngine.jar
+   A /trunk/packages/internal/RPlugin/libExternal/jna-5.10.0.jar
+   D /trunk/packages/internal/RPlugin/libExternal/jna-5.8.0.jar
+   A /trunk/packages/internal/RPlugin/libExternal/jna-platform-5.10.0.jar
+   D /trunk/packages/internal/RPlugin/libExternal/jna-platform-5.8.0.jar
+   A /trunk/packages/internal/RPlugin/libExternal/mxparser-1.2.2.jar
+   A /trunk/packages/internal/RPlugin/libExternal/xstream-1.4.18.jar
+   M /trunk/packages/internal/RPlugin/libExternalPreload/REngine.zip
+   M /trunk/packages/internal/RPlugin/libExternalPreload/rJavaClassLoader.zip
+   M /trunk/packages/internal/RPlugin/src/main/java/weka/classifiers/mlr/MLRClassifier.java
+   M /trunk/packages/internal/RPlugin/src/main/java/weka/classifiers/mlr/impl/MLRClassifierImpl.java
+   M /trunk/packages/internal/RPlugin/src/main/java/weka/core/RSessionImpl.java
+
+Updated library .jar files (latest xstream, jna, mxparser, and JRI/rJava 1.0-6 .jar files) and .zip files for preload libraries. MLR classifier now installs XML package when it is missing. Fixed problem in MLRClassifier when learning scheme tried to write to file at prediction time. Improved instructions for installation and update.
+------------------------------------------------------------------------
+r15901 | eibe | 2021-12-31 13:07:42 +1300 (Fri, 31 Dec 2021) | 1 line
+Changed paths:
+   D /trunk/packages/internal/RPlugin/libExternal/xpp3_min-1.1.4c.jar
+   D /trunk/packages/internal/RPlugin/libExternal/xstream-1.4.17.jar
+
+Removed old library .jar files.
+------------------------------------------------------------------------
+r15905 | eibe | 2022-01-01 18:38:53 +1300 (Sat, 01 Jan 2022) | 1 line
+Changed paths:
+   M /trunk/packages/internal/netlibNativeLinux/Description.props
+   D /trunk/packages/internal/netlibNativeLinux/lib/jniloader-1.1.jar
+   A /trunk/packages/internal/netlibNativeLinux/lib/jniloader-1.2-SNAPSHOT.jar
+   D /trunk/packages/internal/netlibNativeLinux/lib/native_ref-java-1.1.jar
+   A /trunk/packages/internal/netlibNativeLinux/lib/native_ref-java-1.2-SNAPSHOT.jar
+   D /trunk/packages/internal/netlibNativeLinux/lib/native_system-java-1.1.jar
+   A /trunk/packages/internal/netlibNativeLinux/lib/native_system-java-1.2-SNAPSHOT.jar
+   A /trunk/packages/internal/netlibNativeLinux/lib/netlib-native_ref-linux-aarch64-1.2-SNAPSHOT-natives.jar
+   D /trunk/packages/internal/netlibNativeLinux/lib/netlib-native_ref-linux-armhf-1.1-natives.jar
+   D /trunk/packages/internal/netlibNativeLinux/lib/netlib-native_ref-linux-i686-1.1-natives.jar
+   A /trunk/packages/internal/netlibNativeLinux/lib/netlib-native_ref-linux-i686-1.2-SNAPSHOT-natives.jar
+   D /trunk/packages/internal/netlibNativeLinux/lib/netlib-native_ref-linux-x86_64-1.1-natives.jar
+   A /trunk/packages/internal/netlibNativeLinux/lib/netlib-native_ref-linux-x86_64-1.2-SNAPSHOT-natives.jar
+   A /trunk/packages/internal/netlibNativeLinux/lib/netlib-native_system-linux-aarch64-1.2-SNAPSHOT-natives.jar
+   D /trunk/packages/internal/netlibNativeLinux/lib/netlib-native_system-linux-armhf-1.1-natives.jar
+   D /trunk/packages/internal/netlibNativeLinux/lib/netlib-native_system-linux-i686-1.1-natives.jar
+   A /trunk/packages/internal/netlibNativeLinux/lib/netlib-native_system-linux-i686-1.2-SNAPSHOT-natives.jar
+   D /trunk/packages/internal/netlibNativeLinux/lib/netlib-native_system-linux-x86_64-1.1-natives.jar
+   A /trunk/packages/internal/netlibNativeLinux/lib/netlib-native_system-linux-x86_64-1.2-SNAPSHOT-natives.jar
+
+Now includes Linux natives built on Ubuntu 20.04 against libgfortran.5 and glibc 2.31 (and libraries from BLAS/LAPACK 3.10.0-2 for the "system" versions). The armhf versions have been removed in the default set-up. Instead, aarch64 versions are included now. The aarch64 and the 32-bit Intel versions were built on a 64-bit Intel machine running Ubuntu 20.04. GCC/GFORTRAN version 9.3.0 were used throughout for this.
+------------------------------------------------------------------------
+r15908 | eibe | 2022-01-10 23:02:40 +1300 (Mon, 10 Jan 2022) | 1 line
+Changed paths:
+   M /trunk/packages/internal/RPlugin/src/main/java/weka/core/JRILoader.java
+   M /trunk/packages/internal/RPlugin/src/main/java/weka/core/JRINativeLoader.java
+   M /trunk/packages/internal/RPlugin/src/main/java/weka/core/RSessionImpl.java
+
+Changes to RPlugin to remove debug output, set JAVA_HOME on all three platforms (if not set already), and remove special hack to fix up location of Java binary in native library on macOS. Also added further information to the installation message.
+------------------------------------------------------------------------
+r15912 | eibe | 2022-01-12 15:21:59 +1300 (Wed, 12 Jan 2022) | 1 line
+Changed paths:
+   M /trunk/packages/internal/RPlugin/Description.props
+
+Corrected date of package release.
+------------------------------------------------------------------------
+r15913 | eibe | 2022-01-13 17:28:12 +1300 (Thu, 13 Jan 2022) | 1 line
+Changed paths:
+   M /trunk/packages/external/associationRulesVisualizer/Description.props
+   M /trunk/packages/external/associationRulesVisualizer/lib/jogamp-fat.jar
+   M /trunk/packages/external/scatterPlot3D/Description.props
+   M /trunk/packages/external/scatterPlot3D/lib/jogamp-fat.jar
+
+Now works on ARM Macs because universal binaries are included for Jogamp (from https://sourceforge.net/projects/sweethome3d/).
+------------------------------------------------------------------------

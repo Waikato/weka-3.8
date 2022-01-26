@@ -1,0 +1,169 @@
+------------------------------------------------------------------------
+r15744 | mhall | 2020-12-23 10:43:53 +1300 (Wed, 23 Dec 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/datagenerators/clusterers/SubspaceClusterDefinition.java
+
+Fixed a bug where if no -A, -G or -U was specified in the option string, then the default attribute index range would be overwritten with empty string
+------------------------------------------------------------------------
+r15748 | eibe | 2020-12-23 12:54:32 +1300 (Wed, 23 Dec 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/datagenerators/clusterers/SubspaceCluster.java
+
+SubspaceCluster now runs at the command-line even when the user does not explicitly provide a cluster definition, to be consistent with the setup in the GUI.
+------------------------------------------------------------------------
+r15753 | fracpete | 2020-12-27 15:54:06 +1300 (Sun, 27 Dec 2020) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/evaluation/CostCurve.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/evaluation/MarginCurve.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/evaluation/ThresholdCurve.java
+
+removed main method (only used for testing) to clean up dependencies
+------------------------------------------------------------------------
+r15757 | fracpete | 2021-01-02 14:22:20 +1300 (Sat, 02 Jan 2021) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/gui/AttributeSummaryPanel.java
+
+date attributes now display dates instead of milliseconds using the attribute's format for min/max/mean/stdev
+------------------------------------------------------------------------
+r15792 | eibe | 2021-06-06 18:41:38 +1200 (Sun, 06 Jun 2021) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/filters/MultiFilter.java
+   M /branches/stable-3-8/weka/src/test/resources/wekarefs/weka/filters/MultiFilterTest.ref
+   M /branches/waikato-3-8/weka/src/main/java/weka/filters/MultiFilter.java
+   M /branches/waikato-3-8/weka/src/test/resources/wekarefs/weka/filters/MultiFilterTest.ref
+   M /branches/waikato/weka/src/main/java/weka/filters/MultiFilter.java
+   M /branches/waikato/weka/src/test/resources/wekarefs/weka/filters/MultiFilterTest.ref
+
+MultiFilter now implements Randomizable. The seed that is specified is passed through the filters included in the list specified by the user. If no filter is Randomizable, there will be no effect. Now, MultiFilter also checks that at least one of the specified filters can handle instance or attribute weights if the data has unequal attribute or instance weights respectively. Otherwise, an exception will be thrown.
+------------------------------------------------------------------------
+r15801 | eibe | 2021-06-08 20:04:52 +1200 (Tue, 08 Jun 2021) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/meta/Bagging.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/meta/RandomCommittee.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/meta/RandomSubSpace.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/meta/Bagging.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/meta/RandomCommittee.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/meta/RandomSubSpace.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/meta/Bagging.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/meta/RandomCommittee.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/meta/RandomSubSpace.java
+
+Now, Bagging, RandomCommittee, and RandomSubSpace implement multi-threaded batch prediction if base learner supports batch prediction (e.g., MLRClassifier). Normal single-instance prediction is still single-threaded.
+------------------------------------------------------------------------
+r15882 | mhall | 2021-12-23 10:44:41 +1300 (Thu, 23 Dec 2021) | 1 line
+Changed paths:
+   A /branches/stable-3-8/weka/src/main/java/weka/gui/weka_icon_new_1024x1024.png
+
+1024x1024 version of the icon
+------------------------------------------------------------------------
+r15895 | mhall | 2021-12-24 14:20:16 +1300 (Fri, 24 Dec 2021) | 1 line
+Changed paths:
+   M /branches/stable-3-8/weka/src/main/java/weka/gui/GUIChooserApp.java
+   A /branches/stable-3-8/weka/src/main/java/weka/gui/images/weka_background_new.png
+
+New image for GUIChooser
+------------------------------------------------------------------------
+r15923 | eibe | 2022-01-24 17:17:38 +1300 (Mon, 24 Jan 2022) | 1 line
+Changed paths:
+   M /branches/stable-3-8/installer/nsis/templates/RunWeka.bat
+   M /branches/stable-3-8/installer/nsis/templates/RunWeka.ini
+   M /branches/stable-3-8/installer/nsis/templates/RunWeka.java
+   M /branches/stable-3-8/weka/build.xml
+   M /branches/stable-3-8/weka/lib/README
+   A /branches/stable-3-8/weka/lib/flatlaf-2.0.jar
+   D /branches/stable-3-8/weka/lib/istack-commons-runtime-3.0.11.jar
+   A /branches/stable-3-8/weka/lib/istack-commons-runtime-3.0.12.jar
+   D /branches/stable-3-8/weka/lib/jaxb-runtime-2.3.3.jar
+   A /branches/stable-3-8/weka/lib/jaxb-runtime-2.3.5.jar
+   D /branches/stable-3-8/weka/lib/junit-4.13.1.jar
+   A /branches/stable-3-8/weka/lib/junit-4.13.2.jar
+   M /branches/stable-3-8/weka/pom.xml
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/evaluation/MarginCurve.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/evaluation/ThresholdCurve.java
+   M /branches/stable-3-8/weka/src/main/java/weka/classifiers/functions/MultilayerPerceptron.java
+   M /branches/stable-3-8/weka/src/main/java/weka/core/Copyright.props
+   M /branches/stable-3-8/weka/src/main/java/weka/core/TestInstances.java
+   M /branches/stable-3-8/weka/src/main/java/weka/core/packageManagement/DefaultPackage.java
+   M /branches/stable-3-8/weka/src/main/java/weka/core/version.txt
+   M /branches/stable-3-8/weka/src/main/java/weka/gui/LookAndFeel.java
+   M /branches/stable-3-8/weka/src/main/java/weka/gui/SplashWindow.java
+   M /branches/stable-3-8/weka/src/main/java/weka/gui/WorkbenchDefaults.java
+   M /branches/stable-3-8/weka/src/main/java/weka/gui/arffviewer/ArffTable.java
+   M /branches/stable-3-8/weka/src/main/java/weka/knowledgeflow/KFDefaults.java
+   M /branches/stable-3-8/weka/src/main/scripts/weka.sh
+   M /branches/stable-3-8/wekadocs/README
+   M /branches/stable-3-8/wekadocs/manual/manual.tex
+   M /branches/stable-3-8/wekadocs/manual/simplecli.tex
+   M /branches/stable-3-8/wekaexamples/build.xml
+   M /branches/waikato-3-8/weka/build.xml
+   M /branches/waikato-3-8/weka/lib/README
+   D /branches/waikato-3-8/weka/lib/istack-commons-runtime-3.0.11.jar
+   A /branches/waikato-3-8/weka/lib/istack-commons-runtime-3.0.12.jar
+   D /branches/waikato-3-8/weka/lib/jaxb-runtime-2.3.3.jar
+   A /branches/waikato-3-8/weka/lib/jaxb-runtime-2.3.5.jar
+   D /branches/waikato-3-8/weka/lib/junit-4.13.1.jar
+   A /branches/waikato-3-8/weka/lib/junit-4.13.2.jar
+   M /branches/waikato-3-8/weka/pom.xml
+   M /branches/waikato-3-8/weka/src/main/java/weka/associations/NumericItem.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/bayes/net/BayesNetGenerator.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/bayes/net/search/local/Scoreable.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/functions/MultilayerPerceptron.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/trees/j48/BinC45ModelSelection.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/trees/j48/NBTreeModelSelection.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/trees/j48/NBTreeNoSplit.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/classifiers/trees/j48/NBTreeSplit.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/core/Copyright.props
+   M /branches/waikato-3-8/weka/src/main/java/weka/core/converters/CSVSaver.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/core/pmml/Function.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/estimators/PoissonEstimator.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/estimators/UnivariateMixtureEstimator.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/filters/CheckSource.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/gui/GUIChooserApp.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/gui/LookAndFeel.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/gui/SplashWindow.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/gui/WorkbenchDefaults.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/gui/arffviewer/ArffTable.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/gui/arffviewer/ArffViewer.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/gui/beans/CrossValidationFoldMakerBeanInfo.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/gui/sql/event/HistoryChangedListener.java
+   M /branches/waikato-3-8/weka/src/main/java/weka/knowledgeflow/KFDefaults.java
+   M /branches/waikato-3-8/weka/src/main/scripts/weka.sh
+   M /branches/waikato-3-8/weka/src/test/java/weka/filters/unsupervised/attribute/AddTest.java
+   M /branches/waikato-3-8/wekadocs/README
+   M /branches/waikato/weka/build.xml
+   M /branches/waikato/weka/lib/README
+   D /branches/waikato/weka/lib/istack-commons-runtime-3.0.11.jar
+   A /branches/waikato/weka/lib/istack-commons-runtime-3.0.12.jar
+   D /branches/waikato/weka/lib/jaxb-runtime-2.3.3.jar
+   A /branches/waikato/weka/lib/jaxb-runtime-2.3.5.jar
+   D /branches/waikato/weka/lib/junit-4.13.1.jar
+   A /branches/waikato/weka/lib/junit-4.13.2.jar
+   M /branches/waikato/weka/pom.xml
+   M /branches/waikato/weka/src/main/java/weka/associations/NumericItem.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/bayes/net/BayesNetGenerator.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/bayes/net/search/local/Scoreable.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/functions/MultilayerPerceptron.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/trees/j48/BinC45ModelSelection.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/trees/j48/NBTreeModelSelection.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/trees/j48/NBTreeNoSplit.java
+   M /branches/waikato/weka/src/main/java/weka/classifiers/trees/j48/NBTreeSplit.java
+   M /branches/waikato/weka/src/main/java/weka/core/Copyright.props
+   M /branches/waikato/weka/src/main/java/weka/core/converters/CSVSaver.java
+   M /branches/waikato/weka/src/main/java/weka/core/pmml/Function.java
+   M /branches/waikato/weka/src/main/java/weka/estimators/PoissonEstimator.java
+   M /branches/waikato/weka/src/main/java/weka/estimators/UnivariateMixtureEstimator.java
+   M /branches/waikato/weka/src/main/java/weka/filters/CheckSource.java
+   M /branches/waikato/weka/src/main/java/weka/gui/GUIChooserApp.java
+   M /branches/waikato/weka/src/main/java/weka/gui/LookAndFeel.java
+   M /branches/waikato/weka/src/main/java/weka/gui/SplashWindow.java
+   M /branches/waikato/weka/src/main/java/weka/gui/WorkbenchDefaults.java
+   M /branches/waikato/weka/src/main/java/weka/gui/arffviewer/ArffTable.java
+   M /branches/waikato/weka/src/main/java/weka/gui/arffviewer/ArffViewer.java
+   M /branches/waikato/weka/src/main/java/weka/gui/beans/CrossValidationFoldMakerBeanInfo.java
+   M /branches/waikato/weka/src/main/java/weka/gui/sql/event/HistoryChangedListener.java
+   M /branches/waikato/weka/src/main/java/weka/knowledgeflow/KFDefaults.java
+   M /branches/waikato/weka/src/main/scripts/weka.sh
+   M /branches/waikato/weka/src/test/java/weka/filters/unsupervised/attribute/AddTest.java
+
+Migrated changes from main trunk, mainly to do with new look and feel.
+------------------------------------------------------------------------
