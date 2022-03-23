@@ -110,7 +110,7 @@ public class C45PruneableClassifierTree
   /**
    * Collapses a tree to a node if training error doesn't increase.
    */
-  public final void collapse(){
+  public void collapse(){
 
     double errorsOfSubtree;
     double errorsOfTree;

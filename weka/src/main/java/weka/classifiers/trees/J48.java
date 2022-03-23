@@ -344,7 +344,7 @@ public class J48 extends AbstractClassifier implements OptionHandler, Drawable,
    * @throws Exception if distribution can't be computed successfully
    */
   @Override
-  public final double[] distributionForInstance(Instance instance)
+  public double[] distributionForInstance(Instance instance)
     throws Exception {
 
     return m_root.distributionForInstance(instance, m_useLaplace);
