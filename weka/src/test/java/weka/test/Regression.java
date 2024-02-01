@@ -27,6 +27,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.Writer;
 import java.util.Properties;
 
@@ -141,19 +142,31 @@ public class Regression {
    *         differences.
    */
   protected String diff(String reference, String current) {
-
-    if (reference.equals(current)) {
-      return "";
-    } else {
-      // Should do something more cunning here, like try to isolate the
-      // actual differences. We could also try calling unix diff utility
-      // if it exists.
-      StringBuffer diff = new StringBuffer();
-      diff.append("+++ Reference: ").append(m_RefFile).append(" +++\n")
-        .append(reference).append("+++ Current +++\n").append(current)
-        .append("+++\n");
-      return diff.toString();
+    StringBuffer diff = new StringBuffer();
+    try {
+      BufferedReader brExp = new BufferedReader(new StringReader(reference));
+      BufferedReader brWas = new BufferedReader(new StringReader(current));
+      String expLine = brExp.readLine();
+      String wasLine = brWas.readLine();
+      while (expLine != null || wasLine != null) {
+        if (!("" + expLine).equals("" + wasLine)) {
+          if (diff.length() == 0) {
+            diff.append("+++ Reference: ").append(m_RefFile).append(" +++\n")
+            .append(reference)
+            .append("+++ Current +++\n")
+            .append(current)
+            .append("+++\n");
+          }
+          diff.append("Exp: " + expLine + "\n");
+          diff.append("Was: " + wasLine + "\n");
+        }
+        expLine = brExp.readLine();
+        wasLine = brWas.readLine();
+      }
+    } catch (IOException ex) {
+      throw new IllegalStateException(ex);
     }
+    return diff.toString();
   }
 
   /**
